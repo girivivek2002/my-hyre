@@ -1,0 +1,453 @@
+"use client";
+import React, { ReactNode, MouseEvent } from "react";
+import { motion, useMotionTemplate, useMotionValue, Variants } from "framer-motion";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import {
+    LayoutDashboard, Users, Briefcase, BarChart3, Settings,
+    Search, Bell, ChevronDown, Sparkles, TrendingUp, TrendingDown,
+    Clock, Target, Zap, Eye, UserCheck, ArrowUpRight, ArrowDownRight,
+    Globe, Calendar, Filter, CalendarDays
+} from "lucide-react";
+
+// ─── Glass Card ───────────────────────────────────────────────────────────────
+function GlassCard({ children, className = "" }: { children: ReactNode, className?: string }) {
+    const mouseX = useMotionValue(0);
+    const mouseY = useMotionValue(0);
+    function handleMouseMove({ currentTarget, clientX, clientY }: MouseEvent) {
+        const { left, top } = currentTarget.getBoundingClientRect();
+        mouseX.set(clientX - left);
+        mouseY.set(clientY - top);
+    }
+    return (
+        <div onMouseMove={handleMouseMove} className={`group relative bg-white/60 dark:bg-neutral-900/40 backdrop-blur-md border border-slate-200 dark:border-neutral-800/60 rounded-3xl overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.2)] ${className}`}>
+            <motion.div className="pointer-events-none absolute -inset-px opacity-0 transition duration-500 group-hover:opacity-100 z-[-1]" style={{ background: useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, rgba(59, 130, 246, 0.15), transparent 80%)` }} />
+            <div className="absolute inset-0 bg-slate-50/80 dark:bg-neutral-950/80 -z-10" />
+            <div className="relative z-10 w-full h-full p-6">{children}</div>
+        </div>
+    );
+}
+
+// ─── Mini Bar Chart ───────────────────────────────────────────────────────────
+function MiniBarChart({ data, color }: { data: number[], color: string }) {
+    const max = Math.max(...data);
+    return (
+        <div className="flex items-end gap-1 h-16">
+            {data.map((val, i) => (
+                <motion.div
+                    key={i}
+                    initial={{ height: 0 }}
+                    animate={{ height: `${(val / max) * 100}%` }}
+                    transition={{ delay: i * 0.05, type: "spring", stiffness: 200, damping: 15 }}
+                    className={`flex-1 rounded-t-sm ${color} min-h-[4px] opacity-60 hover:opacity-100 transition-opacity cursor-pointer`}
+                />
+            ))}
+        </div>
+    );
+}
+
+// ─── Horizontal Progress Bar ──────────────────────────────────────────────────
+function ProgressBar({ label, value, max, color, delay = 0 }: { label: string, value: number, max: number, color: string, delay?: number }) {
+    const pct = Math.round((value / max) * 100);
+    return (
+        <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+                <span className="text-slate-700 dark:text-neutral-300 font-medium">{label}</span>
+                <span className="text-slate-500 dark:text-neutral-500 font-bold">{pct}%</span>
+            </div>
+            <div className="h-2.5 bg-slate-200 dark:bg-neutral-800/80 rounded-full overflow-hidden">
+                <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${pct}%` }}
+                    transition={{ delay, duration: 0.8, ease: "easeOut" }}
+                    className={`h-full rounded-full ${color}`}
+                />
+            </div>
+        </div>
+    );
+}
+
+// ─── Donut Segment (CSS only) ─────────────────────────────────────────────────
+function DonutChart({ segments }: { segments: { label: string, value: number, color: string }[] }) {
+    const total = segments.reduce((s, x) => s + x.value, 0);
+    let cumulative = 0;
+    const gradientParts = segments.map(seg => {
+        const start = (cumulative / total) * 360;
+        cumulative += seg.value;
+        const end = (cumulative / total) * 360;
+        return `${seg.color} ${start}deg ${end}deg`;
+    });
+    return (
+        <div className="flex flex-col items-center gap-6">
+            <div
+                className="w-40 h-40 rounded-full relative shadow-[0_0_30px_rgba(59,130,246,0.15)]"
+                style={{ background: `conic-gradient(${gradientParts.join(", ")})` }}
+            >
+                <div className="absolute inset-4 rounded-full bg-slate-50 dark:bg-neutral-950 flex items-center justify-center">
+                    <div className="text-center">
+                        <p className="text-2xl font-extrabold text-slate-900 dark:text-white">{total}</p>
+                        <p className="text-[10px] text-slate-500 dark:text-neutral-500 uppercase tracking-widest font-bold">Total</p>
+                    </div>
+                </div>
+            </div>
+            <div className="flex flex-wrap justify-center gap-x-5 gap-y-2">
+                {segments.map((seg, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                        <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: seg.color }} />
+                        <span className="text-xs text-slate-600 dark:text-neutral-400 font-medium">{seg.label} <span className="text-slate-900 dark:text-white font-bold">{seg.value}</span></span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+export default function AnalyticsPage() {
+    const router = useRouter();
+
+    const containerVars: Variants = {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.08, delayChildren: 0.1 } }
+    };
+    const itemVars: Variants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+    };
+
+    const weeklyApplicants = [42, 58, 35, 72, 65, 80, 91];
+    const weeklyHires = [4, 6, 3, 8, 5, 7, 9];
+
+    return (
+        <div className="min-h-screen bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white flex overflow-hidden selection:bg-blue-500/30 font-sans transition-colors duration-300">
+
+            {/* Ambient Glow */}
+            <div className="absolute top-[-20%] left-[-10%] w-[120%] h-[120%] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100/50 via-slate-50 to-slate-50 dark:from-blue-900/10 dark:via-neutral-950 dark:to-[#050505] pointer-events-none -z-10 blur-[100px]" />
+
+            {/* ── Sidebar ──────────────────────────────────────────────── */}
+            <motion.div
+                initial={{ x: -100, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                className="w-72 bg-white/50 dark:bg-neutral-950/50 backdrop-blur-2xl border-r border-slate-200 dark:border-neutral-800/60 p-6 flex flex-col z-20 shrink-0 shadow-2xl"
+            >
+                <div className="flex items-center gap-3 mb-10 pl-2 cursor-pointer" onClick={() => router.push("/recruiter/dashboard")}>
+                    <Image src="/logo.png" alt="Logo" width={32} height={32} className="rounded-lg shadow-[0_0_15px_rgba(59,130,246,0.3)]" />
+                    <div>
+                        <h1 className="text-xl font-bold tracking-tight">Mr. Hyre</h1>
+                        <p className="text-[10px] text-blue-400 font-semibold tracking-widest uppercase">Intelligence</p>
+                    </div>
+                </div>
+                <div className="space-y-2 text-slate-600 dark:text-neutral-400 flex-1">
+                    {[
+                        { icon: <LayoutDashboard size={20} />, label: "Dashboard", path: "/recruiter/dashboard" },
+                        { icon: <Briefcase size={20} />, label: "Active Jobs", path: "/recruiter/post-job" },
+                        { icon: <Users size={20} />, label: "Candidates", path: "/recruiter/candidates" },
+                        { icon: <BarChart3 size={20} />, label: "Analytics", active: true },
+                        { icon: <CalendarDays size={20} />, label: "Schedule", path: "/recruiter/schedule" },
+                    ].map((item, i) => (
+                        <div
+                            key={i}
+                            onClick={() => item.path && router.push(item.path)}
+                            className={`flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer transition-all duration-300 font-medium ${item.active ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 shadow-inner' : 'hover:bg-slate-100 dark:hover:bg-neutral-900 hover:text-slate-900 dark:hover:text-white border border-transparent'}`}
+                        >
+                            {item.icon}
+                            <span>{item.label}</span>
+                        </div>
+                    ))}
+                    <div className="mt-8 mb-2 px-4 text-xs font-semibold tracking-widest text-slate-400 dark:text-neutral-600 uppercase">Configuration</div>
+                    <div onClick={() => router.push("/recruiter/settings")} className="flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer transition-all duration-300 hover:bg-slate-100 dark:hover:bg-neutral-900 hover:text-slate-900 dark:hover:text-white border border-transparent font-medium">
+                        <Settings size={20} />
+                        <span>Settings</span>
+                    </div>
+                </div>
+            </motion.div>
+
+            {/* ── Main ─────────────────────────────────────────────────── */}
+            <div className="flex-1 flex flex-col h-screen overflow-hidden">
+
+                {/* Topbar */}
+                <motion.div
+                    initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.1, type: "spring", stiffness: 200, damping: 20 }}
+                    className="h-20 border-b border-slate-200 dark:border-neutral-800/60 bg-white/30 dark:bg-neutral-950/30 backdrop-blur-md px-10 flex justify-between items-center z-10 shrink-0"
+                >
+                    <div className="relative group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-neutral-500 group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors" size={20} />
+                        <input placeholder="Search metrics..." className="bg-slate-100/50 dark:bg-neutral-900/50 border border-slate-200 dark:border-neutral-800/80 px-4 py-2.5 pl-12 rounded-full w-[400px] text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-500/50 dark:focus:border-blue-500/50 focus:bg-white dark:focus:bg-neutral-900 focus:ring-1 focus:ring-blue-500/50 transition-all shadow-inner dark:shadow-none" />
+                    </div>
+                    <div className="flex items-center gap-6">
+                        <button className="relative text-slate-400 hover:text-slate-900 dark:text-neutral-400 dark:hover:text-white transition-colors">
+                            <Bell size={22} />
+                            <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-blue-500 border-2 border-white dark:border-neutral-950 rounded-full" />
+                        </button>
+                        <div className="w-px h-8 bg-slate-200 dark:bg-neutral-800" />
+                        <div className="flex items-center gap-3 cursor-pointer group">
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-200 to-slate-100 dark:from-neutral-700 dark:to-neutral-900 border border-slate-300 dark:border-neutral-700 overflow-hidden relative shadow-[0_0_10px_rgba(0,0,0,0.1)] dark:shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                                <Image src="/logo.png" alt="Profile" fill className="object-cover opacity-80" />
+                            </div>
+                            <div className="hidden md:block">
+                                <p className="text-sm font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Sterling & Co.</p>
+                                <p className="text-[11px] text-slate-500 dark:text-neutral-500 font-medium">Enterprise Admin</p>
+                            </div>
+                            <ChevronDown size={16} className="text-slate-400 dark:text-neutral-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors ml-1" />
+                        </div>
+                    </div>
+                </motion.div>
+
+                {/* ── Scrollable Content ─────────────────────────────── */}
+                <motion.div
+                    variants={containerVars} initial="hidden" animate="visible"
+                    className="flex-1 overflow-y-auto px-6 sm:px-10 py-8 pb-20 custom-scrollbar"
+                >
+                    <div className="max-w-7xl mx-auto">
+
+                        {/* Header */}
+                        <motion.div variants={itemVars} className="mb-10 flex flex-col sm:flex-row justify-between sm:items-end gap-4">
+                            <div>
+                                <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 text-slate-900 dark:text-white">
+                                    Recruitment <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500 dark:from-blue-400 dark:to-indigo-300">Analytics</span>
+                                </h1>
+                                <p className="text-slate-500 dark:text-neutral-400 text-lg flex items-center gap-2">
+                                    <Sparkles size={18} className="text-blue-500 dark:text-blue-400" />
+                                    Real-time intelligence across your entire hiring pipeline.
+                                </p>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <button className="flex items-center gap-2 bg-white dark:bg-neutral-900/60 border border-slate-200 dark:border-neutral-800 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-neutral-700 transition-all">
+                                    <Calendar size={16} /> Last 30 Days
+                                </button>
+                                <button className="flex items-center gap-2 bg-white dark:bg-neutral-900/60 border border-slate-200 dark:border-neutral-800 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-neutral-700 transition-all">
+                                    <Filter size={16} /> Filter
+                                </button>
+                            </div>
+                        </motion.div>
+
+                        {/* ── KPI Row ────────────────────────────────── */}
+                        <motion.div variants={itemVars} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                            {[
+                                { title: "Total Applications", value: "4,218", trend: "+18%", positive: true, icon: <Users size={22} className="text-blue-400" />, sub: "vs last month" },
+                                { title: "Avg. Time to Hire", value: "14 days", trend: "-3 days", positive: true, icon: <Clock size={22} className="text-emerald-400" />, sub: "from 17 days" },
+                                { title: "Offer Acceptance", value: "89%", trend: "+5%", positive: true, icon: <UserCheck size={22} className="text-purple-400" />, sub: "industry avg 72%" },
+                                { title: "Cost per Hire", value: "$2,140", trend: "-12%", positive: true, icon: <Target size={22} className="text-amber-400" />, sub: "from $2,432" },
+                            ].map((kpi, i) => (
+                                <GlassCard key={i}>
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div className="p-3 bg-slate-100 dark:bg-neutral-800/50 rounded-xl border border-slate-200 dark:border-neutral-700/50 shadow-inner">
+                                            {kpi.icon}
+                                        </div>
+                                        <div className={`flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full ${kpi.positive ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' : 'bg-red-500/10 text-red-600 dark:text-red-400'}`}>
+                                            {kpi.positive ? <ArrowUpRight size={14} /> : <ArrowDownRight size={14} />}
+                                            {kpi.trend}
+                                        </div>
+                                    </div>
+                                    <p className="text-slate-500 dark:text-neutral-400 font-medium text-sm mb-1">{kpi.title}</p>
+                                    <h2 className="text-3xl font-extrabold mb-1 text-slate-900 dark:text-white">{kpi.value}</h2>
+                                    <p className="text-[11px] text-slate-400 dark:text-neutral-500">{kpi.sub}</p>
+                                </GlassCard>
+                            ))}
+                        </motion.div>
+
+                        {/* ── Charts Row ─────────────────────────────── */}
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+
+                            {/* Weekly Applicants */}
+                            <motion.div variants={itemVars} className="lg:col-span-2">
+                                <GlassCard>
+                                    <div className="flex justify-between items-center mb-6">
+                                        <div>
+                                            <h2 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white">Weekly Application Volume</h2>
+                                            <p className="text-xs text-slate-500 dark:text-neutral-500 mt-1">Applicants received per day this week</p>
+                                        </div>
+                                        <div className="flex items-center gap-4 text-xs text-slate-500 dark:text-neutral-500">
+                                            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-blue-500" /> Applicants</span>
+                                            <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> Hires</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-6">
+                                        <div>
+                                            <p className="text-xs text-slate-500 dark:text-neutral-500 mb-3 font-semibold uppercase tracking-widest">Applicants</p>
+                                            <MiniBarChart data={weeklyApplicants} color="bg-blue-500" />
+                                            <div className="flex justify-between mt-2 text-[10px] text-slate-400 dark:text-neutral-600 font-medium">
+                                                {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(d => <span key={d}>{d}</span>)}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <p className="text-xs text-slate-500 dark:text-neutral-500 mb-3 font-semibold uppercase tracking-widest">Hires</p>
+                                            <MiniBarChart data={weeklyHires} color="bg-emerald-500" />
+                                            <div className="flex justify-between mt-2 text-[10px] text-slate-400 dark:text-neutral-600 font-medium">
+                                                {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(d => <span key={d}>{d}</span>)}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-slate-200 dark:border-neutral-800/50">
+                                        <div>
+                                            <p className="text-[10px] text-slate-500 dark:text-neutral-500 uppercase tracking-widest font-bold">Peak Day</p>
+                                            <p className="text-lg font-extrabold text-slate-900 dark:text-white">Sunday</p>
+                                            <p className="text-xs text-slate-500 dark:text-neutral-400">91 applicants</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] text-slate-500 dark:text-neutral-500 uppercase tracking-widest font-bold">Weekly Total</p>
+                                            <p className="text-lg font-extrabold text-slate-900 dark:text-white">443</p>
+                                            <p className="text-xs text-emerald-600 dark:text-emerald-400">+22% from prev</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] text-slate-500 dark:text-neutral-500 uppercase tracking-widest font-bold">Conversion</p>
+                                            <p className="text-lg font-extrabold text-slate-900 dark:text-white">9.5%</p>
+                                            <p className="text-xs text-slate-500 dark:text-neutral-400">applicant → hire</p>
+                                        </div>
+                                    </div>
+                                </GlassCard>
+                            </motion.div>
+
+                            {/* Source Donut */}
+                            <motion.div variants={itemVars}>
+                                <GlassCard className="h-full flex flex-col">
+                                    <h2 className="text-lg font-bold tracking-tight mb-2 text-slate-900 dark:text-white">Source Breakdown</h2>
+                                    <p className="text-xs text-slate-500 dark:text-neutral-500 mb-6">Where your candidates come from</p>
+                                    <div className="flex-1 flex items-center justify-center">
+                                        <DonutChart segments={[
+                                            { label: "LinkedIn", value: 142, color: "#3b82f6" },
+                                            { label: "Referrals", value: 89, color: "#8b5cf6" },
+                                            { label: "Direct", value: 67, color: "#10b981" },
+                                            { label: "Job Boards", value: 45, color: "#f59e0b" },
+                                        ]} />
+                                    </div>
+                                </GlassCard>
+                            </motion.div>
+                        </div>
+
+                        {/* ── Funnel + Pipeline ──────────────────────── */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+
+                            {/* Hiring Funnel */}
+                            <motion.div variants={itemVars}>
+                                <GlassCard>
+                                    <h2 className="text-lg font-bold tracking-tight mb-2 text-slate-900 dark:text-white">Hiring Funnel</h2>
+                                    <p className="text-xs text-slate-500 dark:text-neutral-500 mb-6">Conversion rates across pipeline stages</p>
+                                    <div className="space-y-5">
+                                        <ProgressBar label="Applications Received" value={4218} max={4218} color="bg-blue-500" delay={0.1} />
+                                        <ProgressBar label="Screening Passed" value={2106} max={4218} color="bg-indigo-500" delay={0.2} />
+                                        <ProgressBar label="Technical Assessment" value={843} max={4218} color="bg-purple-500" delay={0.3} />
+                                        <ProgressBar label="Interviews Completed" value={421} max={4218} color="bg-violet-500" delay={0.4} />
+                                        <ProgressBar label="Offers Extended" value={168} max={4218} color="bg-amber-500" delay={0.5} />
+                                        <ProgressBar label="Hires Made" value={142} max={4218} color="bg-emerald-500" delay={0.6} />
+                                    </div>
+                                </GlassCard>
+                            </motion.div>
+
+                            {/* Top Performing Jobs */}
+                            <motion.div variants={itemVars}>
+                                <GlassCard>
+                                    <div className="flex justify-between items-center mb-6">
+                                        <div>
+                                            <h2 className="text-lg font-bold tracking-tight text-slate-900 dark:text-white">Top Performing Roles</h2>
+                                            <p className="text-xs text-slate-500 dark:text-neutral-500 mt-1">Highest application-to-hire conversion</p>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-4">
+                                        {[
+                                            { role: "Senior Frontend Engineer", apps: 312, hires: 8, conversion: "2.6%", trend: "+0.4%", positive: true },
+                                            { role: "Product Designer", apps: 256, hires: 6, conversion: "2.3%", trend: "+0.2%", positive: true },
+                                            { role: "DevOps Architect", apps: 189, hires: 5, conversion: "2.6%", trend: "+0.8%", positive: true },
+                                            { role: "Data Scientist", apps: 203, hires: 4, conversion: "2.0%", trend: "-0.1%", positive: false },
+                                            { role: "Marketing Lead", apps: 145, hires: 3, conversion: "2.1%", trend: "+0.3%", positive: true },
+                                        ].map((job, i) => (
+                                            <div key={i} className="flex items-center justify-between bg-white dark:bg-neutral-900/50 border border-slate-200 dark:border-neutral-800/60 p-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-neutral-800/50 hover:border-slate-300 dark:hover:border-neutral-700 transition-all cursor-pointer">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-neutral-800 flex items-center justify-center text-slate-500 dark:text-neutral-400 font-bold text-sm border border-slate-200 dark:border-neutral-700/50">
+                                                        #{i + 1}
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-sm font-semibold text-slate-900 dark:text-white">{job.role}</p>
+                                                        <p className="text-xs text-slate-500 dark:text-neutral-500">{job.apps} applicants · {job.hires} hires</p>
+                                                    </div>
+                                                </div>
+                                                <div className="text-right">
+                                                    <p className="text-sm font-bold text-slate-900 dark:text-white">{job.conversion}</p>
+                                                    <p className={`text-[11px] font-semibold flex items-center gap-1 justify-end ${job.positive ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+                                                        {job.positive ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+                                                        {job.trend}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </GlassCard>
+                            </motion.div>
+                        </div>
+
+                        {/* ── AI Insight + Diversity ──────────────────── */}
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+
+                            {/* AI Insight */}
+                            <motion.div variants={itemVars} className="lg:col-span-2">
+                                <div className="bg-gradient-to-br from-blue-600 to-indigo-600 p-6 rounded-3xl border border-blue-500 shadow-[0_20px_40px_rgba(59,130,246,0.3)] relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-4 opacity-40 transform rotate-12 scale-150 group-hover:rotate-45 group-hover:scale-110 transition-transform duration-700 pointer-events-none">
+                                        <Sparkles size={100} strokeWidth={1} className="text-white" />
+                                    </div>
+                                    <h2 className="text-lg font-bold mb-4 flex items-center gap-2 relative z-10 text-white">
+                                        <Sparkles size={20} /> AI-Powered Recommendations
+                                    </h2>
+                                    <div className="space-y-4 relative z-10">
+                                        {[
+                                            { insight: "Your frontend engineering pipeline converts 34% faster when candidates come from referrals vs. cold outreach.", action: "Boost referral program →" },
+                                            { insight: "Tuesday and Thursday job posts receive 28% more applications than weekend posts.", action: "Optimize posting schedule →" },
+                                            { insight: "Candidates who complete the technical assessment within 48 hours have a 91% higher chance of accepting an offer.", action: "Shorten assessment window →" },
+                                        ].map((item, i) => (
+                                            <div key={i} className="bg-white/10 backdrop-blur-sm p-4 rounded-2xl border border-white/20">
+                                                <p className="text-sm text-blue-50 leading-relaxed font-medium mb-2">{item.insight}</p>
+                                                <button className="text-xs text-white font-bold flex items-center gap-1 hover:underline underline-offset-2">
+                                                    <Zap size={12} /> {item.action}
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </motion.div>
+
+                            {/* Geographic Distribution */}
+                            <motion.div variants={itemVars}>
+                                <GlassCard className="h-full">
+                                    <h2 className="text-lg font-bold tracking-tight mb-2 flex items-center gap-2 text-slate-900 dark:text-white">
+                                        <Globe size={18} className="text-slate-400 dark:text-neutral-400" /> Talent Geography
+                                    </h2>
+                                    <p className="text-xs text-slate-500 dark:text-neutral-500 mb-6">Where your top applicants are located</p>
+                                    <div className="space-y-4">
+                                        {[
+                                            { region: "San Francisco Bay Area", count: 892, pct: 21 },
+                                            { region: "New York Metro", count: 634, pct: 15 },
+                                            { region: "Remote (Global)", count: 1265, pct: 30 },
+                                            { region: "London / EU", count: 507, pct: 12 },
+                                            { region: "Austin / Denver", count: 423, pct: 10 },
+                                            { region: "Other", count: 497, pct: 12 },
+                                        ].map((loc, i) => (
+                                            <div key={i} className="flex items-center justify-between">
+                                                <div className="flex items-center gap-3 flex-1 min-w-0">
+                                                    <div className="w-1.5 h-8 rounded-full bg-gradient-to-b from-blue-500 to-indigo-500" style={{ opacity: 0.4 + (loc.pct / 100) * 2 }} />
+                                                    <div className="min-w-0">
+                                                        <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{loc.region}</p>
+                                                        <p className="text-[11px] text-slate-500 dark:text-neutral-500">{loc.count.toLocaleString()} applicants</p>
+                                                    </div>
+                                                </div>
+                                                <span className="text-sm font-bold text-slate-700 dark:text-neutral-300 shrink-0 ml-3">{loc.pct}%</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </GlassCard>
+                            </motion.div>
+                        </div>
+
+                        {/* Footer */}
+                        <motion.div variants={itemVars} className="mt-4 text-center text-xs font-semibold tracking-widest text-neutral-600 uppercase border-t border-neutral-800/50 pt-8">
+                            © {new Date().getFullYear()} MR. HYRE TECHNOLOGIES. ALL RIGHTS RESERVED.
+                        </motion.div>
+
+                    </div>
+                </motion.div>
+            </div>
+        </div>
+    );
+}

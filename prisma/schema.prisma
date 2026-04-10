@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Waitlist {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Candidate {
+  id                String   @id @default(cuid())
+  name              String
+  email             String   @unique
+  role              String?
+  experience        String?
+  biography         String?
+  location          String?
+  workPreference    String?
+  salaryExpectation String?
+  noticePeriod      String?
+  skills            String[] // Postgres supports arrays
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  shortlists        Shortlist[]
+  messages          Message[]
+}
+
+model Recruiter {
+  id          String   @id @default(cuid())
+  name        String
+  email       String   @unique
+  companyName String
+  companySize String?
+  industry    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  jobs        Job[]
+  messages    Message[]
+}
+
+model Job {
+  id          String   @id @default(cuid())
+  title       String
+  company     String
+  location    String
+  salary      String?
+  type        String?
+  experience  String?
+  description String?
+  skills      String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  recruiterId String
+  recruiter   Recruiter @relation(fields: [recruiterId], references: [id])
+  shortlists  Shortlist[]
+}
+
+model Shortlist {
+  id          String   @id @default(cuid())
+  status      String   @default("SHORTLISTED") // SHORTLISTED, SELECTED, REJECTED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  candidateId String
+  candidate   Candidate @relation(fields: [candidateId], references: [id])
+  jobId       String
+  job         Job       @relation(fields: [jobId], references: [id])
+
+  @@unique([candidateId, jobId])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  
+  senderType String // RECRUITER or CANDIDATE
+  
+  recruiterId String
+  recruiter   Recruiter @relation(fields: [recruiterId], references: [id])
+  candidateId String
+  candidate   Candidate @relation(fields: [candidateId], references: [id])
+}

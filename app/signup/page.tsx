@@ -16,54 +16,54 @@ function SignupCard({ title, desc, icon, href }: { title: string; desc: string; 
     }
 
     return (
-        <motion.div
-            variants={{
-                hidden: { opacity: 0, y: 30 },
-                visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
-            }}
-            onMouseMove={handleMouseMove}
-            className="group relative flex w-full max-w-[360px] flex-col bg-white/60 dark:bg-neutral-900/60 backdrop-blur-xl border border-slate-200 dark:border-neutral-800/80 rounded-3xl p-8 hover:border-transparent transition-all duration-300 overflow-hidden text-left shadow-lg dark:shadow-[0_20px_40px_rgba(0,0,0,0.3)] shrink-0"
-        >
-            {/* Magnetic Glow Border */}
+        <Link href={href} className="block w-full max-w-[360px] shrink-0">
             <motion.div
-                className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 transition duration-500 group-hover:opacity-100 z-[-1]"
-                style={{
-                    background: useMotionTemplate`
-                        radial-gradient(
-                            300px circle at ${mouseX}px ${mouseY}px,
-                            rgba(59, 130, 246, 0.4),
-                            transparent 80%
-                        )
-                    `,
+                variants={{
+                    hidden: { opacity: 0, y: 30 },
+                    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
                 }}
-            />
-            <div className="absolute inset-0 rounded-3xl bg-white/90 dark:bg-neutral-950/90 -z-10" />
+                onMouseMove={handleMouseMove}
+                className="group relative flex flex-col bg-white/60 dark:bg-neutral-900/60 backdrop-blur-xl border border-slate-200 dark:border-neutral-800/80 rounded-3xl p-8 hover:border-transparent transition-all duration-300 overflow-hidden text-left shadow-lg dark:shadow-[0_20px_40px_rgba(0,0,0,0.3)] h-full"
+            >
+                {/* Magnetic Glow Border */}
+                <motion.div
+                    className="pointer-events-none absolute -inset-px rounded-3xl opacity-0 transition duration-500 group-hover:opacity-100 z-[-1]"
+                    style={{
+                        background: useMotionTemplate`
+                            radial-gradient(
+                                300px circle at ${mouseX}px ${mouseY}px,
+                                rgba(59, 130, 246, 0.4),
+                                transparent 80%
+                            )
+                        `,
+                    }}
+                />
+                <div className="absolute inset-0 rounded-3xl bg-white/90 dark:bg-neutral-950/90 -z-10" />
 
-            <div className="relative z-10 flex flex-col h-full">
-                <div className="mb-6 w-14 h-14 flex items-center justify-center rounded-2xl bg-slate-100 dark:bg-neutral-800/80 border border-slate-200 dark:border-neutral-700/50 text-slate-900 dark:text-white shadow-inner group-hover:bg-blue-500/20 group-hover:text-blue-600 dark:group-hover:text-blue-400 group-hover:border-blue-500/30 transition-all duration-300">
-                    {icon}
-                </div>
+                <div className="relative z-10 flex flex-col h-full">
+                    <div className="mb-6 w-14 h-14 flex items-center justify-center rounded-2xl bg-slate-100 dark:bg-neutral-800/80 border border-slate-200 dark:border-neutral-700/50 text-slate-900 dark:text-white shadow-inner group-hover:bg-blue-500/20 group-hover:text-blue-600 dark:group-hover:text-blue-400 group-hover:border-blue-500/30 transition-all duration-300">
+                        {icon}
+                    </div>
 
-                <h3 className="text-2xl font-bold mb-3 tracking-tight text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-100 transition-colors">
-                    {title}
-                </h3>
+                    <h3 className="text-2xl font-bold mb-3 tracking-tight text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-100 transition-colors">
+                        {title}
+                    </h3>
 
-                <p className="text-slate-600 dark:text-neutral-400 text-sm md:text-base leading-relaxed mb-10 flex-grow">
-                    {desc}
-                </p>
+                    <p className="text-slate-600 dark:text-neutral-400 text-sm md:text-base leading-relaxed mb-10 flex-grow">
+                        {desc}
+                    </p>
 
-                <Link href={href}>
-                    <motion.button
+                    <motion.div
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         className="w-full bg-slate-900 text-white dark:bg-white dark:text-black py-3.5 rounded-xl font-bold flex justify-center items-center gap-2 shadow-sm dark:shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:shadow-md dark:hover:shadow-[0_0_25px_rgba(255,255,255,0.4)] transition-all group/btn"
                     >
                         Select
                         <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
-                    </motion.button>
-                </Link>
-            </div>
-        </motion.div>
+                    </motion.div>
+                </div>
+            </motion.div>
+        </Link>
     );
 }
 

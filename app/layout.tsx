@@ -3,6 +3,9 @@ import "./globals.css";
 export const metadata = {
   title: "Mr Hyre",
   description: "AI Hiring Platform",
+  icons: {
+    icon: "/logo.png",
+  },
 };
 
 import { ThemeProvider } from "../components/ThemeProvider";

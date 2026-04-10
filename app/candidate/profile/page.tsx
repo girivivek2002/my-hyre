@@ -1,162 +1,372 @@
 "use client";
-import { useState } from "react";
 
-export default function CandidateProfile() {
-  const [skills, setSkills] = useState([
-    "React",
-    "Node.js",
-    "Python",
-  ]);
-  const [skillInput, setSkillInput] = useState("");
+import React, { ReactNode, MouseEvent, useState, useEffect, ReactElement } from "react";
+import { motion, useMotionTemplate, useMotionValue, Variants, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { 
+  User, Mail, Phone, Link as LinkIcon, Globe, 
+  Briefcase, Sparkles, Upload, Plus, 
+  X, ChevronRight, CheckCircle2, CloudUpload, Clock
+} from "lucide-react";
+import Link from "next/link";
 
-  const addSkill = () => {
-    if (skillInput.trim() !== "") {
-      setSkills([...skills, skillInput]);
-      setSkillInput("");
-    }
-  };
+// Brand Icons (Custom SVGs since lucide-react version is ancient)
+const LinkedinIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452z" />
+  </svg>
+);
+
+const GithubIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.6.113.793-.26.793-.577v-2.234c-3.338.726-4.042-1.416-4.042-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z" />
+  </svg>
+);
+
+// Premium Interactive Glass Card
+function GlassCard({ children, className = "" }: { children: ReactNode, className?: string }) {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  function handleMouseMove({ currentTarget, clientX, clientY }: MouseEvent) {
+    const { left, top } = currentTarget.getBoundingClientRect();
+    mouseX.set(clientX - left);
+    mouseY.set(clientY - top);
+  }
 
   return (
-    <div className="min-h-screen bg-black text-white px-20 py-10">
-
-      {/* Header */}
-      <div className="flex justify-between items-center mb-16">
-        <h1 className="text-2xl font-semibold">Mr. Hyre</h1>
-        <button className="bg-blue-600 px-4 py-2 rounded-lg">
-          Help
-        </button>
-      </div>
-
-      {/* Title */}
-      <div className="mb-16">
-        <span className="text-blue-500 text-sm">ONBOARDING</span>
-        <h1 className="text-5xl font-bold mt-2">
-          Create your AI-powered profile
-        </h1>
-      </div>
-
-      {/* Personal Identity */}
-      <Section
-        title="Personal Identity"
-        description="Let's start with the basics."
-      >
-        <input className="input" placeholder="Full Name" />
-        <input className="input" placeholder="Email Address" />
-        <input className="input" placeholder="Phone Number" />
-        <input className="input" placeholder="LinkedIn Profile" />
-        <input className="input" placeholder="GitHub Profile" />
-        <input className="input" placeholder="Portfolio Website" />
-      </Section>
-
-      {/* Role Section */}
-      <Section
-        title="Role & Experience"
-        description="Tell us what roles you're targeting."
-      >
-        <input className="input" placeholder="Desired Role (e.g. Frontend Developer)" />
-        <input className="input" placeholder="Years of Experience" />
-      </Section>
-
-      {/* Resume Upload */}
-      <Section
-        title="Experience Architecture"
-        description="Upload your resume."
-      >
-        <div className="col-span-2 border border-dashed border-neutral-700 rounded-2xl p-10 text-center">
-          <p className="mb-4 text-neutral-400">
-            Drag and drop your resume here
-          </p>
-          <button className="bg-white text-black px-6 py-2 rounded-lg">
-            Select File
-          </button>
-        </div>
-      </Section>
-
-      {/* Skills Section */}
-      <Section
-        title="Skills Matrix"
-        description="These will be used for AI matching."
-      >
-        <div className="col-span-2">
-          <div className="flex flex-wrap gap-2 mb-4">
-            {skills.map((skill, index) => (
-              <span
-                key={index}
-                className="bg-blue-600 px-3 py-1 rounded-full text-sm"
-              >
-                {skill}
-              </span>
-            ))}
-          </div>
-
-          <div className="flex gap-2">
-            <input
-              value={skillInput}
-              onChange={(e) => setSkillInput(e.target.value)}
-              className="input flex-1"
-              placeholder="Add skill"
-            />
-            <button
-              onClick={addSkill}
-              className="bg-blue-600 px-4 rounded-lg"
-            >
-              Add
-            </button>
-          </div>
-        </div>
-      </Section>
-
-      {/* Career Preferences */}
-      <Section
-        title="Career Trajectory"
-        description="Work preferences and salary expectations."
-      >
-        <select className="input">
-          <option>Work Type</option>
-          <option>Full Time</option>
-          <option>Contract</option>
-          <option>Remote</option>
-        </select>
-
-        <input className="input" placeholder="Expected Salary" />
-        <input className="input" placeholder="Preferred Location" />
-        <input className="input" placeholder="Notice Period" />
-      </Section>
-
-      {/* Submit */}
-      <div className="text-center mt-20">
-        <button className="bg-blue-600 px-12 py-4 rounded-full text-lg">
-          Submit Application
-        </button>
-        <p className="text-neutral-500 text-sm mt-3">
-          Estimated AI review time: 45 seconds
-        </p>
-      </div>
-
-    </div>
-  );
-}
-
-/* Reusable Section Component */
-function Section({
-  title,
-  description,
-  children,
-}: {
-  title: string;
-  description: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="grid grid-cols-2 gap-10 mb-12">
-      <div>
-        <h2 className="text-xl font-semibold mb-2">{title}</h2>
-        <p className="text-neutral-400 text-sm">{description}</p>
-      </div>
-
-      <div className="bg-neutral-900 border border-neutral-800 rounded-2xl p-6 grid grid-cols-2 gap-4">
+    <div
+      onMouseMove={handleMouseMove}
+      className={`group relative bg-white/60 dark:bg-neutral-900/40 backdrop-blur-xl border border-slate-200 dark:border-neutral-800/60 rounded-3xl overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.3)] transition-all duration-500 hover:shadow-[0_30px_60px_rgba(59,130,246,0.15)] ${className}`}
+    >
+      <motion.div
+        className="pointer-events-none absolute -inset-px opacity-0 transition duration-500 group-hover:opacity-100 z-[-1]"
+        style={{
+          background: useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, rgba(59, 130, 246, 0.2), transparent 80%)`,
+        }}
+      />
+      <div className="absolute inset-0 bg-slate-50/40 dark:bg-neutral-950/40 -z-10" />
+      <div className="relative z-10 w-full h-full p-6 sm:p-8">
         {children}
       </div>
     </div>
   );
 }
+
+// Reusable Input Component for premium feel
+interface PremiumInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  icon: ReactNode;
+  label: string;
+}
+
+function PremiumInput({ icon, label, ...props }: PremiumInputProps) {
+  return (
+    <div className="group space-y-2">
+      <label className="text-[10px] font-bold tracking-widest text-slate-400 dark:text-neutral-500 uppercase ml-1 group-focus-within:text-blue-500 transition-colors">
+        {label}
+      </label>
+      <div className="relative">
+        <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-blue-500 transition-colors">
+          {icon}
+        </div>
+        <input
+          {...props}
+          className="w-full px-4 py-3.5 pl-11 rounded-2xl bg-white/50 dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
+        />
+      </div>
+    </div>
+  );
+}
+
+export default function CandidateProfile() {
+  const [skills, setSkills] = useState(["React", "TypeScript", "Node.js", "AI/ML"]);
+  const [skillInput, setSkillInput] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const addSkill = () => {
+    if (skillInput.trim() !== "" && !skills.includes(skillInput.trim())) {
+      setSkills([...skills, skillInput.trim()]);
+      setSkillInput("");
+    }
+  };
+
+  const removeSkill = (skillToRemove: string) => {
+    setSkills(skills.filter(s => s !== skillToRemove));
+  };
+
+  const router = useRouter();
+
+  const handleApply = async () => {
+    setIsSubmitting(true);
+    // Simulate AI processing
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    router.push("/candidate/dashboard");
+  };
+
+  const containerVars: Variants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1, 
+      transition: { staggerChildren: 0.15, delayChildren: 0.2 } 
+    }
+  };
+
+  const itemVars: Variants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 20, duration: 0.8 } }
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white selection:bg-blue-500/30 font-sans transition-colors duration-300 relative overflow-x-hidden">
+
+      {/* Extraordinary Ambient Glows */}
+      <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-blue-600/10 blur-[140px] rounded-full pointer-events-none -z-10"></div>
+      <div className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[60%] bg-indigo-600/10 blur-[140px] rounded-full pointer-events-none -z-10"></div>
+
+      {/* Header */}
+      <motion.nav 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="px-6 sm:px-12 lg:px-20 py-8 flex justify-between items-center relative z-20 backdrop-blur-sm border-b border-slate-200/50 dark:border-neutral-800/50"
+      >
+        <div className="flex items-center gap-3">
+          <Image src="/logo.png" alt="Logo" width={32} height={32} className="rounded-xl shadow-lg" />
+          <div>
+            <span className="text-xl font-bold tracking-tight">Mr. Hyre</span>
+            <span className="ml-2 text-[10px] font-bold text-blue-500 tracking-widest uppercase">Candidate Platform</span>
+          </div>
+        </div>
+        <button className="text-sm font-semibold text-slate-500 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white transition-colors bg-white/50 dark:bg-neutral-900 px-5 py-2.5 rounded-full border border-slate-200 dark:border-neutral-800 shadow-sm">
+          Need Help?
+        </button>
+      </motion.nav>
+
+      <main className="max-w-6xl mx-auto px-6 sm:px-12 lg:px-20 py-16 pb-32">
+        
+        {/* Hero Title */}
+        <motion.div 
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          className="mb-20"
+        >
+          <div className="inline-flex items-center gap-2 bg-blue-500/10 text-blue-600 dark:text-blue-400 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-4 shadow-inner">
+            <Sparkles size={14} /> Profile Architecture
+          </div>
+          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight mb-4 leading-tight">
+            Create your <span className="text-transparent bg-clip-text bg-gradient-to-tr from-blue-600 to-indigo-400">AI-Powered</span> profile.
+          </h1>
+          <p className="text-slate-500 dark:text-neutral-400 text-lg max-w-2xl font-medium">
+            Let our proprietary matching engine analyze your skills and curate your path to companies that elite-match your profile.
+          </p>
+        </motion.div>
+
+        <motion.div
+          variants={containerVars}
+          initial="hidden"
+          animate="visible"
+          className="space-y-12"
+        >
+          {/* Section 1: Identity */}
+          <SectionWrapper
+            title="Personal Identity"
+            description="The foundation of your professional presence."
+            icon={<User className="text-blue-500" size={24} />}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <PremiumInput icon={<User size={18} />} label="Full Name" placeholder="Ex: Sterling Archer" />
+              <PremiumInput icon={<Mail size={18} />} label="Email Address" placeholder="archer@agency.com" />
+              <PremiumInput icon={<Phone size={18} />} label="Phone Number" placeholder="+1 (555) 000-0000" />
+              <PremiumInput icon={<LinkedinIcon />} label="LinkedIn Profile" placeholder="linkedin.com/in/username" />
+              <PremiumInput icon={<GithubIcon />} label="GitHub Profile" placeholder="github.com/username" />
+              <PremiumInput icon={<Globe size={18} />} label="Portfolio Website" placeholder="sterling-archer.com" />
+            </div>
+          </SectionWrapper>
+
+          {/* Section 2: Role & Experience */}
+          <SectionWrapper
+            title="Role & Mastery"
+            description="Defining your targeting and seniority."
+            icon={<Briefcase className="text-indigo-500" size={24} />}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <PremiumInput icon={<Briefcase size={18} />} label="Desired Role" placeholder="Ex: Lead Software Engineer" />
+              <PremiumInput icon={<Clock size={18} />} label="Years of Experience" placeholder="Ex: 8+" />
+            </div>
+          </SectionWrapper>
+
+          {/* Section 3: Resume Architecture */}
+          <SectionWrapper
+            title="Experience Architecture"
+            description="Upload your high-fidelity resume for AI parsing."
+            icon={<Upload className="text-emerald-500" size={24} />}
+          >
+            <motion.div 
+              whileHover={{ scale: 1.005 }}
+              className="relative group cursor-pointer"
+            >
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-[28px] blur opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
+              <div className="relative aspect-[3/1] rounded-[24px] border-2 border-dashed border-slate-300 dark:border-neutral-800 bg-white/50 dark:bg-neutral-900/50 flex flex-col items-center justify-center transition-all group-hover:border-blue-500/50 group-hover:bg-blue-500/5 shadow-inner">
+                <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500 shadow-md">
+                  <CloudUpload size={28} />
+                </div>
+                <p className="text-slate-600 dark:text-neutral-300 font-bold text-lg mb-1">Drag and drop your resume</p>
+                <p className="text-slate-400 dark:text-neutral-500 text-sm font-medium">PDF, DOCX (Max 10MB)</p>
+                
+                <div className="mt-6">
+                  <span className="bg-slate-900 dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-full text-sm font-bold shadow-lg group-hover:shadow-blue-500/20 transition-all">
+                    Select File
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          </SectionWrapper>
+
+          {/* Section 4: Skills Matrix */}
+          <SectionWrapper
+            title="Skills Matrix"
+            description="AI uses these tags to map you to top-floor vacancies."
+            icon={<Sparkles className="text-amber-500" size={24} />}
+          >
+            <div className="space-y-6">
+              <div className="flex flex-wrap gap-2.5">
+                <AnimatePresence>
+                  {skills.map((skill) => (
+                    <motion.span
+                      key={skill}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      whileHover={{ y: -2 }}
+                      className="group flex items-center gap-2 bg-blue-500 text-white dark:bg-blue-500/10 dark:text-blue-400 px-4 py-2 rounded-xl text-sm font-bold border border-blue-500/20 shadow-md dark:shadow-inner transition-all hover:bg-blue-600 dark:hover:bg-blue-500/20"
+                    >
+                      {skill}
+                      <button 
+                        onClick={() => removeSkill(skill)}
+                        className="opacity-60 hover:opacity-100 transition-opacity"
+                      >
+                        <X size={14} />
+                      </button>
+                    </motion.span>
+                  ))}
+                </AnimatePresence>
+              </div>
+
+              <div className="flex gap-3">
+                <div className="relative flex-1">
+                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
+                    <Plus size={18} />
+                  </div>
+                  <input
+                    value={skillInput}
+                    onChange={(e) => setSkillInput(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && addSkill()}
+                    className="w-full px-4 py-3.5 pl-11 rounded-2xl bg-white/50 dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-600 focus:outline-none focus:border-blue-500 transition-all shadow-inner"
+                    placeholder="E.g. PyTorch, Figma, AWS"
+                  />
+                </div>
+                <button
+                  onClick={addSkill}
+                  className="bg-slate-900 dark:bg-neutral-800 hover:bg-slate-800 dark:hover:bg-neutral-700 text-white px-8 rounded-2xl font-bold border border-slate-800 dark:border-neutral-700 transition-all flex items-center gap-2 group"
+                >
+                  Add
+                </button>
+              </div>
+            </div>
+          </SectionWrapper>
+
+          {/* Section 5: Preferences */}
+          <SectionWrapper
+            title="Career Trajectory"
+            description="Work environment and compensation targets."
+            icon={<Globe className="text-purple-500" size={24} />}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold tracking-widest text-slate-400 dark:text-neutral-500 uppercase ml-1">Work Type</label>
+                <select className="w-full px-4 py-3.5 rounded-2xl bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 transition-all appearance-none cursor-pointer shadow-inner">
+                  <option>Full-Time</option>
+                  <option>Remote</option>
+                  <option>Contract (Long term)</option>
+                  <option>Hybrid</option>
+                </select>
+              </div>
+              <PremiumInput icon={<Sparkles size={18} />} label="Expected Salary ($)" placeholder="Ex: 150k - 180k" />
+              <PremiumInput icon={<Globe size={18} />} label="Preferred Location" placeholder="Ex: New York, NY / Remote" />
+              <PremiumInput icon={<Clock size={18} />} label="Notice Period" placeholder="Ex: 2 weeks" />
+            </div>
+          </SectionWrapper>
+
+          {/* Extraordinary CTA */}
+          <motion.div 
+            variants={itemVars}
+            className="pt-12 flex flex-col items-center"
+          >
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleApply}
+              disabled={isSubmitting}
+              className="group relative px-12 py-5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-black font-extrabold text-lg shadow-[0_20px_40px_rgba(30,41,59,0.3)] dark:shadow-[0_20px_40px_rgba(255,255,255,0.1)] hover:shadow-[0_30px_60px_rgba(30,41,59,0.4)] dark:hover:shadow-[0_30px_60px_rgba(255,255,255,0.25)] transition-all flex items-center gap-3 overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-tr from-blue-600 to-indigo-600 opacity-0 group-hover:opacity-10 dark:group-hover:opacity-100 dark:from-blue-500 dark:to-indigo-400 transition-opacity duration-500"></div>
+              {isSubmitting ? (
+                <>
+                  <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
+                    <Sparkles size={22} />
+                  </motion.div>
+                  Processing Engine...
+                </>
+              ) : (
+                <>
+                  Submit Profile Intelligence
+                  <ChevronRight size={22} className="group-hover:translate-x-1 transition-transform" />
+                </>
+              )}
+            </motion.button>
+            <p className="mt-4 text-slate-400 font-bold uppercase tracking-widest text-[10px] flex items-center gap-2">
+              <CheckCircle2 size={12} className="text-emerald-500" /> AI Review Time: 45 Seconds
+            </p>
+          </motion.div>
+
+        </motion.div>
+      </main>
+
+      {/* Extraordinary Scroll Progress (Side) */}
+      <div className="fixed right-8 top-1/2 -translate-y-1/2 flex flex-col gap-3 pointer-events-none hidden lg:flex">
+        {[0, 1, 2, 3, 4].map(i => (
+          <div key={i} className={`w-1 h-8 rounded-full bg-slate-200 dark:bg-neutral-800 transition-all duration-500 ${i === 0 ? 'bg-blue-500 h-12' : ''}`}></div>
+        ))}
+      </div>
+
+    </div>
+  );
+}
+
+// Extraordinary Section Wrapper
+function SectionWrapper({ title, description, icon, children }: { title: string, description: string, icon: ReactElement, children: ReactNode }) {
+  return (
+    <motion.div 
+      variants={{
+        hidden: { opacity: 0, x: -20 },
+        visible: { opacity: 1, x: 0 }
+      }}
+      className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start"
+    >
+      <div className="lg:col-span-4 space-y-2">
+        <div className="w-12 h-12 rounded-2xl bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 shadow-sm flex items-center justify-center mb-4">
+          {icon}
+        </div>
+        <h2 className="text-2xl font-extrabold tracking-tight">{title}</h2>
+        <p className="text-slate-500 dark:text-neutral-500 font-medium text-sm leading-relaxed">{description}</p>
+      </div>
+
+      <div className="lg:col-span-8">
+        <GlassCard>
+          {children}
+        </GlassCard>
+      </div>
+    </motion.div>
+  );
+}

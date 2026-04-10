@@ -1,123 +1,185 @@
 "use client";
-import { motion } from "framer-motion";
+
+import { motion, Variants } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, User, Mail, Phone, KeyRound, ArrowRight } from "lucide-react";
 import { useState } from "react";
 
 export default function CandidateSignup() {
   const [showPassword, setShowPassword] = useState(false);
 
-  return (
-    <div className="min-h-screen bg-black relative overflow-hidden flex flex-col">
+  // Stagger variants for smooth form entry
+  const containerVars: Variants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: { 
+      opacity: 1, 
+      scale: 1,
+      transition: { staggerChildren: 0.1, delayChildren: 0.1, ease: "easeOut", duration: 0.5 } 
+    }
+  };
 
-      {/* Background Glow */}
-      <div className="absolute w-[700px] h-[700px] bg-blue-500/20 blur-[160px] rounded-full top-20 left-1/2 -translate-x-1/2"></div>
+  const itemVars: Variants = {
+    hidden: { opacity: 0, y: 15 },
+    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col justify-between bg-slate-50 dark:bg-[#050505] relative overflow-hidden select-none transition-colors duration-300">
+
+      {/* Animated Ambient Glow */}
+      <motion.div 
+        animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute w-[400px] sm:w-[700px] h-[400px] sm:h-[700px] bg-blue-600/20 blur-[120px] sm:blur-[160px] rounded-full top-0 left-1/2 -translate-x-1/2 pointer-events-none"
+      ></motion.div>
 
       {/* Header */}
-      <div className="flex justify-between items-center px-20 py-6">
-        <div className="flex items-center gap-2">
-          <Image src="/logo.png" alt="logo" width={26} height={26} />
-          <span className="font-semibold">Mr. Hyre</span>
-          <span className="text-xs bg-neutral-800 px-2 py-1 rounded">HQ</span>
+      <motion.header 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex justify-between items-center px-6 sm:px-12 lg:px-20 py-6 relative z-20"
+      >
+        <div className="flex items-center gap-3">
+          <Image src="/logo.png" alt="Mr. Hyre Logo" width={32} height={32} className="rounded-xl" />
+          <span className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">Mr. Hyre</span>
+          <span className="text-[10px] font-bold bg-slate-200 dark:bg-neutral-800 px-2 py-0.5 rounded-full text-slate-600 dark:text-neutral-400 tracking-wider">CANDIDATE</span>
         </div>
 
-        <Link href="/signup" className="text-neutral-400 text-sm">
-          ← Back to selection
+        <Link href="/signup" className="text-slate-500 dark:text-neutral-400 text-sm font-medium hover:text-slate-900 dark:hover:text-white transition-colors flex items-center gap-2 group">
+          <span className="group-hover:-translate-x-1 transition-transform">←</span> Back to selection
         </Link>
-      </div>
+      </motion.header>
 
       {/* Main Content */}
-      <div className="flex flex-1 items-center justify-center">
+      <div className="flex flex-1 items-center justify-center px-4 py-8 relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-[480px] bg-neutral-900/70 backdrop-blur border border-neutral-800 rounded-2xl p-8"
+          variants={containerVars}
+          initial="hidden"
+          animate="visible"
+          className="w-full max-w-[480px] bg-white/60 dark:bg-neutral-900/60 backdrop-blur-xl border border-slate-200 dark:border-neutral-800/80 rounded-3xl p-6 sm:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden text-slate-900 dark:text-white"
         >
-          {/* Title */}
-          <h1 className="text-3xl font-bold text-center mb-2">
-            Create your account.
-          </h1>
+          {/* Inner glossy highlight */}
+          <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-50 pointer-events-none"></div>
 
-          <p className="text-neutral-400 text-center mb-8">
-            Create your candidate account to start your AI-powered career journey.
-          </p>
+          {/* Title Section */}
+          <motion.div variants={itemVars} className="text-center mb-10">
+            <h1 className="text-3xl font-extrabold mb-3 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-500 dark:from-white dark:to-neutral-400">
+              Create your account.
+            </h1>
+            <p className="text-slate-500 dark:text-neutral-400 text-sm">
+              Start your AI-powered career journey today.
+            </p>
+          </motion.div>
 
           {/* Form */}
-          <div className="space-y-4">
-
+          <form className="space-y-4 relative z-10" onSubmit={(e) => e.preventDefault()}>
+            
             {/* Full Name */}
-            <div>
-              <label className="text-sm text-neutral-400">Full Name</label>
-              <input
-                placeholder="John Doe"
-                className="w-full mt-1 px-4 py-3 rounded-lg bg-black border border-neutral-800"
-              />
-            </div>
+            <motion.div variants={itemVars} className="group">
+              <label className="text-xs font-semibold tracking-wider text-slate-500 dark:text-neutral-400 ml-1 mb-2 block group-focus-within:text-blue-500 transition-colors">FULL NAME</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-neutral-500 group-focus-within:text-blue-500 transition-colors">
+                  <User size={18} />
+                </div>
+                <input
+                  type="text"
+                  placeholder="John Doe"
+                  className="w-full px-4 py-3 pl-11 rounded-xl bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
+                />
+              </div>
+            </motion.div>
 
             {/* Email */}
-            <div>
-              <label className="text-sm text-neutral-400">Email Address</label>
-              <input
-                placeholder="john@example.com"
-                className="w-full mt-1 px-4 py-3 rounded-lg bg-black border border-neutral-800"
-              />
-            </div>
+            <motion.div variants={itemVars} className="group">
+              <label className="text-xs font-semibold tracking-wider text-slate-500 dark:text-neutral-400 ml-1 mb-2 block group-focus-within:text-blue-500 transition-colors">EMAIL ADDRESS</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-neutral-500 group-focus-within:text-blue-500 transition-colors">
+                  <Mail size={18} />
+                </div>
+                <input
+                  type="email"
+                  placeholder="john@example.com"
+                  className="w-full px-4 py-3 pl-11 rounded-xl bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
+                />
+              </div>
+            </motion.div>
 
             {/* Mobile */}
-            <div>
-              <label className="text-sm text-neutral-400">Mobile Number</label>
-              <input
-                placeholder="+91 9876543210"
-                className="w-full mt-1 px-4 py-3 rounded-lg bg-black border border-neutral-800"
-              />
-            </div>
+            <motion.div variants={itemVars} className="group">
+              <label className="text-xs font-semibold tracking-wider text-slate-500 dark:text-neutral-400 ml-1 mb-2 block group-focus-within:text-blue-500 transition-colors">MOBILE NUMBER</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-neutral-500 group-focus-within:text-blue-500 transition-colors">
+                  <Phone size={18} />
+                </div>
+                <input
+                  type="tel"
+                  placeholder="+91 9876543210"
+                  className="w-full px-4 py-3 pl-11 rounded-xl bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
+                />
+              </div>
+            </motion.div>
 
             {/* Password */}
-            <div>
-              <label className="text-sm text-neutral-400">Password</label>
+            <motion.div variants={itemVars} className="group">
+              <label className="text-xs font-semibold tracking-wider text-slate-500 dark:text-neutral-400 ml-1 mb-2 block group-focus-within:text-blue-500 transition-colors">PASSWORD</label>
               <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 dark:text-neutral-500 group-focus-within:text-blue-500 transition-colors">
+                  <KeyRound size={18} />
+                </div>
                 <input
                   type={showPassword ? "text" : "password"}
-                  className="w-full mt-1 px-4 py-3 rounded-lg bg-black border border-neutral-800"
+                  placeholder="••••••••"
+                  className="w-full px-4 py-3 pl-11 rounded-xl bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-4 text-neutral-400 hover:text-white"
+                  className="absolute right-4 top-3 text-slate-400 dark:text-neutral-500 hover:text-slate-900 dark:hover:text-white transition-colors"
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
-            </div>
+            </motion.div>
 
-            {/* Button */}
-            <Link href="/candidate/profile">
-              <button className="w-full bg-white text-black py-3 rounded-full mt-4">
-                Create Candidate Account
-              </button>
-            </Link>
+            {/* Submit Button */}
+            <motion.div variants={itemVars} className="pt-4">
+              <Link href="/candidate/profile" className="block">
+                <motion.button 
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full bg-slate-900 border border-slate-800 dark:bg-white text-white dark:text-black py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all group"
+                >
+                  Create Account
+                  <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                </motion.button>
+              </Link>
+            </motion.div>
 
-            <p className="text-neutral-400 text-sm text-center mt-4">
+            <motion.p variants={itemVars} className="text-slate-500 dark:text-neutral-400 text-sm text-center mt-6">
               Already have an account?{" "}
-              <Link href="/login" className="text-white">
+              <Link href="/login" className="text-blue-600 dark:text-blue-400 font-semibold hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
                 Log in
               </Link>
-            </p>
-
-          </div>
+            </motion.p>
+          </form>
         </motion.div>
       </div>
 
       {/* Footer */}
-      <div className="flex justify-between px-20 py-6 text-xs text-neutral-500">
-        <div>© 2024 MR. HYRE AI. ALL RIGHTS RESERVED.</div>
-        <div className="flex gap-6">
-          <span>PRIVACY POLICY</span>
-          <span>TERMS OF SERVICE</span>
+      <motion.footer 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.8 }}
+        className="border-t border-slate-200 dark:border-neutral-900 py-6 px-6 sm:px-12 lg:px-20 flex flex-col md:flex-row items-center justify-between text-[10px] sm:text-xs text-slate-500 dark:text-neutral-500 gap-4 relative z-10"
+      >
+        <div className="font-bold tracking-widest uppercase opacity-50 text-slate-400">© {new Date().getFullYear()} Mr. Hyre AI</div>
+        <div className="flex gap-6 font-medium uppercase tracking-widest">
+          <span className="hover:text-slate-900 dark:hover:text-white cursor-pointer transition-colors">Privacy Policy</span>
+          <span className="hover:text-slate-900 dark:hover:text-white cursor-pointer transition-colors">Terms of Service</span>
         </div>
-      </div>
+      </motion.footer>
 
     </div>
   );
-}
+}

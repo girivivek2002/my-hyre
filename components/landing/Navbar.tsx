@@ -9,7 +9,13 @@ export default function Navbar() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const navItems = ["For Recruiters", "For Candidates", "Pricing", "About", "Contact"];
+  const navItems = [
+    { name: "For Recruiters", href: "/login?role=recruiter" },
+    { name: "For Candidates", href: "/login?role=candidate" },
+    { name: "Pricing", href: "/pricing" },
+    { name: "About", href: "/about" },
+    { name: "Contact", href: "/contact" }
+  ];
 
   const navVariants: Variants = {
     hidden: { y: -100, opacity: 0 },
@@ -59,35 +65,37 @@ export default function Navbar() {
       <div className="w-full px-6 md:px-10 py-4 md:py-5 flex items-center justify-between">
 
         {/* Logo */}
-        <motion.div
-          variants={itemVariants}
-          whileHover={{ scale: 1.05, rotate: [0, -5, 5, 0], transition: { duration: 0.5 } }}
-          className="flex items-center gap-3 cursor-pointer"
-        >
-          <div className="relative w-8 h-8 md:w-9 md:h-9">
-            <Image src="/logo.png" alt="Mr. Hyre" fill sizes="36px" className="object-contain drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
-          </div>
-          <span className="text-xl md:text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-neutral-400">
-            Mr. Hyre
-          </span>
-        </motion.div>
+        <Link href="/">
+          <motion.div
+            variants={itemVariants}
+            whileHover={{ scale: 1.05, rotate: [0, -5, 5, 0], transition: { duration: 0.5 } }}
+            className="flex items-center gap-3 cursor-pointer"
+          >
+            <div className="relative w-8 h-8 md:w-9 md:h-9">
+              <Image src="/logo.png" alt="Mr. Hyre" fill sizes="36px" className="object-contain drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+            </div>
+            <span className="text-xl md:text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-neutral-400">
+              Mr. Hyre
+            </span>
+          </motion.div>
+        </Link>
 
         {/* Desktop Menu */}
         <motion.div variants={itemVariants} className="hidden md:flex items-center gap-2 relative">
           {navItems.map((item, index) => (
             <div
-              key={item}
+              key={item.name}
               className="relative px-4 py-2"
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
             >
-              <a
-                href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}
+              <Link
+                href={item.href}
                 className={`relative z-10 text-sm font-medium transition-colors duration-300 ${hoveredIndex === index ? "text-blue-600 dark:text-white" : "text-slate-600 dark:text-neutral-400"
                   }`}
               >
-                {item}
-              </a>
+                {item.name}
+              </Link>
               <AnimatePresence>
                 {hoveredIndex === index && (
                   <motion.div
@@ -173,16 +181,19 @@ export default function Navbar() {
             className="md:hidden flex flex-col bg-white/95 dark:bg-black/95 px-6 pt-4 pb-8 gap-4 overflow-hidden border-t border-slate-100 dark:border-white/5 shadow-xl"
           >
             {navItems.map((item) => (
-              <motion.a
-                key={item}
-                variants={mobileItemVariants}
-                href={`#${item.toLowerCase().replace(/\s+/g, '-')}`}
+              <Link
+                key={item.name}
+                href={item.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="text-lg font-medium text-slate-700 dark:text-neutral-300 hover:text-blue-600 dark:hover:text-white transition-colors py-2 border-b border-slate-100 dark:border-white/5"
-                whileHover={{ x: 10 }}
+                className="block text-lg font-medium text-slate-700 dark:text-neutral-300 hover:text-blue-600 dark:hover:text-white transition-colors py-2 border-b border-slate-100 dark:border-white/5"
               >
-                {item}
-              </motion.a>
+                <motion.span
+                  whileHover={{ x: 10 }}
+                  className="block w-full"
+                >
+                  {item.name}
+                </motion.span>
+              </Link>
             ))}
 
             <motion.div variants={mobileItemVariants} className="flex flex-col gap-4 mt-4">

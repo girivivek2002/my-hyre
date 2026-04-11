@@ -30,3 +30,40 @@ export async function joinWaitlist(formData: FormData) {
     return { error: "Something went wrong. Please try again later." };
   }
 }
+
+interface CreateJobData {
+  title: string;
+  company: string;
+  location: string;
+  salary?: string;
+  type?: string;
+  experience?: string;
+  description?: string;
+  skills: string[];
+  recruiterId: string;
+}
+
+export async function createJob(data: CreateJobData) {
+  try {
+    const job = await prisma.job.create({
+      data: {
+        title: data.title,
+        company: data.company,
+        location: data.location,
+        salary: data.salary || null,
+        type: data.type || "full-time",
+        experience: data.experience || null,
+        description: data.description || null,
+        skills: data.skills,
+        recruiterId: data.recruiterId,
+      },
+    });
+
+    revalidatePath("/recruiter/dashboard");
+    revalidatePath("/recruiter/post-job");
+    return { success: true, job };
+  } catch (error) {
+    console.error("Create job error:", error);
+    return { error: "Failed to create job. Please try again." };
+  }
+}

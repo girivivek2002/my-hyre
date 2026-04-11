@@ -1,5 +1,5 @@
 "use client";
-import React, { ReactNode, MouseEvent, useState } from "react";
+import React, { ReactNode, MouseEvent, useState, useEffect } from "react";
 import { motion, useMotionTemplate, useMotionValue, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -9,6 +9,17 @@ import {
     GraduationCap, Clock, ExternalLink,
     Award, CheckCircle2, TrendingUp, Zap, CalendarDays
 } from "lucide-react";
+
+interface PostedJob {
+    id: string;
+    title: string;
+    location: string;
+    salary: string;
+    type: string;
+    experience: string;
+    skills: string[];
+    createdAt: string;
+}
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const candidates = [
@@ -112,6 +123,13 @@ export default function CandidatesPage() {
     const router = useRouter();
     const [selectedId, setSelectedId] = useState<number>(candidates[0].id);
     const [searchQuery, setSearchQuery] = useState("");
+    const [postedJobs, setPostedJobs] = useState<PostedJob[]>([]);
+    const [showJobBanner, setShowJobBanner] = useState(true);
+
+    useEffect(() => {
+        const jobs = JSON.parse(localStorage.getItem('postedJobs') || '[]');
+        setPostedJobs(jobs);
+    }, []);
 
     const selected = candidates.find(c => c.id === selectedId)!;
     const filtered = candidates.filter(c =>
@@ -201,7 +219,7 @@ export default function CandidatesPage() {
                 </motion.div>
 
                 {/* ── Content: Candidate List + Detail ─────────────────── */}
-                <div className="flex-1 flex overflow-hidden">
+                <div className="flex-1 flex overflow-hidden relative" style={{ paddingTop: showJobBanner && postedJobs.length > 0 ? '60px' : '0' }}>
 
                     {/* ── Left: Candidate List ──────────────────────────── */}
                     <motion.div

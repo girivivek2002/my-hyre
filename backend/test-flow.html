@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Backend Integration Test</title>
+  <style>
+    body { font-family: -apple-system, system-ui, sans-serif; background: #0f172a; color: white; padding: 40px; }
+    .card { background: #1e293b; padding: 20px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #334155; }
+    .success { color: #10b981; font-weight: bold; }
+    .error { color: #ef4444; font-weight: bold; }
+    .log { font-family: monospace; background: #000; padding: 15px; border-radius: 8px; font-size: 14px; white-space: pre-wrap; overflow-x: auto; }
+    h1 { margin-top: 0; color: #38bdf8; }
+  </style>
+</head>
+<body>
+  <h1>Mr. Hyre Backend Diagnostics</h1>
+  <p>Running automated integration tests on endpoints...</p>
+  
+  <div class="card" id="test1">
+    <h3>1. Health Check (GET /api/resume/test)</h3>
+    <p class="status">Running...</p>
+    <div class="log"></div>
+  </div>
+
+  <div class="card" id="test2">
+    <h3>2. AI Job Parsing (POST /api/job/create)</h3>
+    <p class="status">Waiting...</p>
+    <div class="log"></div>
+  </div>
+
+  <div class="card" id="test3">
+    <h3>3. Candidate Matching (GET /api/match/:jobId)</h3>
+    <p class="status">Waiting...</p>
+    <div class="log"></div>
+  </div>
+
+  <script>
+    async function updateUI(id, data, success = true) {
+      const el = document.getElementById(id);
+      el.querySelector('.status').textContent = success ? 'SUCCESS ✓' : 'FAILED ✗';
+      el.querySelector('.status').className = 'status ' + (success ? 'success' : 'error');
+      el.querySelector('.log').textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function runTests() {
+      try {
+        // Test 1: Health check
+        const res1 = await fetch('http://localhost:5000/api/resume/test');
+        const data1 = await res1.json();
+        await updateUI('test1', data1, res1.ok);
+
+        // Test 2: Create Job
+        document.getElementById('test2').querySelector('.status').textContent = 'Generating via OpenAI...';
+        const res2 = await fetch('http://localhost:5000/api/job/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            description: "We are looking for a Senior React Developer. Must have 5 years of experience using TypeScript, Next.js, and Node.js. AWS experience is a plus."
+          })
+        });
+        const data2 = await res2.json();
+        await updateUI('test2', data2, res2.ok);
+
+        if (!res2.ok) return; // Stop if OpenAI failed
+
+        const jobId = data2.job.id;
+
+        // Test 3: Match candidates
+        document.getElementById('test3').querySelector('.status').textContent = 'Matching...';
+        const res3 = await fetch(`http://localhost:5000/api/match/${jobId}`);
+        const data3 = await res3.json();
+        await updateUI('test3', data3, res3.ok);
+
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    runTests();
+  </script>
+</body>
+</html>

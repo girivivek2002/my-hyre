@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  phone      String?
+  website    String?
+  industry   String?
+  teamSize   String?
+  role      String   // "candidate" or "recruiter"
+  resumes   Resume[]
+  createdAt DateTime @default(now())
+}
+
+model Resume {
+  id         String   @id @default(uuid())
+  userId     String
+  name       String
+  skills     String[]
+  experience Int
+  user       User     @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
+}
+
+model Job {
+  id         String   @id @default(uuid())
+  title      String
+  skills     String[]
+  experience Int
+  createdAt  DateTime @default(now())
+}

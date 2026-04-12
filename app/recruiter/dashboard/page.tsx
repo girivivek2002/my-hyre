@@ -1,5 +1,5 @@
 "use client";
-import React, { ReactNode, MouseEvent } from "react";
+import React, { ReactNode, MouseEvent, useState, useEffect } from "react";
 import { motion, useMotionTemplate, useMotionValue, Variants } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -40,6 +40,40 @@ function GlassCard({ children, className = "" }: { children: ReactNode, classNam
 
 export default function RecruiterDashboard() {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+  const [userData, setUserData] = useState<any>(null);
+  const [stats, setStats] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setMounted(true);
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
+    fetch("http://localhost:5000/api/user/me", {
+      headers: { "Authorization": `Bearer ${token}` }
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("Unauthorized");
+      return res.json();
+    })
+    .then(data => {
+      if (!data.user || data.user.role !== "recruiter") {
+        router.push(data.user?.role === "candidate" ? "/candidate/dashboard" : "/login");
+        return;
+      }
+      setUserData(data.user);
+      setStats(data.stats);
+      setIsLoading(false);
+    })
+    .catch(() => {
+      localStorage.removeItem("authToken");
+      router.push("/login");
+    });
+  }, [router]);
 
   const containerVars: Variants = {
     hidden: { opacity: 0 },
@@ -50,6 +84,8 @@ export default function RecruiterDashboard() {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
   };
+
+  if (!mounted || isLoading) return <div className="min-h-screen bg-slate-50 dark:bg-[#050505] flex items-center justify-center text-slate-500">Loading Pipeline...</div>;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white flex overflow-hidden selection:bg-blue-500/30 font-sans transition-colors duration-300">
@@ -134,12 +170,12 @@ export default function RecruiterDashboard() {
             </button>
             <div className="w-px h-8 bg-slate-200 dark:bg-neutral-800"></div>
             <div className="flex items-center gap-3 cursor-pointer group">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-200 to-slate-100 dark:from-neutral-700 dark:to-neutral-900 border border-slate-300 dark:border-neutral-700 overflow-hidden relative shadow-[0_0_10px_rgba(0,0,0,0.1)] dark:shadow-[0_0_10px_rgba(0,0,0,0.5)]">
-                <Image src="/logo.png" alt="Profile" fill className="object-cover opacity-80" />
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-200 to-slate-100 dark:from-neutral-700 dark:to-neutral-900 border border-slate-300 dark:border-neutral-700 overflow-hidden flex items-center justify-center relative shadow-[0_0_10px_rgba(0,0,0,0.1)] dark:shadow-[0_0_10px_rgba(0,0,0,0.5)]">
+                <span className="font-bold text-slate-500 dark:text-neutral-300">{userData?.name?.slice(0,1)}</span>
               </div>
               <div className="hidden md:block">
-                <p className="text-sm font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Sterling & Co.</p>
-                <p className="text-[11px] text-slate-500 dark:text-neutral-500 font-medium">Enterprise Admin</p>
+                <p className="text-sm font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{userData?.name}</p>
+                <p className="text-[11px] text-slate-500 dark:text-neutral-500 font-medium">Company Account</p>
               </div>
               <ChevronDown size={16} className="text-slate-400 dark:text-neutral-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors ml-1" />
             </div>
@@ -159,7 +195,7 @@ export default function RecruiterDashboard() {
             <motion.div variants={itemVars} className="mb-10 flex justify-between items-end">
               <div>
                 <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 text-slate-900 dark:text-white">
-                  Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">Sterling & Co.</span>
+                  Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">{userData?.name}</span>
                 </h1>
                 <p className="text-slate-500 dark:text-neutral-400 text-lg flex items-center gap-2">
                   <Sparkles size={18} className="text-blue-500 dark:text-blue-400" />
@@ -171,10 +207,10 @@ export default function RecruiterDashboard() {
             {/* Stats Cards */}
             <motion.div variants={itemVars} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
               {[
-                { title: "Active Jobs", value: "12", icon: <Briefcase size={22} className="text-blue-400" />, trend: "+2 this week", positive: true },
-                { title: "Total Candidates", value: "2,840", icon: <Users size={22} className="text-purple-400" />, trend: "+124 new", positive: true },
-                { title: "Interviews", value: "18", icon: <Clock size={22} className="text-amber-400" />, trend: "4 today", positive: true },
-                { title: "Hiring Rate", value: "92%", icon: <TrendingUp size={22} className="text-emerald-400" />, trend: "+4% from prev", positive: true },
+                { title: "Active Jobs", value: stats?.activeJobs || "0", icon: <Briefcase size={22} className="text-blue-400" />, trend: stats?.activeJobs ? "+2 this week" : "Post a job", positive: true },
+                { title: "Total Candidates", value: stats?.candidates || "0", icon: <Users size={22} className="text-purple-400" />, trend: stats?.candidates ? "+124 new" : "No applicants yet", positive: true },
+                { title: "Interviews", value: stats?.interviews || "0", icon: <Clock size={22} className="text-amber-400" />, trend: stats?.interviews ? "4 today" : "No schedule", positive: true },
+                { title: "Hiring Rate", value: `${stats?.hiringRate || 0}%`, icon: <TrendingUp size={22} className="text-emerald-400" />, trend: stats?.hiringRate ? "+4% from prev" : "Not calculated", positive: true },
               ].map((card, i) => (
                 <GlassCard key={i}>
                   <div className="flex justify-between items-start mb-4">
@@ -203,41 +239,12 @@ export default function RecruiterDashboard() {
                   </div>
 
                   <div className="space-y-3">
-                    {[
-                      { name: "Sarah Jenkins", role: "Principal Product Designer", location: "San Francisco, CA", match: 98, img: "SJ" },
-                      { name: "Michael Chen", role: "Senior Fullstack Engineer", location: "Remote", match: 92, img: "MC" },
-                      { name: "Elena Rodriguez", role: "Director of Marketing", location: "New York, NY", match: 89, img: "ER" },
-                      { name: "David Kim", role: "DevOps Architect", location: "Austin, TX", match: 86, img: "DK" },
-                    ].map((c, i) => (
-                      <div
-                        key={i}
-                        className="group flex flex-col sm:flex-row justify-between sm:items-center bg-white dark:bg-neutral-900/60 border border-slate-200 dark:border-neutral-800/80 p-4 rounded-2xl hover:bg-slate-50 hover:border-slate-300 dark:hover:bg-neutral-800 dark:hover:border-neutral-700 transition-all cursor-pointer shadow-sm gap-4 sm:gap-0"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-slate-200 to-slate-100 dark:from-neutral-800 dark:to-neutral-900 border border-slate-300 dark:border-neutral-700/50 rounded-full font-bold text-sm text-slate-500 dark:text-neutral-300 shadow-inner group-hover:from-blue-100/80 group-hover:to-blue-100/40 group-hover:text-blue-600 dark:group-hover:from-blue-900/40 dark:group-hover:to-blue-900/20 dark:group-hover:text-blue-200 group-hover:border-blue-400/30 dark:group-hover:border-blue-500/30 transition-all">
-                            {c.img}
-                          </div>
-                          <div>
-                            <p className="font-semibold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors">{c.name}</p>
-                            <div className="flex items-center gap-3 mt-0.5 text-xs text-slate-500 dark:text-neutral-400">
-                              <span className="flex items-center gap-1"><Briefcase size={12} /> {c.role}</span>
-                              <span className="w-1 h-1 bg-slate-300 dark:bg-neutral-600 rounded-full"></span>
-                              <span className="flex items-center gap-1"><MapPin size={12} /> {c.location}</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center justify-between sm:justify-end gap-6 sm:w-auto w-full border-t sm:border-0 border-slate-200 dark:border-neutral-800 pt-3 sm:pt-0">
-                          <div className="text-left sm:text-right">
-                            <p className="text-xl font-bold text-blue-400">{c.match}%</p>
-                            <p className="text-[10px] uppercase tracking-widest text-blue-500/70 font-bold">AI Match</p>
-                          </div>
-                          <button className="bg-slate-900 dark:bg-white text-white dark:text-black px-4 py-2 rounded-lg text-sm font-bold shadow hover:bg-slate-800 dark:hover:bg-neutral-200 transition-colors">
-                            Review
-                          </button>
-                        </div>
-                      </div>
-                    ))}
+                    <div className="flex flex-col items-center justify-center py-10 text-center text-slate-500 dark:text-neutral-500">
+                      <Search size={40} className="mb-3 opacity-20" />
+                      <p className="font-semibold text-slate-600 dark:text-neutral-400">No AI Matches Yet</p>
+                      <p className="text-xs mt-1">Post a job to start receiving AI-curated talent recommendations.</p>
+                      <button onClick={() => router.push("/recruiter/post-job")} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg text-xs font-bold hover:bg-blue-600 transition-colors">Start Hiring</button>
+                    </div>
                   </div>
                 </GlassCard>
               </motion.div>
@@ -255,7 +262,7 @@ export default function RecruiterDashboard() {
                       <Sparkles size={20} /> Proprietary AI Insight
                     </h2>
                     <p className="text-sm text-blue-50 leading-relaxed relative z-10 font-medium">
-                      Based on behavioral analysis and historic hire paths, we strongly recommend moving <strong className="text-white underline decoration-blue-400 underline-offset-2">Sarah Jenkins</strong> to the final managerial round by Thursday to avoid talent poaching.
+                      Your workspace is securely initialized. Once you post your first job and candidates apply, our AI will provide predictive behavioral insights here to help you identify top talent faster.
                     </p>
                   </div>
                 </motion.div>
@@ -267,23 +274,10 @@ export default function RecruiterDashboard() {
                       <Clock size={18} className="text-slate-400 dark:text-neutral-400" /> Upcoming Scrums
                     </h2>
                     <div className="space-y-4">
-                      {[
-                        { time: "10:00 AM", name: "Sarah Jenkins", label: "Final round", color: "bg-emerald-500" },
-                        { time: "2:30 PM", name: "Jordan Smith", label: "Tech screen", color: "bg-blue-500" },
-                        { time: "Tomorrow", name: "Amara Okafor", label: "Culture sync", color: "bg-purple-500" },
-                      ].map((iv, i) => (
-                        <div key={i} className="flex gap-4">
-                          <div className="flex flex-col items-center pt-1">
-                            <div className={`w-2.5 h-2.5 rounded-full ${iv.color} shadow-[0_0_10px_rgba(255,255,255,0.2)]`}></div>
-                            {i !== 2 && <div className="w-px h-10 bg-slate-200 dark:bg-neutral-800 mt-2"></div>}
-                          </div>
-                          <div>
-                            <p className="text-xs font-bold text-slate-500 dark:text-neutral-500 mb-0.5">{iv.time}</p>
-                            <p className="text-sm font-semibold text-slate-900 dark:text-white">{iv.name}</p>
-                            <p className="text-[11px] text-slate-500 dark:text-neutral-400">{iv.label}</p>
-                          </div>
-                        </div>
-                      ))}
+                      <div className="flex flex-col items-center justify-center py-6 text-center text-slate-500 dark:text-neutral-600">
+                        <Clock size={30} className="mb-2 opacity-20" />
+                        <p className="text-xs font-semibold">No scrums scheduled.</p>
+                      </div>
                     </div>
                     <button className="w-full mt-6 bg-slate-100 dark:bg-neutral-800 hover:bg-slate-200 dark:hover:bg-neutral-700 text-slate-900 dark:text-white font-semibold py-2.5 rounded-lg text-sm transition-colors border border-slate-200 dark:border-neutral-700/50">
                       Open Full Calendar

@@ -43,10 +43,40 @@ function GlassCard({ children, className = "" }: { children: ReactNode, classNam
 export default function CandidateDashboard() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const [userData, setUserData] = useState<any>(null);
+  const [stats, setStats] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
+    fetch("http://localhost:5000/api/user/me", {
+      headers: { "Authorization": `Bearer ${token}` }
+    })
+    .then(res => {
+      if (!res.ok) throw new Error("Unauthorized");
+      return res.json();
+    })
+    .then(data => {
+      if (!data.user || data.user.role !== "candidate") {
+        router.push(data.user?.role === "recruiter" ? "/recruiter/dashboard" : "/login");
+        return;
+      }
+      setUserData(data.user);
+      setStats(data.stats);
+      setIsLoading(false);
+    })
+    .catch(() => {
+      localStorage.removeItem("authToken");
+      router.push("/login");
+    });
+
+  }, [router]);
 
   const containerVars: Variants = {
     hidden: { opacity: 0 },
@@ -58,7 +88,7 @@ export default function CandidateDashboard() {
     visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
   };
 
-  if (!mounted) return null;
+  if (!mounted || isLoading) return <div className="min-h-screen bg-slate-50 dark:bg-[#050505] flex items-center justify-center text-slate-500">Loading Intelligence...</div>;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white flex overflow-hidden selection:bg-blue-500/30 font-sans transition-colors duration-300">
@@ -139,12 +169,12 @@ export default function CandidateDashboard() {
             </button>
             <div className="w-px h-6 bg-slate-200 dark:bg-neutral-800"></div>
             <div className="flex items-center gap-3 cursor-pointer group">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-lg">
-                SA
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-lg uppercase">
+                {userData?.name?.slice(0,2)}
               </div>
               <div className="hidden md:block">
-                <p className="text-sm font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Sterling Archer</p>
-                <p className="text-[10px] text-slate-500 dark:text-neutral-500 font-medium tracking-tight">Verification Pending</p>
+                <p className="text-sm font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{userData?.name}</p>
+                <p className="text-[10px] text-slate-500 dark:text-neutral-500 font-medium tracking-tight">Candidate Profile</p>
               </div>
               <ChevronDown size={14} className="text-slate-400 dark:text-neutral-500 group-hover:text-blue-600 transition-colors" />
             </div>
@@ -166,7 +196,7 @@ export default function CandidateDashboard() {
                   <Zap size={10} fill="currentColor" /> Intelligence Sync Complete
                 </div>
                 <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">
-                  Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-400">Sterling</span>
+                  Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-400">{userData?.name?.split(' ')[0]}</span>
                 </h1>
                 <p className="text-slate-500 dark:text-neutral-400 font-medium">
                   Your AI profile is currently optimized for <strong className="text-slate-900 dark:text-white">Principal Design Roles</strong>.
@@ -176,10 +206,10 @@ export default function CandidateDashboard() {
             {/* Stats Grid */}
             <motion.div variants={itemVars} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
               {[
-                { title: "Match Accuracy", value: "98%", icon: <Zap size={20} className="text-blue-500" />, trend: "Top 2% of pool", color: "blue" },
-                { title: "Recruiter Shortlists", value: "4", icon: <Briefcase size={20} className="text-purple-500" />, trend: "+1 this week", color: "purple" },
-                { title: "Interview Invites", value: "2", icon: <CalendarDays size={20} className="text-amber-500" />, trend: "Review pending", color: "amber" },
-                { title: "Profile Strength", value: "84%", icon: <TrendingUp size={20} className="text-emerald-500" />, trend: "Almost complete", color: "emerald" },
+                { title: "Match Accuracy", value: `${stats?.matches || 0}%`, icon: <Zap size={20} className="text-blue-500" />, trend: stats?.matches > 0 ? "Top 2% of pool" : "Awaiting data", color: "blue" },
+                { title: "Recruiter Shortlists", value: stats?.shortlists || "0", icon: <Briefcase size={20} className="text-purple-500" />, trend: stats?.shortlists > 0 ? "+1 this week" : "No shortlists yet", color: "purple" },
+                { title: "Interview Invites", value: stats?.interviews || "0", icon: <CalendarDays size={20} className="text-amber-500" />, trend: stats?.interviews > 0 ? "Review pending" : "No invites yet", color: "amber" },
+                { title: "Profile Strength", value: `${stats?.profileStrength || 0}%`, icon: <TrendingUp size={20} className="text-emerald-500" />, trend: stats?.profileStrength > 0 ? "Almost complete" : "Needs completion", color: "emerald" },
               ].map((stat, i) => (
                 <GlassCard key={i} className="group cursor-pointer">
                   <div className="flex justify-between items-start mb-4">
@@ -208,42 +238,12 @@ export default function CandidateDashboard() {
                   </div>
 
                   <div className="space-y-6">
-                    {[
-                      { company: "Linear", role: "Sr. Product Designer", status: "Shortlisted", date: "Selected 1h ago", progress: 75, match: 96 },
-                      { company: "Vercel", role: "Design Systems Lead", status: "Review", date: "Selected 2d ago", progress: 40, match: 92 },
-                      { company: "Stripe", role: "Principal Experience Designer", status: "Selected", date: "Selected 5d ago", progress: 20, match: 89 },
-                    ].map((app, i) => (
-                      <div key={i} className="relative">
-                        <div className="flex justify-between items-start mb-2">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 flex items-center justify-center font-bold text-blue-500">
-                              {app.company[0]}
-                            </div>
-                            <div>
-                              <p className="font-bold text-sm">{app.company}</p>
-                              <p className="text-xs text-slate-500 dark:text-neutral-500">{app.role}</p>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <span className={`text-[10px] font-bold uppercase px-2 py-1 rounded-md ${app.status === 'Interview' ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' : 'bg-blue-500/10 text-blue-500 border border-blue-500/20'}`}>
-                              {app.status}
-                            </span>
-                            <p className="text-[10px] text-slate-400 mt-1">{app.date}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-4 mt-4">
-                           <div className="flex-1 h-1.5 bg-slate-100 dark:bg-neutral-900 rounded-full overflow-hidden">
-                              <motion.div 
-                                initial={{ width: 0 }}
-                                animate={{ width: `${app.progress}%` }}
-                                transition={{ duration: 1, delay: 0.5 + (i * 0.1) }}
-                                className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.3)]"
-                              />
-                           </div>
-                           <span className="text-[10px] font-bold text-blue-500 w-8">{app.match}% Hub Match</span>
-                        </div>
-                      </div>
-                    ))}
+                    <div className="flex flex-col items-center justify-center py-10 text-center text-slate-500 dark:text-neutral-500">
+                      <Briefcase size={40} className="mb-3 opacity-20" />
+                      <p className="font-semibold text-slate-600 dark:text-neutral-400">No Applications Yet</p>
+                      <p className="text-xs mt-1">Upload your resume to start getting matched with top companies.</p>
+                      <button onClick={() => router.push("/candidate/profile")} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg text-xs font-bold hover:bg-blue-600 transition-colors">Build Profile</button>
+                    </div>
                   </div>
                 </GlassCard>
               </motion.div>
@@ -263,10 +263,10 @@ export default function CandidateDashboard() {
                         <h2 className="text-lg font-bold">Matching Intelligence</h2>
                       </div>
                       <p className="text-sm text-blue-100 leading-relaxed mb-6">
-                        Your skills in <strong className="text-white underline decoration-blue-300 underline-offset-2">Framer Motion</strong> and <strong className="text-white underline decoration-blue-300 underline-offset-2">Design Systems</strong> currently put you in the top 5% of applicants for Linear.
+                        Complete your profile construction to let our semantic analysis engine evaluate your skills and surface competitive gaps.
                       </p>
-                      <button className="w-full py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-xl text-xs font-bold border border-white/20 transition-all">
-                        Analyze Competitive Gap
+                      <button onClick={() => router.push("/candidate/profile")} className="w-full py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-xl text-xs font-bold border border-white/20 transition-all">
+                        Complete Profile
                       </button>
                     </div>
                   </div>
@@ -278,20 +278,9 @@ export default function CandidateDashboard() {
                     <h2 className="text-lg font-bold mb-5 flex items-center gap-2">
                        <Clock size={18} className="text-slate-400" /> Interview Queue
                     </h2>
-                    <div className="space-y-4">
-                      {[
-                        { time: "Tomorrow, 10:00", company: "Linear", type: "Portfolio Review" },
-                        { time: "Mon, 14:30", company: "Meta", type: "Technical Screen" },
-                      ].map((item, i) => (
-                        <div key={i} className="flex gap-4">
-                          <div className="w-1 h-auto bg-blue-500/30 rounded-full shrink-0" />
-                          <div>
-                            <p className="text-[10px] font-bold text-blue-500 uppercase">{item.time}</p>
-                            <p className="text-sm font-bold mt-0.5">{item.company}</p>
-                            <p className="text-xs text-slate-500 dark:text-neutral-500">{item.type}</p>
-                          </div>
-                        </div>
-                      ))}
+                    <div className="space-y-4 flex flex-col items-center justify-center py-4 text-slate-500 dark:text-neutral-600">
+                      <Clock size={30} className="mb-2 opacity-20" />
+                      <p className="text-xs font-semibold">No interviews queued.</p>
                     </div>
                   </GlassCard>
                 </motion.div>
@@ -309,35 +298,10 @@ export default function CandidateDashboard() {
                  <button className="text-xs font-bold text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">See All →</button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                 {[
-                   { company: "OpenAI", role: "Product Designer, Researcher", salary: "$180k - $240k", match: 99, tags: ["AI/ML", "Design Systems"] },
-                   { company: "Apple", role: "Interactive Experience Designer", salary: "$160k - $220k", match: 97, tags: ["SwiftUI", "Motion"] },
-                   { company: "Airbnb", role: "Senior Product Designer", salary: "$150k - $210k", match: 94, tags: ["Figma", "Strategy"] },
-                 ].map((job, i) => (
-                   <GlassCard key={i} className="hover:border-blue-500/30 transition-colors">
-                     <div className="flex justify-between items-start mb-4">
-                        <div className="w-12 h-12 bg-slate-100 dark:bg-neutral-900 rounded-2xl border border-slate-200 dark:border-neutral-800 flex items-center justify-center font-bold text-slate-400">
-                          {job.company[0]}
-                        </div>
-                        <div className="px-2 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-500 font-bold text-[10px]">
-                           {job.match}% MATCH SCORE
-                        </div>
-                     </div>
-                     <h3 className="font-bold text-lg mb-1">{job.role}</h3>
-                     <p className="text-xs text-slate-500 dark:text-neutral-500 mb-4">{job.company} • {job.salary}</p>
-                     <div className="flex flex-wrap gap-2 mb-6">
-                        {job.tags.map(tag => (
-                          <span key={tag} className="px-2 py-1 bg-slate-100 dark:bg-neutral-900 rounded-md text-[10px] font-medium text-slate-600 dark:text-neutral-400">
-                            {tag}
-                          </span>
-                        ))}
-                     </div>
-                     <button className="w-full py-2 bg-slate-900 dark:bg-white text-white dark:text-black rounded-xl text-xs font-bold shadow-lg hover:opacity-90 transition-opacity">
-                        Review Selection
-                     </button>
-                   </GlassCard>
-                 ))}
+              <div className="flex flex-col items-center justify-center py-16 bg-white/40 dark:bg-neutral-900/40 rounded-3xl border border-slate-200 dark:border-neutral-800 text-slate-500 dark:text-neutral-500 shadow-inner">
+                <Search size={48} className="mb-4 opacity-20" />
+                <h3 className="text-lg font-bold text-slate-700 dark:text-neutral-300">No Selections Available</h3>
+                <p className="text-sm text-center max-w-md mt-2">Recruiters haven't shortlisted your profile manually yet. Make sure your resume is uploaded and skills are configured.</p>
               </div>
             </motion.div>
 

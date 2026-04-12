@@ -3,11 +3,22 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
-import { Eye, EyeOff, Building2, Globe, Mail, Briefcase, Users, ArrowRight } from "lucide-react";
+import { Eye, EyeOff, Building2, Globe, Mail, Briefcase, Users, ArrowRight, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function CompanySignup() {
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [errorObj, setErrorObj] = useState(null);
+
+    // Form states
+    const [name, setName] = useState("");
+    const [website, setWebsite] = useState("");
+    const [industry, setIndustry] = useState("");
+    const [teamSize, setTeamSize] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
     const router = useRouter();
 
     const containerVars = {
@@ -22,6 +33,47 @@ export default function CompanySignup() {
     const itemVars = {
         hidden: { opacity: 0, y: 15 },
         visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setErrorObj(null);
+
+        try {
+            const res = await fetch("http://localhost:5000/api/auth/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    role: "recruiter",
+                    name,
+                    email,
+                    password,
+                    website,
+                    industry,
+                    teamSize
+                }),
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                setErrorObj(data.error || "Failed to create company account.");
+                setIsLoading(false);
+                return;
+            }
+
+            // Successfully created! Cache token and login.
+            localStorage.setItem("authToken", data.token);
+            localStorage.setItem("userRole", data.user.role);
+            localStorage.setItem("userName", data.user.name);
+
+            router.push("/recruiter/dashboard");
+        } catch (err) {
+            console.error(err);
+            setErrorObj("Network error: Could not reach the authentication server.");
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -71,8 +123,15 @@ export default function CompanySignup() {
                         Create your company account to start hiring with semantic AI.
                     </motion.p>
 
+                    {/* Error Banner */}
+                    {errorObj && (
+                        <motion.div variants={itemVars} className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-sm font-medium">
+                            {errorObj}
+                        </motion.div>
+                    )}
+
                     {/* Form */}
-                    <div className="space-y-5 relative z-10">
+                    <form className="space-y-5 relative z-10" onSubmit={handleSubmit}>
 
                         {/* Company Name */}
                         <motion.div variants={itemVars} className="group">
@@ -84,6 +143,9 @@ export default function CompanySignup() {
                                     <Building2 size={18} />
                                 </div>
                                 <input
+                                    required
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
                                     placeholder="Acme Corp"
                                     className="w-full px-4 py-3.5 pl-11 rounded-xl bg-neutral-950/50 border border-neutral-800 text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
                                 />
@@ -100,6 +162,9 @@ export default function CompanySignup() {
                                     <Globe size={18} />
                                 </div>
                                 <input
+                                    type="url"
+                                    value={website}
+                                    onChange={(e) => setWebsite(e.target.value)}
                                     placeholder="https://company.com"
                                     className="w-full px-4 py-3.5 pl-11 rounded-xl bg-neutral-950/50 border border-neutral-800 text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
                                 />
@@ -116,12 +181,12 @@ export default function CompanySignup() {
                                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-500 group-focus-within:text-blue-500 transition-colors">
                                         <Briefcase size={18} />
                                     </div>
-                                    <select defaultValue="" className="w-full px-4 py-3.5 pl-11 appearance-none rounded-xl bg-neutral-950/50 border border-neutral-800 text-neutral-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner cursor-pointer">
+                                    <select required value={industry} onChange={(e) => setIndustry(e.target.value)} className="w-full px-4 py-3.5 pl-11 appearance-none rounded-xl bg-neutral-950/50 border border-neutral-800 text-neutral-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner cursor-pointer">
                                         <option value="" disabled className="text-neutral-600">Select industry</option>
-                                        <option>Technology</option>
-                                        <option>Finance</option>
-                                        <option>Healthcare</option>
-                                        <option>E-commerce</option>
+                                        <option value="Technology">Technology</option>
+                                        <option value="Finance">Finance</option>
+                                        <option value="Healthcare">Healthcare</option>
+                                        <option value="E-commerce">E-commerce</option>
                                     </select>
                                 </div>
                             </div>
@@ -134,12 +199,12 @@ export default function CompanySignup() {
                                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-neutral-500 group-focus-within:text-blue-500 transition-colors">
                                         <Users size={18} />
                                     </div>
-                                    <select defaultValue="" className="w-full px-4 py-3.5 pl-11 appearance-none rounded-xl bg-neutral-950/50 border border-neutral-800 text-neutral-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner cursor-pointer">
+                                    <select required value={teamSize} onChange={(e) => setTeamSize(e.target.value)} className="w-full px-4 py-3.5 pl-11 appearance-none rounded-xl bg-neutral-950/50 border border-neutral-800 text-neutral-300 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner cursor-pointer">
                                         <option value="" disabled className="text-neutral-600">Company size</option>
-                                        <option>1-10</option>
-                                        <option>10-50</option>
-                                        <option>50-200</option>
-                                        <option>200+</option>
+                                        <option value="1-10">1-10</option>
+                                        <option value="10-50">10-50</option>
+                                        <option value="50-200">50-200</option>
+                                        <option value="200+">200+</option>
                                     </select>
                                 </div>
                             </div>
@@ -156,6 +221,9 @@ export default function CompanySignup() {
                                 </div>
                                 <input
                                     type="email"
+                                    required
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                     placeholder="name@company.com"
                                     className="w-full px-4 py-3.5 pl-11 rounded-xl bg-neutral-950/50 border border-neutral-800 text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
                                 />
@@ -170,6 +238,9 @@ export default function CompanySignup() {
                             <div className="relative">
                                 <input
                                     type={showPassword ? "text" : "password"}
+                                    required
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                     placeholder="••••••••"
                                     className="w-full px-4 py-3.5 pl-4 pr-12 rounded-xl bg-neutral-950/50 border border-neutral-800 text-white placeholder-neutral-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner"
                                 />
@@ -186,13 +257,20 @@ export default function CompanySignup() {
                         {/* Submit Button */}
                         <motion.div variants={itemVars} className="pt-2">
                             <motion.button
-                                onClick={() => router.push("/recruiter/dashboard")}
+                                type="submit"
+                                disabled={isLoading}
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
-                                className="w-full bg-white text-black py-4 rounded-xl font-bold flex justify-center items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-shadow group/btn"
+                                className="w-full bg-white text-black py-4 rounded-xl font-bold flex justify-center items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-shadow group/btn disabled:opacity-70"
                             >
-                                Create Company Account
-                                <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
+                                {isLoading ? (
+                                    <Loader2 size={18} className="animate-spin text-black" />
+                                ) : (
+                                    <>
+                                        Create Company Account
+                                        <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
+                                    </>
+                                )}
                             </motion.button>
                         </motion.div>
 
@@ -202,7 +280,7 @@ export default function CompanySignup() {
                                 Log in
                             </Link>
                         </motion.p>
-                    </div>
+                    </form>
                 </motion.div>
             </div>
 

@@ -2,9 +2,18 @@
 import { motion, Variants } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Mail, KeyRound } from "lucide-react";
+import { ArrowRight, Mail, KeyRound, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorObj, setErrorObj] = useState<string | null>(null);
+
+  const router = useRouter();
+
   // Stagger variants for smooth form entry
   const containerVars: Variants = {
     hidden: { opacity: 0, scale: 0.95 },
@@ -18,6 +27,43 @@ export default function LoginPage() {
   const itemVars: Variants = {
     hidden: { opacity: 0, y: 15 },
     visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setErrorObj(null);
+
+    try {
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setErrorObj(data.error || "Login failed. Please check your credentials.");
+        setIsLoading(false);
+        return;
+      }
+
+      // Successful login
+      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("userRole", data.user.role);
+      localStorage.setItem("userName", data.user.name);
+
+      if (data.user.role === "candidate") {
+        router.push("/candidate/dashboard");
+      } else {
+        router.push("/recruiter/dashboard");
+      }
+    } catch (err) {
+      console.error(err);
+      setErrorObj("Network error: Could not reach the authentication server.");
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -58,7 +104,14 @@ export default function LoginPage() {
             </p>
           </motion.div>
 
-          <form className="relative z-10" onSubmit={(e) => e.preventDefault()}>
+          {/* Error Banner */}
+          {errorObj && (
+            <motion.div variants={itemVars} className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-sm font-medium">
+              {errorObj}
+            </motion.div>
+          )}
+
+          <form className="relative z-10" onSubmit={handleSubmit}>
             {/* Email */}
             <motion.div variants={itemVars} className="mb-5 group">
               <label className="text-xs font-semibold tracking-wider text-slate-500 dark:text-neutral-400 ml-1 mb-2 block group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors">
@@ -70,9 +123,11 @@ export default function LoginPage() {
                 </div>
                 <input
                   type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@company.com"
                   className="w-full px-4 py-3.5 pl-11 rounded-xl bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner dark:shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]"
-                  required
                 />
               </div>
             </motion.div>
@@ -93,9 +148,11 @@ export default function LoginPage() {
                 </div>
                 <input
                   type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className="w-full px-4 py-3.5 pl-11 rounded-xl bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner dark:shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]"
-                  required
                 />
               </div>
             </motion.div>
@@ -103,13 +160,20 @@ export default function LoginPage() {
             {/* Sign In Button */}
             <motion.div variants={itemVars}>
               <motion.button 
+                type="submit"
+                disabled={isLoading}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                type="submit"
-                className="w-full bg-slate-900 border border-slate-800 dark:bg-white text-white dark:text-black py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 shadow-[0_4px_14px_rgba(0,0,0,0.1)] dark:shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-shadow group"
+                className="w-full bg-slate-900 border border-slate-800 dark:bg-white text-white dark:text-black py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 shadow-[0_4px_14px_rgba(0,0,0,0.1)] dark:shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.15)] dark:hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-shadow group disabled:opacity-70"
               >
-                Sign In
-                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                {isLoading ? (
+                  <Loader2 size={18} className="animate-spin" />
+                ) : (
+                  <>
+                    Sign In
+                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                  </>
+                )}
               </motion.button>
             </motion.div>
           </form>

@@ -53,7 +53,7 @@ export default function RecruiterDashboard() {
       return;
     }
 
-    fetch("http://localhost:5000/api/user/me", {
+    fetch("/api/user/me", {
       headers: { "Authorization": `Bearer ${token}` }
     })
     .then(res => {

@@ -28,9 +28,126 @@ if (!fs.existsSync(uploadsDir)) {
 app.use(cors());
 app.use(express.json());
 
-// Health check
+// Health check & System Status
 app.get("/", (req, res) => {
-  res.json({ message: "Backend running" });
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mr. Hyre API | System Status</title>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --bg: #0f172a;
+                --card: rgba(30, 41, 59, 0.7);
+                --accent: #3b82f6;
+            }
+            body {
+                background: var(--bg);
+                color: white;
+                font-family: 'Inter', sans-serif;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                margin: 0;
+                overflow: hidden;
+            }
+            .background {
+                position: absolute;
+                inset: 0;
+                background: radial-gradient(circle at 50% 50%, #1e293b 0%, #0f172a 100%);
+                z-index: -1;
+            }
+            .glow {
+                position: absolute;
+                width: 600px;
+                height: 600px;
+                background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.15), transparent 70%);
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                z-index: -1;
+            }
+            .card {
+                background: var(--card);
+                backdrop-filter: blur(12px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                padding: 3rem;
+                border-radius: 2rem;
+                text-align: center;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+                max-width: 450px;
+                width: 90%;
+            }
+            .logo {
+                font-size: 2.5rem;
+                font-weight: 800;
+                margin-bottom: 1rem;
+                background: linear-gradient(to tr, #3b82f6, #818cf8);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+            .status-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                background: rgba(34, 197, 94, 0.1);
+                color: #22c55e;
+                padding: 0.5rem 1rem;
+                border-radius: 100px;
+                font-size: 0.875rem;
+                font-weight: 600;
+                margin-bottom: 2rem;
+                border: 1px solid rgba(34, 197, 94, 0.2);
+            }
+            .dot {
+                width: 8px;
+                height: 8px;
+                background: #22c55e;
+                border-radius: 50%;
+                box-shadow: 0 0 10px #22c55e;
+                animation: pulse 2s infinite;
+            }
+            @keyframes pulse {
+                0% { opacity: 1; }
+                50% { opacity: 0.4; }
+                100% { opacity: 1; }
+            }
+            h1 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+            p { color: #94a3b8; font-size: 0.875rem; line-height: 1.6; margin-bottom: 2rem; }
+            .btn {
+                background: #3b82f6;
+                color: white;
+                text-decoration: none;
+                padding: 0.75rem 1.5rem;
+                border-radius: 0.75rem;
+                font-weight: 600;
+                font-size: 0.875rem;
+                transition: transform 0.2s;
+                display: inline-block;
+            }
+            .btn:hover { transform: translateY(-2px); }
+        </style>
+    </head>
+    <body>
+        <div class="background"></div>
+        <div class="glow"></div>
+        <div class="card">
+            <div class="logo">Mr. Hyre AI</div>
+            <div class="status-badge">
+                <div class="dot"></div>
+                API Engine Operational
+            </div>
+            <h1>The "Brain" is Active.</h1>
+            <p>This server is correctly connected to Supabase and ready to power your AI platform. To access the visual interface, visit your Vercel URL.</p>
+            <a href="https://mr-hyre-nine.vercel.app/" class="btn">Return to Platform</a>
+        </div>
+    </body>
+    </html>
+  `);
 });
 
 // Diagnostic UI

@@ -29,7 +29,20 @@ app.use(cors());
 app.use(express.json());
 
 // Health check & System Status
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
+  let dbStatus = "Checking...";
+  let dbColor = "#94a3b8";
+  
+  try {
+    const prisma = (await import("./utils/prisma.js")).default;
+    await prisma.$queryRaw`SELECT 1`;
+    dbStatus = "Connected to Supabase";
+    dbColor = "#22c55e";
+  } catch (err) {
+    dbStatus = "Connection Failed: " + err.message;
+    dbColor = "#ef4444";
+  }
+
   res.send(`
     <!DOCTYPE html>
     <html lang="en">
@@ -100,8 +113,18 @@ app.get("/", (req, res) => {
                 border-radius: 100px;
                 font-size: 0.875rem;
                 font-weight: 600;
-                margin-bottom: 2rem;
+                margin-bottom: 1rem;
                 border: 1px solid rgba(34, 197, 94, 0.2);
+            }
+            .db-status {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                color: ${dbColor};
+                font-size: 0.75rem;
+                font-weight: 600;
+                margin-bottom: 2rem;
+                font-family: monospace;
             }
             .dot {
                 width: 8px;
@@ -141,8 +164,9 @@ app.get("/", (req, res) => {
                 <div class="dot"></div>
                 API Engine Operational
             </div>
-            <h1>The "Brain" is Active.</h1>
-            <p>This server is correctly connected to Supabase and ready to power your AI platform. To access the visual interface, visit your Vercel URL.</p>
+            <div class="db-status">Database: ${dbStatus}</div>
+            <h1>System Diagnostics</h1>
+            <p>If the database status is red, please verify your Supabase credentials in Render's environment settings.</p>
             <a href="https://mr-hyre-nine.vercel.app/" class="btn">Return to Platform</a>
         </div>
     </body>

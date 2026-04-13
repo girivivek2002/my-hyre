@@ -7,7 +7,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model Waitlist {
@@ -93,4 +92,29 @@ model Message {
   recruiter   Recruiter @relation(fields: [recruiterId], references: [id])
   candidateId String
   candidate   Candidate @relation(fields: [candidateId], references: [id])
+}
+
+// Added for Backend Migration
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  phone      String?
+  website    String?
+  industry   String?
+  teamSize   String?
+  role      String   // "candidate" or "recruiter"
+  resumes   Resume[]
+  createdAt DateTime @default(now())
+}
+
+model Resume {
+  id         String   @id @default(uuid())
+  userId     String
+  name       String
+  skills     String[]
+  experience Int
+  user       User     @relation(fields: [userId], references: [id])
+  createdAt  DateTime @default(now())
 }

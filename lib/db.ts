@@ -1,36 +1,47 @@
-// Mock Prisma client for development
+// Mock Prisma client for development - stores users in memory
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+const users: any[] = [];
+
 const prismaMock: any = {
   waitlist: {
-    findUnique: async (args: any) => null,
-    create: async (args: any) => ({ id: 'mock', email: args?.data?.email || 'mock@mock.com' }),
+    findUnique: async (args: any) => {
+      return users.find(u => u.email === args?.where?.email) || null;
+    },
+    create: async (args: any) => {
+      const newUser = { id: Date.now().toString(), email: args?.data?.email, ...args?.data };
+      users.push(newUser);
+      return newUser;
+    },
   },
   candidate: {
     findUnique: async (args: any) => {
-      if (args?.where?.email === 'candidate@test.com') {
-        return { id: '1', name: 'Test Candidate', email: 'candidate@test.com', password: '$2b$10$mock', role: 'candidate' };
-      }
-      return null;
+      return users.find(u => u.email === args?.where?.email && u.role === 'candidate') || null;
     },
-    create: async (args: any) => ({ id: 'mock', email: args?.data?.email || 'mock@mock.com' }),
+    create: async (args: any) => {
+      const newUser = { id: Date.now().toString(), ...args?.data, role: 'candidate' };
+      users.push(newUser);
+      return newUser;
+    },
   },
   recruiter: {
     findUnique: async (args: any) => {
-      if (args?.where?.email === 'recruiter@test.com') {
-        return { id: '1', name: 'Test Recruiter', email: 'recruiter@test.com', password: '$2b$10$mock', role: 'recruiter' };
-      }
-      return null;
+      return users.find(u => u.email === args?.where?.email && u.role === 'recruiter') || null;
     },
-    create: async (args: any) => ({ id: 'mock', email: args?.data?.email || 'mock@mock.com' }),
+    create: async (args: any) => {
+      const newUser = { id: Date.now().toString(), ...args?.data, role: 'recruiter' };
+      users.push(newUser);
+      return newUser;
+    },
   },
   user: {
     findUnique: async (args: any) => {
-      if (args?.where?.email === 'test@test.com') {
-        return { id: '1', name: 'Test User', email: 'test@test.com', password: '$2b$10$mock', role: 'candidate' };
-      }
-      return null;
+      return users.find(u => u.email === args?.where?.email) || null;
     },
-    create: async (args: any) => ({ id: 'mock', email: args?.data?.email || 'mock@mock.com' }),
+    create: async (args: any) => {
+      const newUser = { id: Date.now().toString(), ...args?.data };
+      users.push(newUser);
+      return newUser;
+    },
   },
   job: {
     create: async (args: any) => ({ id: 'mock', title: 'Mock Job' }),

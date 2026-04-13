@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     }
     
     if (!user) {
-      user = await prisma.user?.findUnique?.({ where: { email } });
+      user = await prisma.waitlist.findUnique({ where: { email } });
       role = "user";
     }
 

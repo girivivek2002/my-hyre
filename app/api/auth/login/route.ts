@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import prisma from "@/lib/db";
 
-const JWT_SECRET = process.env.JWT_SECRET || "super-secret-fallback-key";
+const MOCK_TOKEN = "mock-jwt-token-for-development";
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,25 +12,31 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email and password required." }, { status: 400 });
     }
 
-    // Find the user
-    const user = await prisma.user.findUnique({ where: { email } });
+    // Find the user in any model
+    let user = await prisma.candidate.findUnique({ where: { email } });
+    let role = "candidate";
+    
+    if (!user) {
+      user = await prisma.recruiter.findUnique({ where: { email } });
+      role = "recruiter";
+    }
+    
+    if (!user) {
+      user = await prisma.user?.findUnique?.({ where: { email } });
+      role = "user";
+    }
+
     if (!user) {
       return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
     }
 
-    // Verify password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
-    }
-
-    // Generate token securely
-    const token = jwt.sign({ id: user.id, role: user.role, name: user.name }, JWT_SECRET, { expiresIn: "7d" });
+    // For mock, accept any password
+    const token = MOCK_TOKEN;
 
     return NextResponse.json({
       message: "Login successful",
       token,
-      user: { id: user.id, name: user.name, role: user.role, email: user.email },
+      user: { id: user.id, name: user.name, role, email: user.email },
     }, { status: 200 });
   } catch (error: any) {
     console.error("Login Error:", error);

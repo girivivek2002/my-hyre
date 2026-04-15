@@ -11,13 +11,13 @@ model User {
   email     String   @unique
   password  String
   name      String
-  phone      String?
-  website    String?
-  industry   String?
-  teamSize   String?
-  role      String   // "candidate" or "recruiter"
-  resumes   Resume[]
+  phone     String?
+  website   String?
+  industry  String?
+  teamSize  String?
+  role      String
   createdAt DateTime @default(now())
+  resumes   Resume[]
 }
 
 model Resume {
@@ -26,14 +26,85 @@ model Resume {
   name       String
   skills     String[]
   experience Int
-  user       User     @relation(fields: [userId], references: [id])
   createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
 }
 
 model Job {
-  id         String   @id @default(uuid())
-  title      String
-  skills     String[]
-  experience Int
-  createdAt  DateTime @default(now())
+  id          String      @id @default(uuid())
+  title       String
+  skills      String[]
+  experience  String?
+  createdAt   DateTime    @default(now())
+  company     String
+  description String?
+  location    String
+  recruiterId String
+  salary      String?
+  type        String?
+  updatedAt   DateTime
+  Recruiter   Recruiter   @relation(fields: [recruiterId], references: [id])
+  Shortlist   Shortlist[]
+}
+
+model Candidate {
+  id                String      @id
+  name              String
+  email             String      @unique
+  role              String?
+  experience        String?
+  biography         String?
+  location          String?
+  workPreference    String?
+  salaryExpectation String?
+  noticePeriod      String?
+  skills            String[]
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime
+  Message           Message[]
+  Shortlist         Shortlist[]
+}
+
+model Message {
+  id          String    @id
+  content     String
+  createdAt   DateTime  @default(now())
+  senderType  String
+  recruiterId String
+  candidateId String
+  Candidate   Candidate @relation(fields: [candidateId], references: [id])
+  Recruiter   Recruiter @relation(fields: [recruiterId], references: [id])
+}
+
+model Recruiter {
+  id          String    @id
+  name        String
+  email       String    @unique
+  companyName String
+  companySize String?
+  industry    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime
+  Job         Job[]
+  Message     Message[]
+}
+
+model Shortlist {
+  id          String    @id
+  status      String    @default("SHORTLISTED")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime
+  candidateId String
+  jobId       String
+  Candidate   Candidate @relation(fields: [candidateId], references: [id])
+  Job         Job       @relation(fields: [jobId], references: [id])
+
+  @@unique([candidateId, jobId])
+}
+
+model Waitlist {
+  id        String   @id
+  email     String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime
 }

@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Find the user in any model
-    let user = await prisma.candidate.findUnique({ where: { email } });
+    let user: any = await prisma.candidate.findUnique({ where: { email } });
     let role = "candidate";
     
     if (!user) {
@@ -24,6 +24,14 @@ export async function POST(req: NextRequest) {
     if (!user) {
       user = await prisma.waitlist.findUnique({ where: { email } });
       role = "user";
+    }
+    
+    if (!user) {
+      // Also try User table since schema has User
+      user = await prisma.user.findUnique({ where: { email } });
+      if (user) {
+        role = user.role;
+      }
     }
 
     if (!user) {

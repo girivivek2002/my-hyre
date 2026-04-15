@@ -13,16 +13,17 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if the user already exists
-    const existingUser = await prisma.waitlist.findUnique({ where: { email } });
+    const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return NextResponse.json({ error: "Email already registered." }, { status: 400 });
     }
 
-    // Create user (storing in waitlist for mock)
-    const user = await prisma.waitlist.create({
+    // Create user
+    const user = await prisma.user.create({
       data: {
         email,
         name,
+        password: password, // Note: In production this should be hashed
         role: role || 'candidate',
       },
     });

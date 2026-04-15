@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec tsx src/index.js",
+    "build": "npx prisma generate",
+    "postinstall": "npx prisma generate",
     "start": "tsx src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

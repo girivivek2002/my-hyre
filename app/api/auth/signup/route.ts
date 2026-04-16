@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/db";
+import jwt from "jsonwebtoken";
 
-const MOCK_TOKEN = "mock-jwt-token-for-development";
+const JWT_SECRET = process.env.JWT_SECRET || "super-secret-fallback-key";
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,8 +29,12 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // Mock token
-    const token = MOCK_TOKEN;
+    // Sign a real JWT so subsequent API calls can be verified
+    const token = jwt.sign(
+      { id: user.id, role: user.role, email: user.email },
+      JWT_SECRET,
+      { expiresIn: "7d" }
+    );
 
     return NextResponse.json({
       message: "User created successfully",

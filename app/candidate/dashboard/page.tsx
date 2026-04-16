@@ -7,7 +7,8 @@ import {
   LayoutDashboard, Briefcase, BarChart3, Settings,
   Zap, Bell, ChevronDown, Sparkles, Clock, MapPin, 
   TrendingUp, CalendarDays, ArrowUpRight, Search, 
-  CheckCircle2, AlertCircle, FileText, ArrowRight
+  CheckCircle2, AlertCircle, FileText, ArrowRight,
+  User, LogOut
 } from "lucide-react";
 
 // Interactive Glass Card Component
@@ -48,6 +49,13 @@ export default function CandidateDashboard() {
   const [recentJobs, setRecentJobs] = useState<any[]>([]);
   const [recentInterviews, setRecentInterviews] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    router.push("/login");
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -193,20 +201,65 @@ export default function CandidateDashboard() {
           </div>
 
           <div className="flex items-center gap-6">
-            <button className="relative text-slate-400 hover:text-slate-900 dark:text-neutral-400 dark:hover:text-white transition-colors">
-              <Bell size={20} />
-              <span className="absolute top-0 right-0 w-2 h-2 bg-blue-500 border-2 border-white dark:border-neutral-950 rounded-full"></span>
-            </button>
+            <div className="relative">
+              <button 
+                onClick={() => { setShowNotifications(!showNotifications); setShowProfileMenu(false); }}
+                className="relative text-slate-400 hover:text-slate-900 dark:text-neutral-400 dark:hover:text-white transition-colors p-2"
+              >
+                <Bell size={20} />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-blue-500 border-2 border-white dark:border-neutral-950 rounded-full"></span>
+              </button>
+
+              {showNotifications && (
+                <div className="absolute right-0 mt-3 w-80 bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl shadow-xl z-50 overflow-hidden">
+                  <div className="p-4 border-b border-slate-100 dark:border-neutral-800">
+                    <h3 className="font-bold text-slate-900 dark:text-white">System Alerts</h3>
+                  </div>
+                  <div className="p-4 text-center text-sm text-slate-500 dark:text-neutral-400">
+                    No new intelligence alerts.
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div className="w-px h-6 bg-slate-200 dark:bg-neutral-800"></div>
-            <div className="flex items-center gap-3 cursor-pointer group">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-lg uppercase">
-                {userData?.name?.slice(0,2)}
+
+            <div className="relative">
+              <div 
+                className="flex items-center gap-3 cursor-pointer group"
+                onClick={() => { setShowProfileMenu(!showProfileMenu); setShowNotifications(false); }}
+              >
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-lg uppercase">
+                  {userData?.name?.slice(0,2)}
+                </div>
+                <div className="hidden md:block">
+                  <p className="text-sm font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{userData?.name}</p>
+                  <p className="text-[10px] text-slate-500 dark:text-neutral-500 font-medium tracking-tight">Candidate Profile</p>
+                </div>
+                <ChevronDown size={14} className={`text-slate-400 dark:text-neutral-500 transition-transform ${showProfileMenu ? 'rotate-180' : ''}`} />
               </div>
-              <div className="hidden md:block">
-                <p className="text-sm font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{userData?.name}</p>
-                <p className="text-[10px] text-slate-500 dark:text-neutral-500 font-medium tracking-tight">Candidate Profile</p>
-              </div>
-              <ChevronDown size={14} className="text-slate-400 dark:text-neutral-500 group-hover:text-blue-600 transition-colors" />
+
+              {showProfileMenu && (
+                <div className="absolute right-0 mt-4 w-56 bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl shadow-xl z-50 overflow-hidden flex flex-col py-2">
+                  <div className="px-4 py-3 border-b border-slate-100 dark:border-neutral-800 mb-2">
+                    <p className="text-sm font-bold text-slate-900 dark:text-white truncate">{userData?.name}</p>
+                    <p className="text-xs text-slate-500 dark:text-neutral-400 truncate">{userData?.email}</p>
+                  </div>
+                  
+                  <button onClick={() => router.push("/candidate/profile")} className="w-full text-left px-4 py-2 text-sm font-medium text-slate-600 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-800 flex items-center gap-3 transition-colors">
+                    <User size={16} /> My Talent Profile
+                  </button>
+                  <button onClick={() => router.push("/candidate/settings")} className="w-full text-left px-4 py-2 text-sm font-medium text-slate-600 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-800 flex items-center gap-3 transition-colors">
+                    <Settings size={16} /> System Settings
+                  </button>
+                  
+                  <div className="h-px bg-slate-100 dark:bg-neutral-800 my-2"></div>
+                  
+                  <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-3 transition-colors">
+                    <LogOut size={16} /> End Session
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </motion.div>

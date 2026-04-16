@@ -39,6 +39,11 @@ export type Job = $Result.DefaultSelection<Prisma.$JobPayload>
  */
 export type Shortlist = $Result.DefaultSelection<Prisma.$ShortlistPayload>
 /**
+ * Model Interview
+ * 
+ */
+export type Interview = $Result.DefaultSelection<Prisma.$InterviewPayload>
+/**
  * Model Message
  * 
  */
@@ -224,6 +229,16 @@ export class PrismaClient<
     * ```
     */
   get shortlist(): Prisma.ShortlistDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.interview`: Exposes CRUD operations for the **Interview** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Interviews
+    * const interviews = await prisma.interview.findMany()
+    * ```
+    */
+  get interview(): Prisma.InterviewDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.message`: Exposes CRUD operations for the **Message** model.
@@ -693,6 +708,7 @@ export namespace Prisma {
     Recruiter: 'Recruiter',
     Job: 'Job',
     Shortlist: 'Shortlist',
+    Interview: 'Interview',
     Message: 'Message',
     User: 'User',
     Resume: 'Resume'
@@ -711,7 +727,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "waitlist" | "candidate" | "recruiter" | "job" | "shortlist" | "message" | "user" | "resume"
+      modelProps: "waitlist" | "candidate" | "recruiter" | "job" | "shortlist" | "interview" | "message" | "user" | "resume"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1085,6 +1101,80 @@ export namespace Prisma {
           }
         }
       }
+      Interview: {
+        payload: Prisma.$InterviewPayload<ExtArgs>
+        fields: Prisma.InterviewFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.InterviewFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.InterviewFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPayload>
+          }
+          findFirst: {
+            args: Prisma.InterviewFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.InterviewFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPayload>
+          }
+          findMany: {
+            args: Prisma.InterviewFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPayload>[]
+          }
+          create: {
+            args: Prisma.InterviewCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPayload>
+          }
+          createMany: {
+            args: Prisma.InterviewCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.InterviewCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPayload>[]
+          }
+          delete: {
+            args: Prisma.InterviewDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPayload>
+          }
+          update: {
+            args: Prisma.InterviewUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPayload>
+          }
+          deleteMany: {
+            args: Prisma.InterviewDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.InterviewUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.InterviewUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPayload>[]
+          }
+          upsert: {
+            args: Prisma.InterviewUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InterviewPayload>
+          }
+          aggregate: {
+            args: Prisma.InterviewAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateInterview>
+          }
+          groupBy: {
+            args: Prisma.InterviewGroupByArgs<ExtArgs>
+            result: $Utils.Optional<InterviewGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.InterviewCountArgs<ExtArgs>
+            result: $Utils.Optional<InterviewCountAggregateOutputType> | number
+          }
+        }
+      }
       Message: {
         payload: Prisma.$MessagePayload<ExtArgs>
         fields: Prisma.MessageFieldRefs
@@ -1420,6 +1510,7 @@ export namespace Prisma {
     recruiter?: RecruiterOmit
     job?: JobOmit
     shortlist?: ShortlistOmit
+    interview?: InterviewOmit
     message?: MessageOmit
     user?: UserOmit
     resume?: ResumeOmit
@@ -1606,6 +1697,37 @@ export namespace Prisma {
    */
   export type JobCountOutputTypeCountShortlistsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ShortlistWhereInput
+  }
+
+
+  /**
+   * Count Type ShortlistCountOutputType
+   */
+
+  export type ShortlistCountOutputType = {
+    interviews: number
+  }
+
+  export type ShortlistCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    interviews?: boolean | ShortlistCountOutputTypeCountInterviewsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * ShortlistCountOutputType without action
+   */
+  export type ShortlistCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ShortlistCountOutputType
+     */
+    select?: ShortlistCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * ShortlistCountOutputType without action
+   */
+  export type ShortlistCountOutputTypeCountInterviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InterviewWhereInput
   }
 
 
@@ -2643,6 +2765,7 @@ export namespace Prisma {
 
   export type CandidateMinAggregateOutputType = {
     id: string | null
+    userId: string | null
     name: string | null
     email: string | null
     role: string | null
@@ -2658,6 +2781,7 @@ export namespace Prisma {
 
   export type CandidateMaxAggregateOutputType = {
     id: string | null
+    userId: string | null
     name: string | null
     email: string | null
     role: string | null
@@ -2673,6 +2797,7 @@ export namespace Prisma {
 
   export type CandidateCountAggregateOutputType = {
     id: number
+    userId: number
     name: number
     email: number
     role: number
@@ -2691,6 +2816,7 @@ export namespace Prisma {
 
   export type CandidateMinAggregateInputType = {
     id?: true
+    userId?: true
     name?: true
     email?: true
     role?: true
@@ -2706,6 +2832,7 @@ export namespace Prisma {
 
   export type CandidateMaxAggregateInputType = {
     id?: true
+    userId?: true
     name?: true
     email?: true
     role?: true
@@ -2721,6 +2848,7 @@ export namespace Prisma {
 
   export type CandidateCountAggregateInputType = {
     id?: true
+    userId?: true
     name?: true
     email?: true
     role?: true
@@ -2810,6 +2938,7 @@ export namespace Prisma {
 
   export type CandidateGroupByOutputType = {
     id: string
+    userId: string | null
     name: string
     email: string
     role: string | null
@@ -2843,6 +2972,7 @@ export namespace Prisma {
 
   export type CandidateSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     name?: boolean
     email?: boolean
     role?: boolean
@@ -2855,6 +2985,7 @@ export namespace Prisma {
     skills?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    user?: boolean | Candidate$userArgs<ExtArgs>
     shortlists?: boolean | Candidate$shortlistsArgs<ExtArgs>
     messages?: boolean | Candidate$messagesArgs<ExtArgs>
     _count?: boolean | CandidateCountOutputTypeDefaultArgs<ExtArgs>
@@ -2862,6 +2993,7 @@ export namespace Prisma {
 
   export type CandidateSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     name?: boolean
     email?: boolean
     role?: boolean
@@ -2874,10 +3006,12 @@ export namespace Prisma {
     skills?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    user?: boolean | Candidate$userArgs<ExtArgs>
   }, ExtArgs["result"]["candidate"]>
 
   export type CandidateSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     name?: boolean
     email?: boolean
     role?: boolean
@@ -2890,10 +3024,12 @@ export namespace Prisma {
     skills?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    user?: boolean | Candidate$userArgs<ExtArgs>
   }, ExtArgs["result"]["candidate"]>
 
   export type CandidateSelectScalar = {
     id?: boolean
+    userId?: boolean
     name?: boolean
     email?: boolean
     role?: boolean
@@ -2908,23 +3044,30 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type CandidateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "role" | "experience" | "biography" | "location" | "workPreference" | "salaryExpectation" | "noticePeriod" | "skills" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
+  export type CandidateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "email" | "role" | "experience" | "biography" | "location" | "workPreference" | "salaryExpectation" | "noticePeriod" | "skills" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
   export type CandidateInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | Candidate$userArgs<ExtArgs>
     shortlists?: boolean | Candidate$shortlistsArgs<ExtArgs>
     messages?: boolean | Candidate$messagesArgs<ExtArgs>
     _count?: boolean | CandidateCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type CandidateIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type CandidateIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type CandidateIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | Candidate$userArgs<ExtArgs>
+  }
+  export type CandidateIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | Candidate$userArgs<ExtArgs>
+  }
 
   export type $CandidatePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Candidate"
     objects: {
+      user: Prisma.$UserPayload<ExtArgs> | null
       shortlists: Prisma.$ShortlistPayload<ExtArgs>[]
       messages: Prisma.$MessagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      userId: string | null
       name: string
       email: string
       role: string | null
@@ -3331,6 +3474,7 @@ export namespace Prisma {
    */
   export interface Prisma__CandidateClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends Candidate$userArgs<ExtArgs> = {}>(args?: Subset<T, Candidate$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     shortlists<T extends Candidate$shortlistsArgs<ExtArgs> = {}>(args?: Subset<T, Candidate$shortlistsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ShortlistPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     messages<T extends Candidate$messagesArgs<ExtArgs> = {}>(args?: Subset<T, Candidate$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -3363,6 +3507,7 @@ export namespace Prisma {
    */
   interface CandidateFieldRefs {
     readonly id: FieldRef<"Candidate", 'String'>
+    readonly userId: FieldRef<"Candidate", 'String'>
     readonly name: FieldRef<"Candidate", 'String'>
     readonly email: FieldRef<"Candidate", 'String'>
     readonly role: FieldRef<"Candidate", 'String'>
@@ -3629,6 +3774,10 @@ export namespace Prisma {
      */
     data: CandidateCreateManyInput | CandidateCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -3699,6 +3848,10 @@ export namespace Prisma {
      * Limit how many Candidates to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -3765,6 +3918,25 @@ export namespace Prisma {
      * Limit how many Candidates to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Candidate.user
+   */
+  export type Candidate$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
   /**
@@ -3846,6 +4018,7 @@ export namespace Prisma {
 
   export type RecruiterMinAggregateOutputType = {
     id: string | null
+    userId: string | null
     name: string | null
     email: string | null
     companyName: string | null
@@ -3857,6 +4030,7 @@ export namespace Prisma {
 
   export type RecruiterMaxAggregateOutputType = {
     id: string | null
+    userId: string | null
     name: string | null
     email: string | null
     companyName: string | null
@@ -3868,6 +4042,7 @@ export namespace Prisma {
 
   export type RecruiterCountAggregateOutputType = {
     id: number
+    userId: number
     name: number
     email: number
     companyName: number
@@ -3881,6 +4056,7 @@ export namespace Prisma {
 
   export type RecruiterMinAggregateInputType = {
     id?: true
+    userId?: true
     name?: true
     email?: true
     companyName?: true
@@ -3892,6 +4068,7 @@ export namespace Prisma {
 
   export type RecruiterMaxAggregateInputType = {
     id?: true
+    userId?: true
     name?: true
     email?: true
     companyName?: true
@@ -3903,6 +4080,7 @@ export namespace Prisma {
 
   export type RecruiterCountAggregateInputType = {
     id?: true
+    userId?: true
     name?: true
     email?: true
     companyName?: true
@@ -3987,6 +4165,7 @@ export namespace Prisma {
 
   export type RecruiterGroupByOutputType = {
     id: string
+    userId: string | null
     name: string
     email: string
     companyName: string
@@ -4015,6 +4194,7 @@ export namespace Prisma {
 
   export type RecruiterSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     name?: boolean
     email?: boolean
     companyName?: boolean
@@ -4022,6 +4202,7 @@ export namespace Prisma {
     industry?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    user?: boolean | Recruiter$userArgs<ExtArgs>
     jobs?: boolean | Recruiter$jobsArgs<ExtArgs>
     messages?: boolean | Recruiter$messagesArgs<ExtArgs>
     _count?: boolean | RecruiterCountOutputTypeDefaultArgs<ExtArgs>
@@ -4029,6 +4210,7 @@ export namespace Prisma {
 
   export type RecruiterSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     name?: boolean
     email?: boolean
     companyName?: boolean
@@ -4036,10 +4218,12 @@ export namespace Prisma {
     industry?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    user?: boolean | Recruiter$userArgs<ExtArgs>
   }, ExtArgs["result"]["recruiter"]>
 
   export type RecruiterSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
+    userId?: boolean
     name?: boolean
     email?: boolean
     companyName?: boolean
@@ -4047,10 +4231,12 @@ export namespace Prisma {
     industry?: boolean
     createdAt?: boolean
     updatedAt?: boolean
+    user?: boolean | Recruiter$userArgs<ExtArgs>
   }, ExtArgs["result"]["recruiter"]>
 
   export type RecruiterSelectScalar = {
     id?: boolean
+    userId?: boolean
     name?: boolean
     email?: boolean
     companyName?: boolean
@@ -4060,23 +4246,30 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type RecruiterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "companyName" | "companySize" | "industry" | "createdAt" | "updatedAt", ExtArgs["result"]["recruiter"]>
+  export type RecruiterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "email" | "companyName" | "companySize" | "industry" | "createdAt" | "updatedAt", ExtArgs["result"]["recruiter"]>
   export type RecruiterInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | Recruiter$userArgs<ExtArgs>
     jobs?: boolean | Recruiter$jobsArgs<ExtArgs>
     messages?: boolean | Recruiter$messagesArgs<ExtArgs>
     _count?: boolean | RecruiterCountOutputTypeDefaultArgs<ExtArgs>
   }
-  export type RecruiterIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type RecruiterIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type RecruiterIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | Recruiter$userArgs<ExtArgs>
+  }
+  export type RecruiterIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | Recruiter$userArgs<ExtArgs>
+  }
 
   export type $RecruiterPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Recruiter"
     objects: {
+      user: Prisma.$UserPayload<ExtArgs> | null
       jobs: Prisma.$JobPayload<ExtArgs>[]
       messages: Prisma.$MessagePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
+      userId: string | null
       name: string
       email: string
       companyName: string
@@ -4478,6 +4671,7 @@ export namespace Prisma {
    */
   export interface Prisma__RecruiterClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends Recruiter$userArgs<ExtArgs> = {}>(args?: Subset<T, Recruiter$userArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     jobs<T extends Recruiter$jobsArgs<ExtArgs> = {}>(args?: Subset<T, Recruiter$jobsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     messages<T extends Recruiter$messagesArgs<ExtArgs> = {}>(args?: Subset<T, Recruiter$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
@@ -4510,6 +4704,7 @@ export namespace Prisma {
    */
   interface RecruiterFieldRefs {
     readonly id: FieldRef<"Recruiter", 'String'>
+    readonly userId: FieldRef<"Recruiter", 'String'>
     readonly name: FieldRef<"Recruiter", 'String'>
     readonly email: FieldRef<"Recruiter", 'String'>
     readonly companyName: FieldRef<"Recruiter", 'String'>
@@ -4771,6 +4966,10 @@ export namespace Prisma {
      */
     data: RecruiterCreateManyInput | RecruiterCreateManyInput[]
     skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecruiterIncludeCreateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -4841,6 +5040,10 @@ export namespace Prisma {
      * Limit how many Recruiters to update.
      */
     limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecruiterIncludeUpdateManyAndReturn<ExtArgs> | null
   }
 
   /**
@@ -4907,6 +5110,25 @@ export namespace Prisma {
      * Limit how many Recruiters to delete.
      */
     limit?: number
+  }
+
+  /**
+   * Recruiter.user
+   */
+  export type Recruiter$userArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the User
+     */
+    select?: UserSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the User
+     */
+    omit?: UserOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserInclude<ExtArgs> | null
+    where?: UserWhereInput
   }
 
   /**
@@ -6330,6 +6552,8 @@ export namespace Prisma {
     jobId?: boolean
     candidate?: boolean | CandidateDefaultArgs<ExtArgs>
     job?: boolean | JobDefaultArgs<ExtArgs>
+    interviews?: boolean | Shortlist$interviewsArgs<ExtArgs>
+    _count?: boolean | ShortlistCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["shortlist"]>
 
   export type ShortlistSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -6367,6 +6591,8 @@ export namespace Prisma {
   export type ShortlistInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     candidate?: boolean | CandidateDefaultArgs<ExtArgs>
     job?: boolean | JobDefaultArgs<ExtArgs>
+    interviews?: boolean | Shortlist$interviewsArgs<ExtArgs>
+    _count?: boolean | ShortlistCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type ShortlistIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     candidate?: boolean | CandidateDefaultArgs<ExtArgs>
@@ -6382,6 +6608,7 @@ export namespace Prisma {
     objects: {
       candidate: Prisma.$CandidatePayload<ExtArgs>
       job: Prisma.$JobPayload<ExtArgs>
+      interviews: Prisma.$InterviewPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -6786,6 +7013,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     candidate<T extends CandidateDefaultArgs<ExtArgs> = {}>(args?: Subset<T, CandidateDefaultArgs<ExtArgs>>): Prisma__CandidateClient<$Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     job<T extends JobDefaultArgs<ExtArgs> = {}>(args?: Subset<T, JobDefaultArgs<ExtArgs>>): Prisma__JobClient<$Result.GetResult<Prisma.$JobPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    interviews<T extends Shortlist$interviewsArgs<ExtArgs> = {}>(args?: Subset<T, Shortlist$interviewsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -7222,6 +7450,30 @@ export namespace Prisma {
   }
 
   /**
+   * Shortlist.interviews
+   */
+  export type Shortlist$interviewsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Interview
+     */
+    select?: InterviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Interview
+     */
+    omit?: InterviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewInclude<ExtArgs> | null
+    where?: InterviewWhereInput
+    orderBy?: InterviewOrderByWithRelationInput | InterviewOrderByWithRelationInput[]
+    cursor?: InterviewWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: InterviewScalarFieldEnum | InterviewScalarFieldEnum[]
+  }
+
+  /**
    * Shortlist without action
    */
   export type ShortlistDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7237,6 +7489,1143 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ShortlistInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model Interview
+   */
+
+  export type AggregateInterview = {
+    _count: InterviewCountAggregateOutputType | null
+    _min: InterviewMinAggregateOutputType | null
+    _max: InterviewMaxAggregateOutputType | null
+  }
+
+  export type InterviewMinAggregateOutputType = {
+    id: string | null
+    date: Date | null
+    time: string | null
+    platform: string | null
+    interviewerName: string | null
+    interviewerTitle: string | null
+    status: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    shortlistId: string | null
+  }
+
+  export type InterviewMaxAggregateOutputType = {
+    id: string | null
+    date: Date | null
+    time: string | null
+    platform: string | null
+    interviewerName: string | null
+    interviewerTitle: string | null
+    status: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    shortlistId: string | null
+  }
+
+  export type InterviewCountAggregateOutputType = {
+    id: number
+    date: number
+    time: number
+    platform: number
+    interviewerName: number
+    interviewerTitle: number
+    status: number
+    prepNotes: number
+    createdAt: number
+    updatedAt: number
+    shortlistId: number
+    _all: number
+  }
+
+
+  export type InterviewMinAggregateInputType = {
+    id?: true
+    date?: true
+    time?: true
+    platform?: true
+    interviewerName?: true
+    interviewerTitle?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    shortlistId?: true
+  }
+
+  export type InterviewMaxAggregateInputType = {
+    id?: true
+    date?: true
+    time?: true
+    platform?: true
+    interviewerName?: true
+    interviewerTitle?: true
+    status?: true
+    createdAt?: true
+    updatedAt?: true
+    shortlistId?: true
+  }
+
+  export type InterviewCountAggregateInputType = {
+    id?: true
+    date?: true
+    time?: true
+    platform?: true
+    interviewerName?: true
+    interviewerTitle?: true
+    status?: true
+    prepNotes?: true
+    createdAt?: true
+    updatedAt?: true
+    shortlistId?: true
+    _all?: true
+  }
+
+  export type InterviewAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Interview to aggregate.
+     */
+    where?: InterviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Interviews to fetch.
+     */
+    orderBy?: InterviewOrderByWithRelationInput | InterviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: InterviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Interviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Interviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Interviews
+    **/
+    _count?: true | InterviewCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: InterviewMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: InterviewMaxAggregateInputType
+  }
+
+  export type GetInterviewAggregateType<T extends InterviewAggregateArgs> = {
+        [P in keyof T & keyof AggregateInterview]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateInterview[P]>
+      : GetScalarType<T[P], AggregateInterview[P]>
+  }
+
+
+
+
+  export type InterviewGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InterviewWhereInput
+    orderBy?: InterviewOrderByWithAggregationInput | InterviewOrderByWithAggregationInput[]
+    by: InterviewScalarFieldEnum[] | InterviewScalarFieldEnum
+    having?: InterviewScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: InterviewCountAggregateInputType | true
+    _min?: InterviewMinAggregateInputType
+    _max?: InterviewMaxAggregateInputType
+  }
+
+  export type InterviewGroupByOutputType = {
+    id: string
+    date: Date | null
+    time: string | null
+    platform: string | null
+    interviewerName: string | null
+    interviewerTitle: string | null
+    status: string
+    prepNotes: string[]
+    createdAt: Date
+    updatedAt: Date
+    shortlistId: string
+    _count: InterviewCountAggregateOutputType | null
+    _min: InterviewMinAggregateOutputType | null
+    _max: InterviewMaxAggregateOutputType | null
+  }
+
+  type GetInterviewGroupByPayload<T extends InterviewGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<InterviewGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof InterviewGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], InterviewGroupByOutputType[P]>
+            : GetScalarType<T[P], InterviewGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type InterviewSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    date?: boolean
+    time?: boolean
+    platform?: boolean
+    interviewerName?: boolean
+    interviewerTitle?: boolean
+    status?: boolean
+    prepNotes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    shortlistId?: boolean
+    shortlist?: boolean | ShortlistDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["interview"]>
+
+  export type InterviewSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    date?: boolean
+    time?: boolean
+    platform?: boolean
+    interviewerName?: boolean
+    interviewerTitle?: boolean
+    status?: boolean
+    prepNotes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    shortlistId?: boolean
+    shortlist?: boolean | ShortlistDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["interview"]>
+
+  export type InterviewSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    date?: boolean
+    time?: boolean
+    platform?: boolean
+    interviewerName?: boolean
+    interviewerTitle?: boolean
+    status?: boolean
+    prepNotes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    shortlistId?: boolean
+    shortlist?: boolean | ShortlistDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["interview"]>
+
+  export type InterviewSelectScalar = {
+    id?: boolean
+    date?: boolean
+    time?: boolean
+    platform?: boolean
+    interviewerName?: boolean
+    interviewerTitle?: boolean
+    status?: boolean
+    prepNotes?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    shortlistId?: boolean
+  }
+
+  export type InterviewOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "date" | "time" | "platform" | "interviewerName" | "interviewerTitle" | "status" | "prepNotes" | "createdAt" | "updatedAt" | "shortlistId", ExtArgs["result"]["interview"]>
+  export type InterviewInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    shortlist?: boolean | ShortlistDefaultArgs<ExtArgs>
+  }
+  export type InterviewIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    shortlist?: boolean | ShortlistDefaultArgs<ExtArgs>
+  }
+  export type InterviewIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    shortlist?: boolean | ShortlistDefaultArgs<ExtArgs>
+  }
+
+  export type $InterviewPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Interview"
+    objects: {
+      shortlist: Prisma.$ShortlistPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      date: Date | null
+      time: string | null
+      platform: string | null
+      interviewerName: string | null
+      interviewerTitle: string | null
+      status: string
+      prepNotes: string[]
+      createdAt: Date
+      updatedAt: Date
+      shortlistId: string
+    }, ExtArgs["result"]["interview"]>
+    composites: {}
+  }
+
+  type InterviewGetPayload<S extends boolean | null | undefined | InterviewDefaultArgs> = $Result.GetResult<Prisma.$InterviewPayload, S>
+
+  type InterviewCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<InterviewFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: InterviewCountAggregateInputType | true
+    }
+
+  export interface InterviewDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Interview'], meta: { name: 'Interview' } }
+    /**
+     * Find zero or one Interview that matches the filter.
+     * @param {InterviewFindUniqueArgs} args - Arguments to find a Interview
+     * @example
+     * // Get one Interview
+     * const interview = await prisma.interview.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends InterviewFindUniqueArgs>(args: SelectSubset<T, InterviewFindUniqueArgs<ExtArgs>>): Prisma__InterviewClient<$Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Interview that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {InterviewFindUniqueOrThrowArgs} args - Arguments to find a Interview
+     * @example
+     * // Get one Interview
+     * const interview = await prisma.interview.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends InterviewFindUniqueOrThrowArgs>(args: SelectSubset<T, InterviewFindUniqueOrThrowArgs<ExtArgs>>): Prisma__InterviewClient<$Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Interview that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewFindFirstArgs} args - Arguments to find a Interview
+     * @example
+     * // Get one Interview
+     * const interview = await prisma.interview.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends InterviewFindFirstArgs>(args?: SelectSubset<T, InterviewFindFirstArgs<ExtArgs>>): Prisma__InterviewClient<$Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Interview that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewFindFirstOrThrowArgs} args - Arguments to find a Interview
+     * @example
+     * // Get one Interview
+     * const interview = await prisma.interview.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends InterviewFindFirstOrThrowArgs>(args?: SelectSubset<T, InterviewFindFirstOrThrowArgs<ExtArgs>>): Prisma__InterviewClient<$Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Interviews that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Interviews
+     * const interviews = await prisma.interview.findMany()
+     * 
+     * // Get first 10 Interviews
+     * const interviews = await prisma.interview.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const interviewWithIdOnly = await prisma.interview.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends InterviewFindManyArgs>(args?: SelectSubset<T, InterviewFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Interview.
+     * @param {InterviewCreateArgs} args - Arguments to create a Interview.
+     * @example
+     * // Create one Interview
+     * const Interview = await prisma.interview.create({
+     *   data: {
+     *     // ... data to create a Interview
+     *   }
+     * })
+     * 
+     */
+    create<T extends InterviewCreateArgs>(args: SelectSubset<T, InterviewCreateArgs<ExtArgs>>): Prisma__InterviewClient<$Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Interviews.
+     * @param {InterviewCreateManyArgs} args - Arguments to create many Interviews.
+     * @example
+     * // Create many Interviews
+     * const interview = await prisma.interview.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends InterviewCreateManyArgs>(args?: SelectSubset<T, InterviewCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Interviews and returns the data saved in the database.
+     * @param {InterviewCreateManyAndReturnArgs} args - Arguments to create many Interviews.
+     * @example
+     * // Create many Interviews
+     * const interview = await prisma.interview.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many Interviews and only return the `id`
+     * const interviewWithIdOnly = await prisma.interview.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends InterviewCreateManyAndReturnArgs>(args?: SelectSubset<T, InterviewCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Interview.
+     * @param {InterviewDeleteArgs} args - Arguments to delete one Interview.
+     * @example
+     * // Delete one Interview
+     * const Interview = await prisma.interview.delete({
+     *   where: {
+     *     // ... filter to delete one Interview
+     *   }
+     * })
+     * 
+     */
+    delete<T extends InterviewDeleteArgs>(args: SelectSubset<T, InterviewDeleteArgs<ExtArgs>>): Prisma__InterviewClient<$Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Interview.
+     * @param {InterviewUpdateArgs} args - Arguments to update one Interview.
+     * @example
+     * // Update one Interview
+     * const interview = await prisma.interview.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends InterviewUpdateArgs>(args: SelectSubset<T, InterviewUpdateArgs<ExtArgs>>): Prisma__InterviewClient<$Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Interviews.
+     * @param {InterviewDeleteManyArgs} args - Arguments to filter Interviews to delete.
+     * @example
+     * // Delete a few Interviews
+     * const { count } = await prisma.interview.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends InterviewDeleteManyArgs>(args?: SelectSubset<T, InterviewDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Interviews.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Interviews
+     * const interview = await prisma.interview.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends InterviewUpdateManyArgs>(args: SelectSubset<T, InterviewUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Interviews and returns the data updated in the database.
+     * @param {InterviewUpdateManyAndReturnArgs} args - Arguments to update many Interviews.
+     * @example
+     * // Update many Interviews
+     * const interview = await prisma.interview.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more Interviews and only return the `id`
+     * const interviewWithIdOnly = await prisma.interview.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends InterviewUpdateManyAndReturnArgs>(args: SelectSubset<T, InterviewUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Interview.
+     * @param {InterviewUpsertArgs} args - Arguments to update or create a Interview.
+     * @example
+     * // Update or create a Interview
+     * const interview = await prisma.interview.upsert({
+     *   create: {
+     *     // ... data to create a Interview
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Interview we want to update
+     *   }
+     * })
+     */
+    upsert<T extends InterviewUpsertArgs>(args: SelectSubset<T, InterviewUpsertArgs<ExtArgs>>): Prisma__InterviewClient<$Result.GetResult<Prisma.$InterviewPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Interviews.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewCountArgs} args - Arguments to filter Interviews to count.
+     * @example
+     * // Count the number of Interviews
+     * const count = await prisma.interview.count({
+     *   where: {
+     *     // ... the filter for the Interviews we want to count
+     *   }
+     * })
+    **/
+    count<T extends InterviewCountArgs>(
+      args?: Subset<T, InterviewCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], InterviewCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Interview.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends InterviewAggregateArgs>(args: Subset<T, InterviewAggregateArgs>): Prisma.PrismaPromise<GetInterviewAggregateType<T>>
+
+    /**
+     * Group by Interview.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InterviewGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends InterviewGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: InterviewGroupByArgs['orderBy'] }
+        : { orderBy?: InterviewGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, InterviewGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetInterviewGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Interview model
+   */
+  readonly fields: InterviewFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Interview.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__InterviewClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    shortlist<T extends ShortlistDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ShortlistDefaultArgs<ExtArgs>>): Prisma__ShortlistClient<$Result.GetResult<Prisma.$ShortlistPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Interview model
+   */
+  interface InterviewFieldRefs {
+    readonly id: FieldRef<"Interview", 'String'>
+    readonly date: FieldRef<"Interview", 'DateTime'>
+    readonly time: FieldRef<"Interview", 'String'>
+    readonly platform: FieldRef<"Interview", 'String'>
+    readonly interviewerName: FieldRef<"Interview", 'String'>
+    readonly interviewerTitle: FieldRef<"Interview", 'String'>
+    readonly status: FieldRef<"Interview", 'String'>
+    readonly prepNotes: FieldRef<"Interview", 'String[]'>
+    readonly createdAt: FieldRef<"Interview", 'DateTime'>
+    readonly updatedAt: FieldRef<"Interview", 'DateTime'>
+    readonly shortlistId: FieldRef<"Interview", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Interview findUnique
+   */
+  export type InterviewFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Interview
+     */
+    select?: InterviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Interview
+     */
+    omit?: InterviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewInclude<ExtArgs> | null
+    /**
+     * Filter, which Interview to fetch.
+     */
+    where: InterviewWhereUniqueInput
+  }
+
+  /**
+   * Interview findUniqueOrThrow
+   */
+  export type InterviewFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Interview
+     */
+    select?: InterviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Interview
+     */
+    omit?: InterviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewInclude<ExtArgs> | null
+    /**
+     * Filter, which Interview to fetch.
+     */
+    where: InterviewWhereUniqueInput
+  }
+
+  /**
+   * Interview findFirst
+   */
+  export type InterviewFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Interview
+     */
+    select?: InterviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Interview
+     */
+    omit?: InterviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewInclude<ExtArgs> | null
+    /**
+     * Filter, which Interview to fetch.
+     */
+    where?: InterviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Interviews to fetch.
+     */
+    orderBy?: InterviewOrderByWithRelationInput | InterviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Interviews.
+     */
+    cursor?: InterviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Interviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Interviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Interviews.
+     */
+    distinct?: InterviewScalarFieldEnum | InterviewScalarFieldEnum[]
+  }
+
+  /**
+   * Interview findFirstOrThrow
+   */
+  export type InterviewFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Interview
+     */
+    select?: InterviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Interview
+     */
+    omit?: InterviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewInclude<ExtArgs> | null
+    /**
+     * Filter, which Interview to fetch.
+     */
+    where?: InterviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Interviews to fetch.
+     */
+    orderBy?: InterviewOrderByWithRelationInput | InterviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Interviews.
+     */
+    cursor?: InterviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Interviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Interviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Interviews.
+     */
+    distinct?: InterviewScalarFieldEnum | InterviewScalarFieldEnum[]
+  }
+
+  /**
+   * Interview findMany
+   */
+  export type InterviewFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Interview
+     */
+    select?: InterviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Interview
+     */
+    omit?: InterviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewInclude<ExtArgs> | null
+    /**
+     * Filter, which Interviews to fetch.
+     */
+    where?: InterviewWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Interviews to fetch.
+     */
+    orderBy?: InterviewOrderByWithRelationInput | InterviewOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Interviews.
+     */
+    cursor?: InterviewWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Interviews from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Interviews.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Interviews.
+     */
+    distinct?: InterviewScalarFieldEnum | InterviewScalarFieldEnum[]
+  }
+
+  /**
+   * Interview create
+   */
+  export type InterviewCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Interview
+     */
+    select?: InterviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Interview
+     */
+    omit?: InterviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Interview.
+     */
+    data: XOR<InterviewCreateInput, InterviewUncheckedCreateInput>
+  }
+
+  /**
+   * Interview createMany
+   */
+  export type InterviewCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Interviews.
+     */
+    data: InterviewCreateManyInput | InterviewCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Interview createManyAndReturn
+   */
+  export type InterviewCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Interview
+     */
+    select?: InterviewSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Interview
+     */
+    omit?: InterviewOmit<ExtArgs> | null
+    /**
+     * The data used to create many Interviews.
+     */
+    data: InterviewCreateManyInput | InterviewCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Interview update
+   */
+  export type InterviewUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Interview
+     */
+    select?: InterviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Interview
+     */
+    omit?: InterviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Interview.
+     */
+    data: XOR<InterviewUpdateInput, InterviewUncheckedUpdateInput>
+    /**
+     * Choose, which Interview to update.
+     */
+    where: InterviewWhereUniqueInput
+  }
+
+  /**
+   * Interview updateMany
+   */
+  export type InterviewUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Interviews.
+     */
+    data: XOR<InterviewUpdateManyMutationInput, InterviewUncheckedUpdateManyInput>
+    /**
+     * Filter which Interviews to update
+     */
+    where?: InterviewWhereInput
+    /**
+     * Limit how many Interviews to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Interview updateManyAndReturn
+   */
+  export type InterviewUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Interview
+     */
+    select?: InterviewSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Interview
+     */
+    omit?: InterviewOmit<ExtArgs> | null
+    /**
+     * The data used to update Interviews.
+     */
+    data: XOR<InterviewUpdateManyMutationInput, InterviewUncheckedUpdateManyInput>
+    /**
+     * Filter which Interviews to update
+     */
+    where?: InterviewWhereInput
+    /**
+     * Limit how many Interviews to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Interview upsert
+   */
+  export type InterviewUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Interview
+     */
+    select?: InterviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Interview
+     */
+    omit?: InterviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Interview to update in case it exists.
+     */
+    where: InterviewWhereUniqueInput
+    /**
+     * In case the Interview found by the `where` argument doesn't exist, create a new Interview with this data.
+     */
+    create: XOR<InterviewCreateInput, InterviewUncheckedCreateInput>
+    /**
+     * In case the Interview was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<InterviewUpdateInput, InterviewUncheckedUpdateInput>
+  }
+
+  /**
+   * Interview delete
+   */
+  export type InterviewDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Interview
+     */
+    select?: InterviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Interview
+     */
+    omit?: InterviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewInclude<ExtArgs> | null
+    /**
+     * Filter which Interview to delete.
+     */
+    where: InterviewWhereUniqueInput
+  }
+
+  /**
+   * Interview deleteMany
+   */
+  export type InterviewDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Interviews to delete
+     */
+    where?: InterviewWhereInput
+    /**
+     * Limit how many Interviews to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Interview without action
+   */
+  export type InterviewDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Interview
+     */
+    select?: InterviewSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Interview
+     */
+    omit?: InterviewOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InterviewInclude<ExtArgs> | null
   }
 
 
@@ -8528,6 +9917,8 @@ export namespace Prisma {
     teamSize?: boolean
     role?: boolean
     createdAt?: boolean
+    candidateProfile?: boolean | User$candidateProfileArgs<ExtArgs>
+    recruiterProfile?: boolean | User$recruiterProfileArgs<ExtArgs>
     resumes?: boolean | User$resumesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -8573,6 +9964,8 @@ export namespace Prisma {
 
   export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "name" | "phone" | "website" | "industry" | "teamSize" | "role" | "createdAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    candidateProfile?: boolean | User$candidateProfileArgs<ExtArgs>
+    recruiterProfile?: boolean | User$recruiterProfileArgs<ExtArgs>
     resumes?: boolean | User$resumesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -8582,6 +9975,8 @@ export namespace Prisma {
   export type $UserPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "User"
     objects: {
+      candidateProfile: Prisma.$CandidatePayload<ExtArgs> | null
+      recruiterProfile: Prisma.$RecruiterPayload<ExtArgs> | null
       resumes: Prisma.$ResumePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -8989,6 +10384,8 @@ export namespace Prisma {
    */
   export interface Prisma__UserClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    candidateProfile<T extends User$candidateProfileArgs<ExtArgs> = {}>(args?: Subset<T, User$candidateProfileArgs<ExtArgs>>): Prisma__CandidateClient<$Result.GetResult<Prisma.$CandidatePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    recruiterProfile<T extends User$recruiterProfileArgs<ExtArgs> = {}>(args?: Subset<T, User$recruiterProfileArgs<ExtArgs>>): Prisma__RecruiterClient<$Result.GetResult<Prisma.$RecruiterPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     resumes<T extends User$resumesArgs<ExtArgs> = {}>(args?: Subset<T, User$resumesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ResumePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -9419,6 +10816,44 @@ export namespace Prisma {
      * Limit how many Users to delete.
      */
     limit?: number
+  }
+
+  /**
+   * User.candidateProfile
+   */
+  export type User$candidateProfileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Candidate
+     */
+    select?: CandidateSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Candidate
+     */
+    omit?: CandidateOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: CandidateInclude<ExtArgs> | null
+    where?: CandidateWhereInput
+  }
+
+  /**
+   * User.recruiterProfile
+   */
+  export type User$recruiterProfileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Recruiter
+     */
+    select?: RecruiterSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Recruiter
+     */
+    omit?: RecruiterOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: RecruiterInclude<ExtArgs> | null
+    where?: RecruiterWhereInput
   }
 
   /**
@@ -10596,6 +12031,7 @@ export namespace Prisma {
 
   export const CandidateScalarFieldEnum: {
     id: 'id',
+    userId: 'userId',
     name: 'name',
     email: 'email',
     role: 'role',
@@ -10615,6 +12051,7 @@ export namespace Prisma {
 
   export const RecruiterScalarFieldEnum: {
     id: 'id',
+    userId: 'userId',
     name: 'name',
     email: 'email',
     companyName: 'companyName',
@@ -10655,6 +12092,23 @@ export namespace Prisma {
   };
 
   export type ShortlistScalarFieldEnum = (typeof ShortlistScalarFieldEnum)[keyof typeof ShortlistScalarFieldEnum]
+
+
+  export const InterviewScalarFieldEnum: {
+    id: 'id',
+    date: 'date',
+    time: 'time',
+    platform: 'platform',
+    interviewerName: 'interviewerName',
+    interviewerTitle: 'interviewerTitle',
+    status: 'status',
+    prepNotes: 'prepNotes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    shortlistId: 'shortlistId'
+  };
+
+  export type InterviewScalarFieldEnum = (typeof InterviewScalarFieldEnum)[keyof typeof InterviewScalarFieldEnum]
 
 
   export const MessageScalarFieldEnum: {
@@ -10837,6 +12291,7 @@ export namespace Prisma {
     OR?: CandidateWhereInput[]
     NOT?: CandidateWhereInput | CandidateWhereInput[]
     id?: StringFilter<"Candidate"> | string
+    userId?: StringNullableFilter<"Candidate"> | string | null
     name?: StringFilter<"Candidate"> | string
     email?: StringFilter<"Candidate"> | string
     role?: StringNullableFilter<"Candidate"> | string | null
@@ -10849,12 +12304,14 @@ export namespace Prisma {
     skills?: StringNullableListFilter<"Candidate">
     createdAt?: DateTimeFilter<"Candidate"> | Date | string
     updatedAt?: DateTimeFilter<"Candidate"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     shortlists?: ShortlistListRelationFilter
     messages?: MessageListRelationFilter
   }
 
   export type CandidateOrderByWithRelationInput = {
     id?: SortOrder
+    userId?: SortOrderInput | SortOrder
     name?: SortOrder
     email?: SortOrder
     role?: SortOrderInput | SortOrder
@@ -10867,12 +12324,14 @@ export namespace Prisma {
     skills?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
     shortlists?: ShortlistOrderByRelationAggregateInput
     messages?: MessageOrderByRelationAggregateInput
   }
 
   export type CandidateWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    userId?: string
     email?: string
     AND?: CandidateWhereInput | CandidateWhereInput[]
     OR?: CandidateWhereInput[]
@@ -10888,12 +12347,14 @@ export namespace Prisma {
     skills?: StringNullableListFilter<"Candidate">
     createdAt?: DateTimeFilter<"Candidate"> | Date | string
     updatedAt?: DateTimeFilter<"Candidate"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     shortlists?: ShortlistListRelationFilter
     messages?: MessageListRelationFilter
-  }, "id" | "email">
+  }, "id" | "userId" | "email">
 
   export type CandidateOrderByWithAggregationInput = {
     id?: SortOrder
+    userId?: SortOrderInput | SortOrder
     name?: SortOrder
     email?: SortOrder
     role?: SortOrderInput | SortOrder
@@ -10916,6 +12377,7 @@ export namespace Prisma {
     OR?: CandidateScalarWhereWithAggregatesInput[]
     NOT?: CandidateScalarWhereWithAggregatesInput | CandidateScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Candidate"> | string
+    userId?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
     name?: StringWithAggregatesFilter<"Candidate"> | string
     email?: StringWithAggregatesFilter<"Candidate"> | string
     role?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
@@ -10935,6 +12397,7 @@ export namespace Prisma {
     OR?: RecruiterWhereInput[]
     NOT?: RecruiterWhereInput | RecruiterWhereInput[]
     id?: StringFilter<"Recruiter"> | string
+    userId?: StringNullableFilter<"Recruiter"> | string | null
     name?: StringFilter<"Recruiter"> | string
     email?: StringFilter<"Recruiter"> | string
     companyName?: StringFilter<"Recruiter"> | string
@@ -10942,12 +12405,14 @@ export namespace Prisma {
     industry?: StringNullableFilter<"Recruiter"> | string | null
     createdAt?: DateTimeFilter<"Recruiter"> | Date | string
     updatedAt?: DateTimeFilter<"Recruiter"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     jobs?: JobListRelationFilter
     messages?: MessageListRelationFilter
   }
 
   export type RecruiterOrderByWithRelationInput = {
     id?: SortOrder
+    userId?: SortOrderInput | SortOrder
     name?: SortOrder
     email?: SortOrder
     companyName?: SortOrder
@@ -10955,12 +12420,14 @@ export namespace Prisma {
     industry?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
     jobs?: JobOrderByRelationAggregateInput
     messages?: MessageOrderByRelationAggregateInput
   }
 
   export type RecruiterWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    userId?: string
     email?: string
     AND?: RecruiterWhereInput | RecruiterWhereInput[]
     OR?: RecruiterWhereInput[]
@@ -10971,12 +12438,14 @@ export namespace Prisma {
     industry?: StringNullableFilter<"Recruiter"> | string | null
     createdAt?: DateTimeFilter<"Recruiter"> | Date | string
     updatedAt?: DateTimeFilter<"Recruiter"> | Date | string
+    user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
     jobs?: JobListRelationFilter
     messages?: MessageListRelationFilter
-  }, "id" | "email">
+  }, "id" | "userId" | "email">
 
   export type RecruiterOrderByWithAggregationInput = {
     id?: SortOrder
+    userId?: SortOrderInput | SortOrder
     name?: SortOrder
     email?: SortOrder
     companyName?: SortOrder
@@ -10994,6 +12463,7 @@ export namespace Prisma {
     OR?: RecruiterScalarWhereWithAggregatesInput[]
     NOT?: RecruiterScalarWhereWithAggregatesInput | RecruiterScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Recruiter"> | string
+    userId?: StringNullableWithAggregatesFilter<"Recruiter"> | string | null
     name?: StringWithAggregatesFilter<"Recruiter"> | string
     email?: StringWithAggregatesFilter<"Recruiter"> | string
     companyName?: StringWithAggregatesFilter<"Recruiter"> | string
@@ -11108,6 +12578,7 @@ export namespace Prisma {
     jobId?: StringFilter<"Shortlist"> | string
     candidate?: XOR<CandidateScalarRelationFilter, CandidateWhereInput>
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
+    interviews?: InterviewListRelationFilter
   }
 
   export type ShortlistOrderByWithRelationInput = {
@@ -11119,6 +12590,7 @@ export namespace Prisma {
     jobId?: SortOrder
     candidate?: CandidateOrderByWithRelationInput
     job?: JobOrderByWithRelationInput
+    interviews?: InterviewOrderByRelationAggregateInput
   }
 
   export type ShortlistWhereUniqueInput = Prisma.AtLeast<{
@@ -11134,6 +12606,7 @@ export namespace Prisma {
     jobId?: StringFilter<"Shortlist"> | string
     candidate?: XOR<CandidateScalarRelationFilter, CandidateWhereInput>
     job?: XOR<JobScalarRelationFilter, JobWhereInput>
+    interviews?: InterviewListRelationFilter
   }, "id" | "candidateId_jobId">
 
   export type ShortlistOrderByWithAggregationInput = {
@@ -11158,6 +12631,91 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Shortlist"> | Date | string
     candidateId?: StringWithAggregatesFilter<"Shortlist"> | string
     jobId?: StringWithAggregatesFilter<"Shortlist"> | string
+  }
+
+  export type InterviewWhereInput = {
+    AND?: InterviewWhereInput | InterviewWhereInput[]
+    OR?: InterviewWhereInput[]
+    NOT?: InterviewWhereInput | InterviewWhereInput[]
+    id?: StringFilter<"Interview"> | string
+    date?: DateTimeNullableFilter<"Interview"> | Date | string | null
+    time?: StringNullableFilter<"Interview"> | string | null
+    platform?: StringNullableFilter<"Interview"> | string | null
+    interviewerName?: StringNullableFilter<"Interview"> | string | null
+    interviewerTitle?: StringNullableFilter<"Interview"> | string | null
+    status?: StringFilter<"Interview"> | string
+    prepNotes?: StringNullableListFilter<"Interview">
+    createdAt?: DateTimeFilter<"Interview"> | Date | string
+    updatedAt?: DateTimeFilter<"Interview"> | Date | string
+    shortlistId?: StringFilter<"Interview"> | string
+    shortlist?: XOR<ShortlistScalarRelationFilter, ShortlistWhereInput>
+  }
+
+  export type InterviewOrderByWithRelationInput = {
+    id?: SortOrder
+    date?: SortOrderInput | SortOrder
+    time?: SortOrderInput | SortOrder
+    platform?: SortOrderInput | SortOrder
+    interviewerName?: SortOrderInput | SortOrder
+    interviewerTitle?: SortOrderInput | SortOrder
+    status?: SortOrder
+    prepNotes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    shortlistId?: SortOrder
+    shortlist?: ShortlistOrderByWithRelationInput
+  }
+
+  export type InterviewWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: InterviewWhereInput | InterviewWhereInput[]
+    OR?: InterviewWhereInput[]
+    NOT?: InterviewWhereInput | InterviewWhereInput[]
+    date?: DateTimeNullableFilter<"Interview"> | Date | string | null
+    time?: StringNullableFilter<"Interview"> | string | null
+    platform?: StringNullableFilter<"Interview"> | string | null
+    interviewerName?: StringNullableFilter<"Interview"> | string | null
+    interviewerTitle?: StringNullableFilter<"Interview"> | string | null
+    status?: StringFilter<"Interview"> | string
+    prepNotes?: StringNullableListFilter<"Interview">
+    createdAt?: DateTimeFilter<"Interview"> | Date | string
+    updatedAt?: DateTimeFilter<"Interview"> | Date | string
+    shortlistId?: StringFilter<"Interview"> | string
+    shortlist?: XOR<ShortlistScalarRelationFilter, ShortlistWhereInput>
+  }, "id">
+
+  export type InterviewOrderByWithAggregationInput = {
+    id?: SortOrder
+    date?: SortOrderInput | SortOrder
+    time?: SortOrderInput | SortOrder
+    platform?: SortOrderInput | SortOrder
+    interviewerName?: SortOrderInput | SortOrder
+    interviewerTitle?: SortOrderInput | SortOrder
+    status?: SortOrder
+    prepNotes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    shortlistId?: SortOrder
+    _count?: InterviewCountOrderByAggregateInput
+    _max?: InterviewMaxOrderByAggregateInput
+    _min?: InterviewMinOrderByAggregateInput
+  }
+
+  export type InterviewScalarWhereWithAggregatesInput = {
+    AND?: InterviewScalarWhereWithAggregatesInput | InterviewScalarWhereWithAggregatesInput[]
+    OR?: InterviewScalarWhereWithAggregatesInput[]
+    NOT?: InterviewScalarWhereWithAggregatesInput | InterviewScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"Interview"> | string
+    date?: DateTimeNullableWithAggregatesFilter<"Interview"> | Date | string | null
+    time?: StringNullableWithAggregatesFilter<"Interview"> | string | null
+    platform?: StringNullableWithAggregatesFilter<"Interview"> | string | null
+    interviewerName?: StringNullableWithAggregatesFilter<"Interview"> | string | null
+    interviewerTitle?: StringNullableWithAggregatesFilter<"Interview"> | string | null
+    status?: StringWithAggregatesFilter<"Interview"> | string
+    prepNotes?: StringNullableListFilter<"Interview">
+    createdAt?: DateTimeWithAggregatesFilter<"Interview"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Interview"> | Date | string
+    shortlistId?: StringWithAggregatesFilter<"Interview"> | string
   }
 
   export type MessageWhereInput = {
@@ -11237,6 +12795,8 @@ export namespace Prisma {
     teamSize?: StringNullableFilter<"User"> | string | null
     role?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
+    candidateProfile?: XOR<CandidateNullableScalarRelationFilter, CandidateWhereInput> | null
+    recruiterProfile?: XOR<RecruiterNullableScalarRelationFilter, RecruiterWhereInput> | null
     resumes?: ResumeListRelationFilter
   }
 
@@ -11251,6 +12811,8 @@ export namespace Prisma {
     teamSize?: SortOrderInput | SortOrder
     role?: SortOrder
     createdAt?: SortOrder
+    candidateProfile?: CandidateOrderByWithRelationInput
+    recruiterProfile?: RecruiterOrderByWithRelationInput
     resumes?: ResumeOrderByRelationAggregateInput
   }
 
@@ -11268,6 +12830,8 @@ export namespace Prisma {
     teamSize?: StringNullableFilter<"User"> | string | null
     role?: StringFilter<"User"> | string
     createdAt?: DateTimeFilter<"User"> | Date | string
+    candidateProfile?: XOR<CandidateNullableScalarRelationFilter, CandidateWhereInput> | null
+    recruiterProfile?: XOR<RecruiterNullableScalarRelationFilter, RecruiterWhereInput> | null
     resumes?: ResumeListRelationFilter
   }, "id" | "email">
 
@@ -11428,12 +12992,14 @@ export namespace Prisma {
     skills?: CandidateCreateskillsInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutCandidateProfileInput
     shortlists?: ShortlistCreateNestedManyWithoutCandidateInput
     messages?: MessageCreateNestedManyWithoutCandidateInput
   }
 
   export type CandidateUncheckedCreateInput = {
     id?: string
+    userId?: string | null
     name: string
     email: string
     role?: string | null
@@ -11464,12 +13030,14 @@ export namespace Prisma {
     skills?: CandidateUpdateskillsInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutCandidateProfileNestedInput
     shortlists?: ShortlistUpdateManyWithoutCandidateNestedInput
     messages?: MessageUpdateManyWithoutCandidateNestedInput
   }
 
   export type CandidateUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
@@ -11488,6 +13056,7 @@ export namespace Prisma {
 
   export type CandidateCreateManyInput = {
     id?: string
+    userId?: string | null
     name: string
     email: string
     role?: string | null
@@ -11520,6 +13089,7 @@ export namespace Prisma {
 
   export type CandidateUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
@@ -11543,12 +13113,14 @@ export namespace Prisma {
     industry?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutRecruiterProfileInput
     jobs?: JobCreateNestedManyWithoutRecruiterInput
     messages?: MessageCreateNestedManyWithoutRecruiterInput
   }
 
   export type RecruiterUncheckedCreateInput = {
     id?: string
+    userId?: string | null
     name: string
     email: string
     companyName: string
@@ -11569,12 +13141,14 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutRecruiterProfileNestedInput
     jobs?: JobUpdateManyWithoutRecruiterNestedInput
     messages?: MessageUpdateManyWithoutRecruiterNestedInput
   }
 
   export type RecruiterUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     companyName?: StringFieldUpdateOperationsInput | string
@@ -11588,6 +13162,7 @@ export namespace Prisma {
 
   export type RecruiterCreateManyInput = {
     id?: string
+    userId?: string | null
     name: string
     email: string
     companyName: string
@@ -11610,6 +13185,7 @@ export namespace Prisma {
 
   export type RecruiterUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     companyName?: StringFieldUpdateOperationsInput | string
@@ -11734,6 +13310,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     candidate: CandidateCreateNestedOneWithoutShortlistsInput
     job: JobCreateNestedOneWithoutShortlistsInput
+    interviews?: InterviewCreateNestedManyWithoutShortlistInput
   }
 
   export type ShortlistUncheckedCreateInput = {
@@ -11743,6 +13320,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     candidateId: string
     jobId: string
+    interviews?: InterviewUncheckedCreateNestedManyWithoutShortlistInput
   }
 
   export type ShortlistUpdateInput = {
@@ -11752,6 +13330,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     candidate?: CandidateUpdateOneRequiredWithoutShortlistsNestedInput
     job?: JobUpdateOneRequiredWithoutShortlistsNestedInput
+    interviews?: InterviewUpdateManyWithoutShortlistNestedInput
   }
 
   export type ShortlistUncheckedUpdateInput = {
@@ -11761,6 +13340,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     candidateId?: StringFieldUpdateOperationsInput | string
     jobId?: StringFieldUpdateOperationsInput | string
+    interviews?: InterviewUncheckedUpdateManyWithoutShortlistNestedInput
   }
 
   export type ShortlistCreateManyInput = {
@@ -11786,6 +13366,103 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     candidateId?: StringFieldUpdateOperationsInput | string
     jobId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type InterviewCreateInput = {
+    id?: string
+    date?: Date | string | null
+    time?: string | null
+    platform?: string | null
+    interviewerName?: string | null
+    interviewerTitle?: string | null
+    status?: string
+    prepNotes?: InterviewCreateprepNotesInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    shortlist: ShortlistCreateNestedOneWithoutInterviewsInput
+  }
+
+  export type InterviewUncheckedCreateInput = {
+    id?: string
+    date?: Date | string | null
+    time?: string | null
+    platform?: string | null
+    interviewerName?: string | null
+    interviewerTitle?: string | null
+    status?: string
+    prepNotes?: InterviewCreateprepNotesInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    shortlistId: string
+  }
+
+  export type InterviewUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    time?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewerName?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewerTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    prepNotes?: InterviewUpdateprepNotesInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    shortlist?: ShortlistUpdateOneRequiredWithoutInterviewsNestedInput
+  }
+
+  export type InterviewUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    time?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewerName?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewerTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    prepNotes?: InterviewUpdateprepNotesInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    shortlistId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type InterviewCreateManyInput = {
+    id?: string
+    date?: Date | string | null
+    time?: string | null
+    platform?: string | null
+    interviewerName?: string | null
+    interviewerTitle?: string | null
+    status?: string
+    prepNotes?: InterviewCreateprepNotesInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    shortlistId: string
+  }
+
+  export type InterviewUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    time?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewerName?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewerTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    prepNotes?: InterviewUpdateprepNotesInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InterviewUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    time?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewerName?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewerTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    prepNotes?: InterviewUpdateprepNotesInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    shortlistId?: StringFieldUpdateOperationsInput | string
   }
 
   export type MessageCreateInput = {
@@ -11858,8 +13535,10 @@ export namespace Prisma {
     website?: string | null
     industry?: string | null
     teamSize?: string | null
-    role: string
+    role?: string
     createdAt?: Date | string
+    candidateProfile?: CandidateCreateNestedOneWithoutUserInput
+    recruiterProfile?: RecruiterCreateNestedOneWithoutUserInput
     resumes?: ResumeCreateNestedManyWithoutUserInput
   }
 
@@ -11872,8 +13551,10 @@ export namespace Prisma {
     website?: string | null
     industry?: string | null
     teamSize?: string | null
-    role: string
+    role?: string
     createdAt?: Date | string
+    candidateProfile?: CandidateUncheckedCreateNestedOneWithoutUserInput
+    recruiterProfile?: RecruiterUncheckedCreateNestedOneWithoutUserInput
     resumes?: ResumeUncheckedCreateNestedManyWithoutUserInput
   }
 
@@ -11888,6 +13569,8 @@ export namespace Prisma {
     teamSize?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    candidateProfile?: CandidateUpdateOneWithoutUserNestedInput
+    recruiterProfile?: RecruiterUpdateOneWithoutUserNestedInput
     resumes?: ResumeUpdateManyWithoutUserNestedInput
   }
 
@@ -11902,6 +13585,8 @@ export namespace Prisma {
     teamSize?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    candidateProfile?: CandidateUncheckedUpdateOneWithoutUserNestedInput
+    recruiterProfile?: RecruiterUncheckedUpdateOneWithoutUserNestedInput
     resumes?: ResumeUncheckedUpdateManyWithoutUserNestedInput
   }
 
@@ -11914,7 +13599,7 @@ export namespace Prisma {
     website?: string | null
     industry?: string | null
     teamSize?: string | null
-    role: string
+    role?: string
     createdAt?: Date | string
   }
 
@@ -12108,6 +13793,11 @@ export namespace Prisma {
     isEmpty?: boolean
   }
 
+  export type UserNullableScalarRelationFilter = {
+    is?: UserWhereInput | null
+    isNot?: UserWhereInput | null
+  }
+
   export type ShortlistListRelationFilter = {
     every?: ShortlistWhereInput
     some?: ShortlistWhereInput
@@ -12135,6 +13825,7 @@ export namespace Prisma {
 
   export type CandidateCountOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     name?: SortOrder
     email?: SortOrder
     role?: SortOrder
@@ -12151,6 +13842,7 @@ export namespace Prisma {
 
   export type CandidateMaxOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     name?: SortOrder
     email?: SortOrder
     role?: SortOrder
@@ -12166,6 +13858,7 @@ export namespace Prisma {
 
   export type CandidateMinOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     name?: SortOrder
     email?: SortOrder
     role?: SortOrder
@@ -12209,6 +13902,7 @@ export namespace Prisma {
 
   export type RecruiterCountOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     name?: SortOrder
     email?: SortOrder
     companyName?: SortOrder
@@ -12220,6 +13914,7 @@ export namespace Prisma {
 
   export type RecruiterMaxOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     name?: SortOrder
     email?: SortOrder
     companyName?: SortOrder
@@ -12231,6 +13926,7 @@ export namespace Prisma {
 
   export type RecruiterMinOrderByAggregateInput = {
     id?: SortOrder
+    userId?: SortOrder
     name?: SortOrder
     email?: SortOrder
     companyName?: SortOrder
@@ -12298,6 +13994,16 @@ export namespace Prisma {
     isNot?: JobWhereInput
   }
 
+  export type InterviewListRelationFilter = {
+    every?: InterviewWhereInput
+    some?: InterviewWhereInput
+    none?: InterviewWhereInput
+  }
+
+  export type InterviewOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type ShortlistCandidateIdJobIdCompoundUniqueInput = {
     candidateId: string
     jobId: string
@@ -12330,6 +14036,76 @@ export namespace Prisma {
     jobId?: SortOrder
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type ShortlistScalarRelationFilter = {
+    is?: ShortlistWhereInput
+    isNot?: ShortlistWhereInput
+  }
+
+  export type InterviewCountOrderByAggregateInput = {
+    id?: SortOrder
+    date?: SortOrder
+    time?: SortOrder
+    platform?: SortOrder
+    interviewerName?: SortOrder
+    interviewerTitle?: SortOrder
+    status?: SortOrder
+    prepNotes?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    shortlistId?: SortOrder
+  }
+
+  export type InterviewMaxOrderByAggregateInput = {
+    id?: SortOrder
+    date?: SortOrder
+    time?: SortOrder
+    platform?: SortOrder
+    interviewerName?: SortOrder
+    interviewerTitle?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    shortlistId?: SortOrder
+  }
+
+  export type InterviewMinOrderByAggregateInput = {
+    id?: SortOrder
+    date?: SortOrder
+    time?: SortOrder
+    platform?: SortOrder
+    interviewerName?: SortOrder
+    interviewerTitle?: SortOrder
+    status?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    shortlistId?: SortOrder
+  }
+
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type MessageCountOrderByAggregateInput = {
     id?: SortOrder
     content?: SortOrder
@@ -12355,6 +14131,16 @@ export namespace Prisma {
     senderType?: SortOrder
     recruiterId?: SortOrder
     candidateId?: SortOrder
+  }
+
+  export type CandidateNullableScalarRelationFilter = {
+    is?: CandidateWhereInput | null
+    isNot?: CandidateWhereInput | null
+  }
+
+  export type RecruiterNullableScalarRelationFilter = {
+    is?: RecruiterWhereInput | null
+    isNot?: RecruiterWhereInput | null
   }
 
   export type ResumeListRelationFilter = {
@@ -12483,6 +14269,12 @@ export namespace Prisma {
     set: string[]
   }
 
+  export type UserCreateNestedOneWithoutCandidateProfileInput = {
+    create?: XOR<UserCreateWithoutCandidateProfileInput, UserUncheckedCreateWithoutCandidateProfileInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCandidateProfileInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type ShortlistCreateNestedManyWithoutCandidateInput = {
     create?: XOR<ShortlistCreateWithoutCandidateInput, ShortlistUncheckedCreateWithoutCandidateInput> | ShortlistCreateWithoutCandidateInput[] | ShortlistUncheckedCreateWithoutCandidateInput[]
     connectOrCreate?: ShortlistCreateOrConnectWithoutCandidateInput | ShortlistCreateOrConnectWithoutCandidateInput[]
@@ -12518,6 +14310,16 @@ export namespace Prisma {
   export type CandidateUpdateskillsInput = {
     set?: string[]
     push?: string | string[]
+  }
+
+  export type UserUpdateOneWithoutCandidateProfileNestedInput = {
+    create?: XOR<UserCreateWithoutCandidateProfileInput, UserUncheckedCreateWithoutCandidateProfileInput>
+    connectOrCreate?: UserCreateOrConnectWithoutCandidateProfileInput
+    upsert?: UserUpsertWithoutCandidateProfileInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutCandidateProfileInput, UserUpdateWithoutCandidateProfileInput>, UserUncheckedUpdateWithoutCandidateProfileInput>
   }
 
   export type ShortlistUpdateManyWithoutCandidateNestedInput = {
@@ -12576,6 +14378,12 @@ export namespace Prisma {
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
   }
 
+  export type UserCreateNestedOneWithoutRecruiterProfileInput = {
+    create?: XOR<UserCreateWithoutRecruiterProfileInput, UserUncheckedCreateWithoutRecruiterProfileInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRecruiterProfileInput
+    connect?: UserWhereUniqueInput
+  }
+
   export type JobCreateNestedManyWithoutRecruiterInput = {
     create?: XOR<JobCreateWithoutRecruiterInput, JobUncheckedCreateWithoutRecruiterInput> | JobCreateWithoutRecruiterInput[] | JobUncheckedCreateWithoutRecruiterInput[]
     connectOrCreate?: JobCreateOrConnectWithoutRecruiterInput | JobCreateOrConnectWithoutRecruiterInput[]
@@ -12602,6 +14410,16 @@ export namespace Prisma {
     connectOrCreate?: MessageCreateOrConnectWithoutRecruiterInput | MessageCreateOrConnectWithoutRecruiterInput[]
     createMany?: MessageCreateManyRecruiterInputEnvelope
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
+  export type UserUpdateOneWithoutRecruiterProfileNestedInput = {
+    create?: XOR<UserCreateWithoutRecruiterProfileInput, UserUncheckedCreateWithoutRecruiterProfileInput>
+    connectOrCreate?: UserCreateOrConnectWithoutRecruiterProfileInput
+    upsert?: UserUpsertWithoutRecruiterProfileInput
+    disconnect?: UserWhereInput | boolean
+    delete?: UserWhereInput | boolean
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutRecruiterProfileInput, UserUpdateWithoutRecruiterProfileInput>, UserUncheckedUpdateWithoutRecruiterProfileInput>
   }
 
   export type JobUpdateManyWithoutRecruiterNestedInput = {
@@ -12737,6 +14555,20 @@ export namespace Prisma {
     connect?: JobWhereUniqueInput
   }
 
+  export type InterviewCreateNestedManyWithoutShortlistInput = {
+    create?: XOR<InterviewCreateWithoutShortlistInput, InterviewUncheckedCreateWithoutShortlistInput> | InterviewCreateWithoutShortlistInput[] | InterviewUncheckedCreateWithoutShortlistInput[]
+    connectOrCreate?: InterviewCreateOrConnectWithoutShortlistInput | InterviewCreateOrConnectWithoutShortlistInput[]
+    createMany?: InterviewCreateManyShortlistInputEnvelope
+    connect?: InterviewWhereUniqueInput | InterviewWhereUniqueInput[]
+  }
+
+  export type InterviewUncheckedCreateNestedManyWithoutShortlistInput = {
+    create?: XOR<InterviewCreateWithoutShortlistInput, InterviewUncheckedCreateWithoutShortlistInput> | InterviewCreateWithoutShortlistInput[] | InterviewUncheckedCreateWithoutShortlistInput[]
+    connectOrCreate?: InterviewCreateOrConnectWithoutShortlistInput | InterviewCreateOrConnectWithoutShortlistInput[]
+    createMany?: InterviewCreateManyShortlistInputEnvelope
+    connect?: InterviewWhereUniqueInput | InterviewWhereUniqueInput[]
+  }
+
   export type CandidateUpdateOneRequiredWithoutShortlistsNestedInput = {
     create?: XOR<CandidateCreateWithoutShortlistsInput, CandidateUncheckedCreateWithoutShortlistsInput>
     connectOrCreate?: CandidateCreateOrConnectWithoutShortlistsInput
@@ -12751,6 +14583,61 @@ export namespace Prisma {
     upsert?: JobUpsertWithoutShortlistsInput
     connect?: JobWhereUniqueInput
     update?: XOR<XOR<JobUpdateToOneWithWhereWithoutShortlistsInput, JobUpdateWithoutShortlistsInput>, JobUncheckedUpdateWithoutShortlistsInput>
+  }
+
+  export type InterviewUpdateManyWithoutShortlistNestedInput = {
+    create?: XOR<InterviewCreateWithoutShortlistInput, InterviewUncheckedCreateWithoutShortlistInput> | InterviewCreateWithoutShortlistInput[] | InterviewUncheckedCreateWithoutShortlistInput[]
+    connectOrCreate?: InterviewCreateOrConnectWithoutShortlistInput | InterviewCreateOrConnectWithoutShortlistInput[]
+    upsert?: InterviewUpsertWithWhereUniqueWithoutShortlistInput | InterviewUpsertWithWhereUniqueWithoutShortlistInput[]
+    createMany?: InterviewCreateManyShortlistInputEnvelope
+    set?: InterviewWhereUniqueInput | InterviewWhereUniqueInput[]
+    disconnect?: InterviewWhereUniqueInput | InterviewWhereUniqueInput[]
+    delete?: InterviewWhereUniqueInput | InterviewWhereUniqueInput[]
+    connect?: InterviewWhereUniqueInput | InterviewWhereUniqueInput[]
+    update?: InterviewUpdateWithWhereUniqueWithoutShortlistInput | InterviewUpdateWithWhereUniqueWithoutShortlistInput[]
+    updateMany?: InterviewUpdateManyWithWhereWithoutShortlistInput | InterviewUpdateManyWithWhereWithoutShortlistInput[]
+    deleteMany?: InterviewScalarWhereInput | InterviewScalarWhereInput[]
+  }
+
+  export type InterviewUncheckedUpdateManyWithoutShortlistNestedInput = {
+    create?: XOR<InterviewCreateWithoutShortlistInput, InterviewUncheckedCreateWithoutShortlistInput> | InterviewCreateWithoutShortlistInput[] | InterviewUncheckedCreateWithoutShortlistInput[]
+    connectOrCreate?: InterviewCreateOrConnectWithoutShortlistInput | InterviewCreateOrConnectWithoutShortlistInput[]
+    upsert?: InterviewUpsertWithWhereUniqueWithoutShortlistInput | InterviewUpsertWithWhereUniqueWithoutShortlistInput[]
+    createMany?: InterviewCreateManyShortlistInputEnvelope
+    set?: InterviewWhereUniqueInput | InterviewWhereUniqueInput[]
+    disconnect?: InterviewWhereUniqueInput | InterviewWhereUniqueInput[]
+    delete?: InterviewWhereUniqueInput | InterviewWhereUniqueInput[]
+    connect?: InterviewWhereUniqueInput | InterviewWhereUniqueInput[]
+    update?: InterviewUpdateWithWhereUniqueWithoutShortlistInput | InterviewUpdateWithWhereUniqueWithoutShortlistInput[]
+    updateMany?: InterviewUpdateManyWithWhereWithoutShortlistInput | InterviewUpdateManyWithWhereWithoutShortlistInput[]
+    deleteMany?: InterviewScalarWhereInput | InterviewScalarWhereInput[]
+  }
+
+  export type InterviewCreateprepNotesInput = {
+    set: string[]
+  }
+
+  export type ShortlistCreateNestedOneWithoutInterviewsInput = {
+    create?: XOR<ShortlistCreateWithoutInterviewsInput, ShortlistUncheckedCreateWithoutInterviewsInput>
+    connectOrCreate?: ShortlistCreateOrConnectWithoutInterviewsInput
+    connect?: ShortlistWhereUniqueInput
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type InterviewUpdateprepNotesInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type ShortlistUpdateOneRequiredWithoutInterviewsNestedInput = {
+    create?: XOR<ShortlistCreateWithoutInterviewsInput, ShortlistUncheckedCreateWithoutInterviewsInput>
+    connectOrCreate?: ShortlistCreateOrConnectWithoutInterviewsInput
+    upsert?: ShortlistUpsertWithoutInterviewsInput
+    connect?: ShortlistWhereUniqueInput
+    update?: XOR<XOR<ShortlistUpdateToOneWithWhereWithoutInterviewsInput, ShortlistUpdateWithoutInterviewsInput>, ShortlistUncheckedUpdateWithoutInterviewsInput>
   }
 
   export type RecruiterCreateNestedOneWithoutMessagesInput = {
@@ -12781,6 +14668,18 @@ export namespace Prisma {
     update?: XOR<XOR<CandidateUpdateToOneWithWhereWithoutMessagesInput, CandidateUpdateWithoutMessagesInput>, CandidateUncheckedUpdateWithoutMessagesInput>
   }
 
+  export type CandidateCreateNestedOneWithoutUserInput = {
+    create?: XOR<CandidateCreateWithoutUserInput, CandidateUncheckedCreateWithoutUserInput>
+    connectOrCreate?: CandidateCreateOrConnectWithoutUserInput
+    connect?: CandidateWhereUniqueInput
+  }
+
+  export type RecruiterCreateNestedOneWithoutUserInput = {
+    create?: XOR<RecruiterCreateWithoutUserInput, RecruiterUncheckedCreateWithoutUserInput>
+    connectOrCreate?: RecruiterCreateOrConnectWithoutUserInput
+    connect?: RecruiterWhereUniqueInput
+  }
+
   export type ResumeCreateNestedManyWithoutUserInput = {
     create?: XOR<ResumeCreateWithoutUserInput, ResumeUncheckedCreateWithoutUserInput> | ResumeCreateWithoutUserInput[] | ResumeUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ResumeCreateOrConnectWithoutUserInput | ResumeCreateOrConnectWithoutUserInput[]
@@ -12788,11 +14687,43 @@ export namespace Prisma {
     connect?: ResumeWhereUniqueInput | ResumeWhereUniqueInput[]
   }
 
+  export type CandidateUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<CandidateCreateWithoutUserInput, CandidateUncheckedCreateWithoutUserInput>
+    connectOrCreate?: CandidateCreateOrConnectWithoutUserInput
+    connect?: CandidateWhereUniqueInput
+  }
+
+  export type RecruiterUncheckedCreateNestedOneWithoutUserInput = {
+    create?: XOR<RecruiterCreateWithoutUserInput, RecruiterUncheckedCreateWithoutUserInput>
+    connectOrCreate?: RecruiterCreateOrConnectWithoutUserInput
+    connect?: RecruiterWhereUniqueInput
+  }
+
   export type ResumeUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<ResumeCreateWithoutUserInput, ResumeUncheckedCreateWithoutUserInput> | ResumeCreateWithoutUserInput[] | ResumeUncheckedCreateWithoutUserInput[]
     connectOrCreate?: ResumeCreateOrConnectWithoutUserInput | ResumeCreateOrConnectWithoutUserInput[]
     createMany?: ResumeCreateManyUserInputEnvelope
     connect?: ResumeWhereUniqueInput | ResumeWhereUniqueInput[]
+  }
+
+  export type CandidateUpdateOneWithoutUserNestedInput = {
+    create?: XOR<CandidateCreateWithoutUserInput, CandidateUncheckedCreateWithoutUserInput>
+    connectOrCreate?: CandidateCreateOrConnectWithoutUserInput
+    upsert?: CandidateUpsertWithoutUserInput
+    disconnect?: CandidateWhereInput | boolean
+    delete?: CandidateWhereInput | boolean
+    connect?: CandidateWhereUniqueInput
+    update?: XOR<XOR<CandidateUpdateToOneWithWhereWithoutUserInput, CandidateUpdateWithoutUserInput>, CandidateUncheckedUpdateWithoutUserInput>
+  }
+
+  export type RecruiterUpdateOneWithoutUserNestedInput = {
+    create?: XOR<RecruiterCreateWithoutUserInput, RecruiterUncheckedCreateWithoutUserInput>
+    connectOrCreate?: RecruiterCreateOrConnectWithoutUserInput
+    upsert?: RecruiterUpsertWithoutUserInput
+    disconnect?: RecruiterWhereInput | boolean
+    delete?: RecruiterWhereInput | boolean
+    connect?: RecruiterWhereUniqueInput
+    update?: XOR<XOR<RecruiterUpdateToOneWithWhereWithoutUserInput, RecruiterUpdateWithoutUserInput>, RecruiterUncheckedUpdateWithoutUserInput>
   }
 
   export type ResumeUpdateManyWithoutUserNestedInput = {
@@ -12807,6 +14738,26 @@ export namespace Prisma {
     update?: ResumeUpdateWithWhereUniqueWithoutUserInput | ResumeUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: ResumeUpdateManyWithWhereWithoutUserInput | ResumeUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: ResumeScalarWhereInput | ResumeScalarWhereInput[]
+  }
+
+  export type CandidateUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<CandidateCreateWithoutUserInput, CandidateUncheckedCreateWithoutUserInput>
+    connectOrCreate?: CandidateCreateOrConnectWithoutUserInput
+    upsert?: CandidateUpsertWithoutUserInput
+    disconnect?: CandidateWhereInput | boolean
+    delete?: CandidateWhereInput | boolean
+    connect?: CandidateWhereUniqueInput
+    update?: XOR<XOR<CandidateUpdateToOneWithWhereWithoutUserInput, CandidateUpdateWithoutUserInput>, CandidateUncheckedUpdateWithoutUserInput>
+  }
+
+  export type RecruiterUncheckedUpdateOneWithoutUserNestedInput = {
+    create?: XOR<RecruiterCreateWithoutUserInput, RecruiterUncheckedCreateWithoutUserInput>
+    connectOrCreate?: RecruiterCreateOrConnectWithoutUserInput
+    upsert?: RecruiterUpsertWithoutUserInput
+    disconnect?: RecruiterWhereInput | boolean
+    delete?: RecruiterWhereInput | boolean
+    connect?: RecruiterWhereUniqueInput
+    update?: XOR<XOR<RecruiterUpdateToOneWithWhereWithoutUserInput, RecruiterUpdateWithoutUserInput>, RecruiterUncheckedUpdateWithoutUserInput>
   }
 
   export type ResumeUncheckedUpdateManyWithoutUserNestedInput = {
@@ -12963,6 +14914,31 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -12990,12 +14966,48 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type UserCreateWithoutCandidateProfileInput = {
+    id?: string
+    email: string
+    password: string
+    name: string
+    phone?: string | null
+    website?: string | null
+    industry?: string | null
+    teamSize?: string | null
+    role?: string
+    createdAt?: Date | string
+    recruiterProfile?: RecruiterCreateNestedOneWithoutUserInput
+    resumes?: ResumeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutCandidateProfileInput = {
+    id?: string
+    email: string
+    password: string
+    name: string
+    phone?: string | null
+    website?: string | null
+    industry?: string | null
+    teamSize?: string | null
+    role?: string
+    createdAt?: Date | string
+    recruiterProfile?: RecruiterUncheckedCreateNestedOneWithoutUserInput
+    resumes?: ResumeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutCandidateProfileInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutCandidateProfileInput, UserUncheckedCreateWithoutCandidateProfileInput>
+  }
+
   export type ShortlistCreateWithoutCandidateInput = {
     id?: string
     status?: string
     createdAt?: Date | string
     updatedAt?: Date | string
     job: JobCreateNestedOneWithoutShortlistsInput
+    interviews?: InterviewCreateNestedManyWithoutShortlistInput
   }
 
   export type ShortlistUncheckedCreateWithoutCandidateInput = {
@@ -13004,6 +15016,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     jobId: string
+    interviews?: InterviewUncheckedCreateNestedManyWithoutShortlistInput
   }
 
   export type ShortlistCreateOrConnectWithoutCandidateInput = {
@@ -13040,6 +15053,47 @@ export namespace Prisma {
   export type MessageCreateManyCandidateInputEnvelope = {
     data: MessageCreateManyCandidateInput | MessageCreateManyCandidateInput[]
     skipDuplicates?: boolean
+  }
+
+  export type UserUpsertWithoutCandidateProfileInput = {
+    update: XOR<UserUpdateWithoutCandidateProfileInput, UserUncheckedUpdateWithoutCandidateProfileInput>
+    create: XOR<UserCreateWithoutCandidateProfileInput, UserUncheckedCreateWithoutCandidateProfileInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutCandidateProfileInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutCandidateProfileInput, UserUncheckedUpdateWithoutCandidateProfileInput>
+  }
+
+  export type UserUpdateWithoutCandidateProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    industry?: NullableStringFieldUpdateOperationsInput | string | null
+    teamSize?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    recruiterProfile?: RecruiterUpdateOneWithoutUserNestedInput
+    resumes?: ResumeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutCandidateProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    industry?: NullableStringFieldUpdateOperationsInput | string | null
+    teamSize?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    recruiterProfile?: RecruiterUncheckedUpdateOneWithoutUserNestedInput
+    resumes?: ResumeUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ShortlistUpsertWithWhereUniqueWithoutCandidateInput = {
@@ -13096,6 +15150,41 @@ export namespace Prisma {
     senderType?: StringFilter<"Message"> | string
     recruiterId?: StringFilter<"Message"> | string
     candidateId?: StringFilter<"Message"> | string
+  }
+
+  export type UserCreateWithoutRecruiterProfileInput = {
+    id?: string
+    email: string
+    password: string
+    name: string
+    phone?: string | null
+    website?: string | null
+    industry?: string | null
+    teamSize?: string | null
+    role?: string
+    createdAt?: Date | string
+    candidateProfile?: CandidateCreateNestedOneWithoutUserInput
+    resumes?: ResumeCreateNestedManyWithoutUserInput
+  }
+
+  export type UserUncheckedCreateWithoutRecruiterProfileInput = {
+    id?: string
+    email: string
+    password: string
+    name: string
+    phone?: string | null
+    website?: string | null
+    industry?: string | null
+    teamSize?: string | null
+    role?: string
+    createdAt?: Date | string
+    candidateProfile?: CandidateUncheckedCreateNestedOneWithoutUserInput
+    resumes?: ResumeUncheckedCreateNestedManyWithoutUserInput
+  }
+
+  export type UserCreateOrConnectWithoutRecruiterProfileInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutRecruiterProfileInput, UserUncheckedCreateWithoutRecruiterProfileInput>
   }
 
   export type JobCreateWithoutRecruiterInput = {
@@ -13164,6 +15253,47 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type UserUpsertWithoutRecruiterProfileInput = {
+    update: XOR<UserUpdateWithoutRecruiterProfileInput, UserUncheckedUpdateWithoutRecruiterProfileInput>
+    create: XOR<UserCreateWithoutRecruiterProfileInput, UserUncheckedCreateWithoutRecruiterProfileInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutRecruiterProfileInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutRecruiterProfileInput, UserUncheckedUpdateWithoutRecruiterProfileInput>
+  }
+
+  export type UserUpdateWithoutRecruiterProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    industry?: NullableStringFieldUpdateOperationsInput | string | null
+    teamSize?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    candidateProfile?: CandidateUpdateOneWithoutUserNestedInput
+    resumes?: ResumeUpdateManyWithoutUserNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutRecruiterProfileInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    password?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    industry?: NullableStringFieldUpdateOperationsInput | string | null
+    teamSize?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    candidateProfile?: CandidateUncheckedUpdateOneWithoutUserNestedInput
+    resumes?: ResumeUncheckedUpdateManyWithoutUserNestedInput
+  }
+
   export type JobUpsertWithWhereUniqueWithoutRecruiterInput = {
     where: JobWhereUniqueInput
     update: XOR<JobUpdateWithoutRecruiterInput, JobUncheckedUpdateWithoutRecruiterInput>
@@ -13223,11 +15353,13 @@ export namespace Prisma {
     industry?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutRecruiterProfileInput
     messages?: MessageCreateNestedManyWithoutRecruiterInput
   }
 
   export type RecruiterUncheckedCreateWithoutJobsInput = {
     id?: string
+    userId?: string | null
     name: string
     email: string
     companyName: string
@@ -13249,6 +15381,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     candidate: CandidateCreateNestedOneWithoutShortlistsInput
+    interviews?: InterviewCreateNestedManyWithoutShortlistInput
   }
 
   export type ShortlistUncheckedCreateWithoutJobInput = {
@@ -13257,6 +15390,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     candidateId: string
+    interviews?: InterviewUncheckedCreateNestedManyWithoutShortlistInput
   }
 
   export type ShortlistCreateOrConnectWithoutJobInput = {
@@ -13289,11 +15423,13 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutRecruiterProfileNestedInput
     messages?: MessageUpdateManyWithoutRecruiterNestedInput
   }
 
   export type RecruiterUncheckedUpdateWithoutJobsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     companyName?: StringFieldUpdateOperationsInput | string
@@ -13334,11 +15470,13 @@ export namespace Prisma {
     skills?: CandidateCreateskillsInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutCandidateProfileInput
     messages?: MessageCreateNestedManyWithoutCandidateInput
   }
 
   export type CandidateUncheckedCreateWithoutShortlistsInput = {
     id?: string
+    userId?: string | null
     name: string
     email: string
     role?: string | null
@@ -13394,6 +15532,42 @@ export namespace Prisma {
     create: XOR<JobCreateWithoutShortlistsInput, JobUncheckedCreateWithoutShortlistsInput>
   }
 
+  export type InterviewCreateWithoutShortlistInput = {
+    id?: string
+    date?: Date | string | null
+    time?: string | null
+    platform?: string | null
+    interviewerName?: string | null
+    interviewerTitle?: string | null
+    status?: string
+    prepNotes?: InterviewCreateprepNotesInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InterviewUncheckedCreateWithoutShortlistInput = {
+    id?: string
+    date?: Date | string | null
+    time?: string | null
+    platform?: string | null
+    interviewerName?: string | null
+    interviewerTitle?: string | null
+    status?: string
+    prepNotes?: InterviewCreateprepNotesInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InterviewCreateOrConnectWithoutShortlistInput = {
+    where: InterviewWhereUniqueInput
+    create: XOR<InterviewCreateWithoutShortlistInput, InterviewUncheckedCreateWithoutShortlistInput>
+  }
+
+  export type InterviewCreateManyShortlistInputEnvelope = {
+    data: InterviewCreateManyShortlistInput | InterviewCreateManyShortlistInput[]
+    skipDuplicates?: boolean
+  }
+
   export type CandidateUpsertWithoutShortlistsInput = {
     update: XOR<CandidateUpdateWithoutShortlistsInput, CandidateUncheckedUpdateWithoutShortlistsInput>
     create: XOR<CandidateCreateWithoutShortlistsInput, CandidateUncheckedCreateWithoutShortlistsInput>
@@ -13419,11 +15593,13 @@ export namespace Prisma {
     skills?: CandidateUpdateskillsInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutCandidateProfileNestedInput
     messages?: MessageUpdateManyWithoutCandidateNestedInput
   }
 
   export type CandidateUncheckedUpdateWithoutShortlistsInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13480,6 +15656,91 @@ export namespace Prisma {
     recruiterId?: StringFieldUpdateOperationsInput | string
   }
 
+  export type InterviewUpsertWithWhereUniqueWithoutShortlistInput = {
+    where: InterviewWhereUniqueInput
+    update: XOR<InterviewUpdateWithoutShortlistInput, InterviewUncheckedUpdateWithoutShortlistInput>
+    create: XOR<InterviewCreateWithoutShortlistInput, InterviewUncheckedCreateWithoutShortlistInput>
+  }
+
+  export type InterviewUpdateWithWhereUniqueWithoutShortlistInput = {
+    where: InterviewWhereUniqueInput
+    data: XOR<InterviewUpdateWithoutShortlistInput, InterviewUncheckedUpdateWithoutShortlistInput>
+  }
+
+  export type InterviewUpdateManyWithWhereWithoutShortlistInput = {
+    where: InterviewScalarWhereInput
+    data: XOR<InterviewUpdateManyMutationInput, InterviewUncheckedUpdateManyWithoutShortlistInput>
+  }
+
+  export type InterviewScalarWhereInput = {
+    AND?: InterviewScalarWhereInput | InterviewScalarWhereInput[]
+    OR?: InterviewScalarWhereInput[]
+    NOT?: InterviewScalarWhereInput | InterviewScalarWhereInput[]
+    id?: StringFilter<"Interview"> | string
+    date?: DateTimeNullableFilter<"Interview"> | Date | string | null
+    time?: StringNullableFilter<"Interview"> | string | null
+    platform?: StringNullableFilter<"Interview"> | string | null
+    interviewerName?: StringNullableFilter<"Interview"> | string | null
+    interviewerTitle?: StringNullableFilter<"Interview"> | string | null
+    status?: StringFilter<"Interview"> | string
+    prepNotes?: StringNullableListFilter<"Interview">
+    createdAt?: DateTimeFilter<"Interview"> | Date | string
+    updatedAt?: DateTimeFilter<"Interview"> | Date | string
+    shortlistId?: StringFilter<"Interview"> | string
+  }
+
+  export type ShortlistCreateWithoutInterviewsInput = {
+    id?: string
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    candidate: CandidateCreateNestedOneWithoutShortlistsInput
+    job: JobCreateNestedOneWithoutShortlistsInput
+  }
+
+  export type ShortlistUncheckedCreateWithoutInterviewsInput = {
+    id?: string
+    status?: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    candidateId: string
+    jobId: string
+  }
+
+  export type ShortlistCreateOrConnectWithoutInterviewsInput = {
+    where: ShortlistWhereUniqueInput
+    create: XOR<ShortlistCreateWithoutInterviewsInput, ShortlistUncheckedCreateWithoutInterviewsInput>
+  }
+
+  export type ShortlistUpsertWithoutInterviewsInput = {
+    update: XOR<ShortlistUpdateWithoutInterviewsInput, ShortlistUncheckedUpdateWithoutInterviewsInput>
+    create: XOR<ShortlistCreateWithoutInterviewsInput, ShortlistUncheckedCreateWithoutInterviewsInput>
+    where?: ShortlistWhereInput
+  }
+
+  export type ShortlistUpdateToOneWithWhereWithoutInterviewsInput = {
+    where?: ShortlistWhereInput
+    data: XOR<ShortlistUpdateWithoutInterviewsInput, ShortlistUncheckedUpdateWithoutInterviewsInput>
+  }
+
+  export type ShortlistUpdateWithoutInterviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    candidate?: CandidateUpdateOneRequiredWithoutShortlistsNestedInput
+    job?: JobUpdateOneRequiredWithoutShortlistsNestedInput
+  }
+
+  export type ShortlistUncheckedUpdateWithoutInterviewsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    candidateId?: StringFieldUpdateOperationsInput | string
+    jobId?: StringFieldUpdateOperationsInput | string
+  }
+
   export type RecruiterCreateWithoutMessagesInput = {
     id?: string
     name: string
@@ -13489,11 +15750,13 @@ export namespace Prisma {
     industry?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutRecruiterProfileInput
     jobs?: JobCreateNestedManyWithoutRecruiterInput
   }
 
   export type RecruiterUncheckedCreateWithoutMessagesInput = {
     id?: string
+    userId?: string | null
     name: string
     email: string
     companyName: string
@@ -13523,11 +15786,13 @@ export namespace Prisma {
     skills?: CandidateCreateskillsInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
+    user?: UserCreateNestedOneWithoutCandidateProfileInput
     shortlists?: ShortlistCreateNestedManyWithoutCandidateInput
   }
 
   export type CandidateUncheckedCreateWithoutMessagesInput = {
     id?: string
+    userId?: string | null
     name: string
     email: string
     role?: string | null
@@ -13568,11 +15833,13 @@ export namespace Prisma {
     industry?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutRecruiterProfileNestedInput
     jobs?: JobUpdateManyWithoutRecruiterNestedInput
   }
 
   export type RecruiterUncheckedUpdateWithoutMessagesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     companyName?: StringFieldUpdateOperationsInput | string
@@ -13608,11 +15875,13 @@ export namespace Prisma {
     skills?: CandidateUpdateskillsInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneWithoutCandidateProfileNestedInput
     shortlists?: ShortlistUpdateManyWithoutCandidateNestedInput
   }
 
   export type CandidateUncheckedUpdateWithoutMessagesInput = {
     id?: StringFieldUpdateOperationsInput | string
+    userId?: NullableStringFieldUpdateOperationsInput | string | null
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     role?: NullableStringFieldUpdateOperationsInput | string | null
@@ -13626,6 +15895,78 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     shortlists?: ShortlistUncheckedUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type CandidateCreateWithoutUserInput = {
+    id?: string
+    name: string
+    email: string
+    role?: string | null
+    experience?: string | null
+    biography?: string | null
+    location?: string | null
+    workPreference?: string | null
+    salaryExpectation?: string | null
+    noticePeriod?: string | null
+    skills?: CandidateCreateskillsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    shortlists?: ShortlistCreateNestedManyWithoutCandidateInput
+    messages?: MessageCreateNestedManyWithoutCandidateInput
+  }
+
+  export type CandidateUncheckedCreateWithoutUserInput = {
+    id?: string
+    name: string
+    email: string
+    role?: string | null
+    experience?: string | null
+    biography?: string | null
+    location?: string | null
+    workPreference?: string | null
+    salaryExpectation?: string | null
+    noticePeriod?: string | null
+    skills?: CandidateCreateskillsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    shortlists?: ShortlistUncheckedCreateNestedManyWithoutCandidateInput
+    messages?: MessageUncheckedCreateNestedManyWithoutCandidateInput
+  }
+
+  export type CandidateCreateOrConnectWithoutUserInput = {
+    where: CandidateWhereUniqueInput
+    create: XOR<CandidateCreateWithoutUserInput, CandidateUncheckedCreateWithoutUserInput>
+  }
+
+  export type RecruiterCreateWithoutUserInput = {
+    id?: string
+    name: string
+    email: string
+    companyName: string
+    companySize?: string | null
+    industry?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    jobs?: JobCreateNestedManyWithoutRecruiterInput
+    messages?: MessageCreateNestedManyWithoutRecruiterInput
+  }
+
+  export type RecruiterUncheckedCreateWithoutUserInput = {
+    id?: string
+    name: string
+    email: string
+    companyName: string
+    companySize?: string | null
+    industry?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    jobs?: JobUncheckedCreateNestedManyWithoutRecruiterInput
+    messages?: MessageUncheckedCreateNestedManyWithoutRecruiterInput
+  }
+
+  export type RecruiterCreateOrConnectWithoutUserInput = {
+    where: RecruiterWhereUniqueInput
+    create: XOR<RecruiterCreateWithoutUserInput, RecruiterUncheckedCreateWithoutUserInput>
   }
 
   export type ResumeCreateWithoutUserInput = {
@@ -13652,6 +15993,90 @@ export namespace Prisma {
   export type ResumeCreateManyUserInputEnvelope = {
     data: ResumeCreateManyUserInput | ResumeCreateManyUserInput[]
     skipDuplicates?: boolean
+  }
+
+  export type CandidateUpsertWithoutUserInput = {
+    update: XOR<CandidateUpdateWithoutUserInput, CandidateUncheckedUpdateWithoutUserInput>
+    create: XOR<CandidateCreateWithoutUserInput, CandidateUncheckedCreateWithoutUserInput>
+    where?: CandidateWhereInput
+  }
+
+  export type CandidateUpdateToOneWithWhereWithoutUserInput = {
+    where?: CandidateWhereInput
+    data: XOR<CandidateUpdateWithoutUserInput, CandidateUncheckedUpdateWithoutUserInput>
+  }
+
+  export type CandidateUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    experience?: NullableStringFieldUpdateOperationsInput | string | null
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    workPreference?: NullableStringFieldUpdateOperationsInput | string | null
+    salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
+    noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: CandidateUpdateskillsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    shortlists?: ShortlistUpdateManyWithoutCandidateNestedInput
+    messages?: MessageUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type CandidateUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    role?: NullableStringFieldUpdateOperationsInput | string | null
+    experience?: NullableStringFieldUpdateOperationsInput | string | null
+    biography?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    workPreference?: NullableStringFieldUpdateOperationsInput | string | null
+    salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
+    noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
+    skills?: CandidateUpdateskillsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    shortlists?: ShortlistUncheckedUpdateManyWithoutCandidateNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutCandidateNestedInput
+  }
+
+  export type RecruiterUpsertWithoutUserInput = {
+    update: XOR<RecruiterUpdateWithoutUserInput, RecruiterUncheckedUpdateWithoutUserInput>
+    create: XOR<RecruiterCreateWithoutUserInput, RecruiterUncheckedCreateWithoutUserInput>
+    where?: RecruiterWhereInput
+  }
+
+  export type RecruiterUpdateToOneWithWhereWithoutUserInput = {
+    where?: RecruiterWhereInput
+    data: XOR<RecruiterUpdateWithoutUserInput, RecruiterUncheckedUpdateWithoutUserInput>
+  }
+
+  export type RecruiterUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    companySize?: NullableStringFieldUpdateOperationsInput | string | null
+    industry?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobs?: JobUpdateManyWithoutRecruiterNestedInput
+    messages?: MessageUpdateManyWithoutRecruiterNestedInput
+  }
+
+  export type RecruiterUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    companyName?: StringFieldUpdateOperationsInput | string
+    companySize?: NullableStringFieldUpdateOperationsInput | string | null
+    industry?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    jobs?: JobUncheckedUpdateManyWithoutRecruiterNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutRecruiterNestedInput
   }
 
   export type ResumeUpsertWithWhereUniqueWithoutUserInput = {
@@ -13691,8 +16116,10 @@ export namespace Prisma {
     website?: string | null
     industry?: string | null
     teamSize?: string | null
-    role: string
+    role?: string
     createdAt?: Date | string
+    candidateProfile?: CandidateCreateNestedOneWithoutUserInput
+    recruiterProfile?: RecruiterCreateNestedOneWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutResumesInput = {
@@ -13704,8 +16131,10 @@ export namespace Prisma {
     website?: string | null
     industry?: string | null
     teamSize?: string | null
-    role: string
+    role?: string
     createdAt?: Date | string
+    candidateProfile?: CandidateUncheckedCreateNestedOneWithoutUserInput
+    recruiterProfile?: RecruiterUncheckedCreateNestedOneWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutResumesInput = {
@@ -13735,6 +16164,8 @@ export namespace Prisma {
     teamSize?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    candidateProfile?: CandidateUpdateOneWithoutUserNestedInput
+    recruiterProfile?: RecruiterUpdateOneWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutResumesInput = {
@@ -13748,6 +16179,8 @@ export namespace Prisma {
     teamSize?: NullableStringFieldUpdateOperationsInput | string | null
     role?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    candidateProfile?: CandidateUncheckedUpdateOneWithoutUserNestedInput
+    recruiterProfile?: RecruiterUncheckedUpdateOneWithoutUserNestedInput
   }
 
   export type ShortlistCreateManyCandidateInput = {
@@ -13772,6 +16205,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     job?: JobUpdateOneRequiredWithoutShortlistsNestedInput
+    interviews?: InterviewUpdateManyWithoutShortlistNestedInput
   }
 
   export type ShortlistUncheckedUpdateWithoutCandidateInput = {
@@ -13780,6 +16214,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobId?: StringFieldUpdateOperationsInput | string
+    interviews?: InterviewUncheckedUpdateManyWithoutShortlistNestedInput
   }
 
   export type ShortlistUncheckedUpdateManyWithoutCandidateInput = {
@@ -13918,6 +16353,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     candidate?: CandidateUpdateOneRequiredWithoutShortlistsNestedInput
+    interviews?: InterviewUpdateManyWithoutShortlistNestedInput
   }
 
   export type ShortlistUncheckedUpdateWithoutJobInput = {
@@ -13926,6 +16362,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     candidateId?: StringFieldUpdateOperationsInput | string
+    interviews?: InterviewUncheckedUpdateManyWithoutShortlistNestedInput
   }
 
   export type ShortlistUncheckedUpdateManyWithoutJobInput = {
@@ -13934,6 +16371,58 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     candidateId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type InterviewCreateManyShortlistInput = {
+    id?: string
+    date?: Date | string | null
+    time?: string | null
+    platform?: string | null
+    interviewerName?: string | null
+    interviewerTitle?: string | null
+    status?: string
+    prepNotes?: InterviewCreateprepNotesInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type InterviewUpdateWithoutShortlistInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    time?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewerName?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewerTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    prepNotes?: InterviewUpdateprepNotesInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InterviewUncheckedUpdateWithoutShortlistInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    time?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewerName?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewerTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    prepNotes?: InterviewUpdateprepNotesInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InterviewUncheckedUpdateManyWithoutShortlistInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    date?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    time?: NullableStringFieldUpdateOperationsInput | string | null
+    platform?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewerName?: NullableStringFieldUpdateOperationsInput | string | null
+    interviewerTitle?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    prepNotes?: InterviewUpdateprepNotesInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ResumeCreateManyUserInput = {

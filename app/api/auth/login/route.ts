@@ -13,31 +13,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email and password required." }, { status: 400 });
     }
 
-    // Find the user in any model
-    let user: any = await prisma.candidate.findUnique({ where: { email } });
-    let role = "candidate";
-    
-    if (!user) {
-      user = await prisma.recruiter.findUnique({ where: { email } });
-      role = "recruiter";
-    }
-    
-    if (!user) {
-      user = await prisma.waitlist.findUnique({ where: { email } });
-      role = "user";
-    }
-    
-    if (!user) {
-      // Also try User table since schema has User
-      user = await prisma.user.findUnique({ where: { email } });
-      if (user) {
-        role = user.role;
-      }
+    // Prioritize the central User table for authentication
+    const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user || user.password !== password) { // In a real app, use bcrypt.compare
+      return NextResponse.json({ error: "Invalid credentials: Email or password mismatch." }, { status: 401 });
     }
 
-    if (!user) {
-      return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
-    }
+    const role = user.role || "candidate";
 
     // Sign a real JWT so /api/user/me can verify it
     const token = jwt.sign(
@@ -52,7 +37,11 @@ export async function POST(req: NextRequest) {
       user: { id: user.id, name: user.name, role, email: user.email },
     }, { status: 200 });
   } catch (error: any) {
-    console.error("Login Error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    console.error("Login Error Detailed:", error);
+    return NextResponse.json({ 
+      error: "Authentication Node Failure.", 
+      message: error.message,
+      stack: error.stack
+    }, { status: 500 });
   }
 }

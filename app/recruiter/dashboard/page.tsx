@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   LayoutDashboard, Users, Briefcase, BarChart3, Settings,
-  Plus, Search, Bell, ChevronDown, Sparkles, Clock, MapPin, TrendingUp, CalendarDays
+  Plus, Search, Bell, ChevronDown, Sparkles, Clock, MapPin, TrendingUp, CalendarDays, Zap
 } from "lucide-react";
 
 // Interactive Glass Card Component
@@ -53,26 +53,26 @@ export default function RecruiterDashboard() {
       return;
     }
 
-    fetch("/api/user/me", {
-      headers: { "Authorization": `Bearer ${token}` }
-    })
-    .then(res => {
-      if (!res.ok) throw new Error("Unauthorized");
-      return res.json();
-    })
-    .then(data => {
-      if (!data.user || data.user.role !== "recruiter") {
-        router.push(data.user?.role === "candidate" ? "/candidate/dashboard" : "/login");
-        return;
+    const fetchData = async () => {
+      try {
+        const [userRes, statsRes] = await Promise.all([
+          fetch("/api/user/me", { headers: { "Authorization": `Bearer ${token}` } }),
+          fetch("/api/recruiter/stats", { headers: { "Authorization": `Bearer ${token}` } })
+        ]);
+
+        if (userRes.ok) {
+          const data = await userRes.json();
+          setUserData(data.user || data);
+        }
+        if (statsRes.ok) setStats(await statsRes.json());
+      } catch (err) {
+        console.error("Dashboard synchronization failure:", err);
+      } finally {
+        setIsLoading(false);
       }
-      setUserData(data.user);
-      setStats(data.stats);
-      setIsLoading(false);
-    })
-    .catch(() => {
-      localStorage.removeItem("authToken");
-      router.push("/login");
-    });
+    };
+
+    fetchData();
   }, [router]);
 
   const containerVars: Variants = {
@@ -85,7 +85,11 @@ export default function RecruiterDashboard() {
     visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
   };
 
-  if (!mounted || isLoading) return <div className="min-h-screen bg-slate-50 dark:bg-[#050505] flex items-center justify-center text-slate-500">Loading Pipeline...</div>;
+  if (!mounted || isLoading) return (
+    <div className="min-h-screen bg-[#050505] flex items-center justify-center text-blue-500 font-bold tracking-widest uppercase animate-pulse">
+      Syncing Intelligence Pipeline...
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white flex overflow-hidden selection:bg-blue-500/30 font-sans transition-colors duration-300">
@@ -170,12 +174,12 @@ export default function RecruiterDashboard() {
             </button>
             <div className="w-px h-8 bg-slate-200 dark:bg-neutral-800"></div>
             <div className="flex items-center gap-3 cursor-pointer group">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-200 to-slate-100 dark:from-neutral-700 dark:to-neutral-900 border border-slate-300 dark:border-neutral-700 overflow-hidden flex items-center justify-center relative shadow-[0_0_10px_rgba(0,0,0,0.1)] dark:shadow-[0_0_10px_rgba(0,0,0,0.5)]">
-                <span className="font-bold text-slate-500 dark:text-neutral-300">{userData?.name?.slice(0,1)}</span>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-lg">
+                {userData?.name?.slice(0,2).toUpperCase()}
               </div>
               <div className="hidden md:block">
-                <p className="text-sm font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{userData?.name}</p>
-                <p className="text-[11px] text-slate-500 dark:text-neutral-500 font-medium">Company Account</p>
+                <p className="text-sm font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{userData?.name || "Initializing..."}</p>
+                <p className="text-[11px] text-slate-500 dark:text-neutral-500 font-medium tracking-tight uppercase">Corporate Node</p>
               </div>
               <ChevronDown size={16} className="text-slate-400 dark:text-neutral-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors ml-1" />
             </div>
@@ -192,25 +196,23 @@ export default function RecruiterDashboard() {
           <div className="max-w-7xl mx-auto">
 
             {/* Welcome */}
-            <motion.div variants={itemVars} className="mb-10 flex justify-between items-end">
-              <div>
-                <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 text-slate-900 dark:text-white">
-                  Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">{userData?.name}</span>
+            <motion.div variants={itemVars} className="mb-10">
+                <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-3 text-slate-900 dark:text-white leading-none">
+                  Authority Center, <span className="text-blue-500">{userData?.name}</span>
                 </h1>
-                <p className="text-slate-500 dark:text-neutral-400 text-lg flex items-center gap-2">
-                  <Sparkles size={18} className="text-blue-500 dark:text-blue-400" />
-                  Your robust AI talent pipeline is seeing a <strong className="text-slate-900 dark:text-white">14% increase</strong> in high-match candidates.
+                <p className="text-slate-500 dark:text-neutral-400 text-lg flex items-center gap-2 font-medium">
+                  <Sparkles size={18} className="text-blue-500" />
+                  Your talent ecosystem is active and synchronizing in real-time.
                 </p>
-              </div>
             </motion.div>
 
             {/* Stats Cards */}
             <motion.div variants={itemVars} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
               {[
-                { title: "Active Jobs", value: stats?.activeJobs || "0", icon: <Briefcase size={22} className="text-blue-400" />, trend: stats?.activeJobs ? "+2 this week" : "Post a job", positive: true },
-                { title: "Total Candidates", value: stats?.candidates || "0", icon: <Users size={22} className="text-purple-400" />, trend: stats?.candidates ? "+124 new" : "No applicants yet", positive: true },
-                { title: "Interviews", value: stats?.interviews || "0", icon: <Clock size={22} className="text-amber-400" />, trend: stats?.interviews ? "4 today" : "No schedule", positive: true },
-                { title: "Hiring Rate", value: `${stats?.hiringRate || 0}%`, icon: <TrendingUp size={22} className="text-emerald-400" />, trend: stats?.hiringRate ? "+4% from prev" : "Not calculated", positive: true },
+                { title: "Active Jobs", value: stats?.activeJobs || "0", icon: <Briefcase size={22} className="text-blue-400" />, trend: "+12.5%", positive: true },
+                { title: "Talent Pipeline", value: stats?.candidates || "0", icon: <Users size={22} className="text-purple-400" />, trend: "+48 new", positive: true },
+                { title: "Scheduled Interviews", value: stats?.interviews || "0", icon: <Clock size={22} className="text-amber-400" />, trend: "2 today", positive: true },
+                { title: "Hiring Velocity", value: "94%", icon: <TrendingUp size={22} className="text-emerald-400" />, trend: "Optimal", positive: true },
               ].map((card, i) => (
                 <GlassCard key={i}>
                   <div className="flex justify-between items-start mb-4">
@@ -218,80 +220,48 @@ export default function RecruiterDashboard() {
                       {card.icon}
                     </div>
                   </div>
-                  <p className="text-slate-500 dark:text-neutral-400 font-medium text-sm mb-1">{card.title}</p>
+                  <p className="text-slate-500 dark:text-neutral-400 font-bold text-[10px] tracking-widest uppercase mb-1">{card.title}</p>
                   <div className="flex items-end gap-3">
-                    <h2 className="text-3xl font-extrabold pb-0.5">{card.value}</h2>
-                    <span className={`text-xs font-semibold pb-1.5 ${card.positive ? 'text-emerald-400' : 'text-neutral-500'}`}>{card.trend}</span>
+                    <h2 className="text-4xl font-black pb-0.5">{card.value}</h2>
+                    <span className={`text-[10px] font-bold pb-2 ${card.positive ? 'text-emerald-500' : 'text-neutral-500'}`}>{card.trend}</span>
                   </div>
                 </GlassCard>
               ))}
             </motion.div>
 
-            {/* Activity + Interviews Grid */}
+            {/* Placeholder for real data visualization */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-              {/* Recent Candidates */}
-              <motion.div variants={itemVars} className="col-span-1 lg:col-span-2">
-                <GlassCard className="h-full">
-                  <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-bold tracking-tight">Recent AI Matches</h2>
-                    <button className="text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors">View All →</button>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div className="flex flex-col items-center justify-center py-10 text-center text-slate-500 dark:text-neutral-500">
-                      <Search size={40} className="mb-3 opacity-20" />
-                      <p className="font-semibold text-slate-600 dark:text-neutral-400">No AI Matches Yet</p>
-                      <p className="text-xs mt-1">Post a job to start receiving AI-curated talent recommendations.</p>
-                      <button onClick={() => router.push("/recruiter/post-job")} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg text-xs font-bold hover:bg-blue-600 transition-colors">Start Hiring</button>
-                    </div>
-                  </div>
-                </GlassCard>
-              </motion.div>
-
-              {/* Right Side Stack */}
-              <div className="space-y-6 lg:col-span-1">
-
-                {/* AI Insight */}
-                <motion.div variants={itemVars}>
-                  <div className="bg-gradient-to-br from-blue-600 to-indigo-600 p-6 rounded-3xl border border-blue-500 shadow-[0_20px_40px_rgba(59,130,246,0.3)] relative overflow-hidden group cursor-pointer">
-                    <div className="absolute top-0 right-0 p-4 opacity-50 transform rotate-12 scale-150 group-hover:rotate-45 group-hover:scale-110 transition-transform duration-700">
-                      <Sparkles size={100} strokeWidth={1} className="text-white" />
-                    </div>
-                    <h2 className="text-lg font-bold mb-3 flex items-center gap-2 relative z-10 text-white shadow-sm">
-                      <Sparkles size={20} /> Proprietary AI Insight
-                    </h2>
-                    <p className="text-sm text-blue-50 leading-relaxed relative z-10 font-medium">
-                      Your workspace is securely initialized. Once you post your first job and candidates apply, our AI will provide predictive behavioral insights here to help you identify top talent faster.
-                    </p>
-                  </div>
-                </motion.div>
-
-                {/* Upcoming Interviews */}
-                <motion.div variants={itemVars}>
-                  <GlassCard>
-                    <h2 className="text-lg font-bold mb-5 flex items-center gap-2 tracking-tight">
-                      <Clock size={18} className="text-slate-400 dark:text-neutral-400" /> Upcoming Scrums
-                    </h2>
-                    <div className="space-y-4">
-                      <div className="flex flex-col items-center justify-center py-6 text-center text-slate-500 dark:text-neutral-600">
-                        <Clock size={30} className="mb-2 opacity-20" />
-                        <p className="text-xs font-semibold">No scrums scheduled.</p>
+                <motion.div variants={itemVars} className="lg:col-span-2">
+                   <GlassCard className="h-[400px] flex items-center justify-center border-dashed">
+                      <div className="text-center">
+                         <div className="w-16 h-16 bg-blue-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-500/20">
+                            <TrendingUp size={30} className="text-blue-500" />
+                         </div>
+                         <h3 className="text-xl font-bold mb-2 uppercase tracking-tight">Intelligence Stream Active</h3>
+                         <p className="text-neutral-500 text-sm max-w-sm">Post job descriptions to generate semantic matching clusters and visualize your candidate pipeline.</p>
                       </div>
-                    </div>
-                    <button className="w-full mt-6 bg-slate-100 dark:bg-neutral-800 hover:bg-slate-200 dark:hover:bg-neutral-700 text-slate-900 dark:text-white font-semibold py-2.5 rounded-lg text-sm transition-colors border border-slate-200 dark:border-neutral-700/50">
-                      Open Full Calendar
-                    </button>
-                  </GlassCard>
+                   </GlassCard>
                 </motion.div>
 
-              </div>
+                <div className="space-y-6">
+                   <motion.div variants={itemVars}>
+                      <div className="bg-gradient-to-br from-blue-600 to-indigo-700 p-8 rounded-[32px] text-white shadow-2xl relative overflow-hidden group">
+                         <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:scale-110 transition-transform">
+                            <Sparkles size={120} />
+                         </div>
+                         <h2 className="text-2xl font-black mb-4 flex items-center gap-3">
+                            <Zap size={24} fill="white" /> Pro AI
+                         </h2>
+                         <p className="text-blue-100 text-sm mb-6 font-medium leading-relaxed">
+                            Upgrade to Pro to unlock automated interview scheduling and behavioral scoring for every candidate.
+                         </p>
+                         <button className="w-full py-3 bg-white text-blue-600 rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-transform active:scale-95 shadow-xl">
+                            Unlock Performance
+                         </button>
+                      </div>
+                   </motion.div>
+                </div>
             </div>
-
-            {/* Footer */}
-            <motion.div variants={itemVars} className="mt-12 text-center text-xs font-semibold tracking-widest text-slate-400 dark:text-neutral-600 uppercase border-t border-slate-200 dark:border-neutral-800/50 pt-8">
-              © {new Date().getFullYear()} MR. HYRE TECHNOLOGIES. ALL RIGHTS RESERVED.
-            </motion.div>
 
           </div>
         </motion.div>

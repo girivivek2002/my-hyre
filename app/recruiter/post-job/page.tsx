@@ -267,32 +267,56 @@ export default function PostJobPage() {
 
     const handleDeploy = async () => {
         if (!editableData) return;
-        
+
         setDeployLoading(true);
-        
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        const jobData = {
-            id: Date.now().toString(),
-            title: editableData.job_title,
-            location: editableData.location,
-            salary: editableData.salary ? `$${editableData.salary.min.toLocaleString()}-$${editableData.salary.max.toLocaleString()}` : 'Not specified',
-            type: editableData.workplace_type,
-            experience: editableData.experience,
-            skills: editableData.skills,
-            createdAt: new Date().toISOString()
-        };
-        
-        const existingJobs = JSON.parse(localStorage.getItem('postedJobs') || '[]');
-        existingJobs.push(jobData);
-        localStorage.setItem('postedJobs', JSON.stringify(existingJobs));
-        
-        setFeedbackMessage({ type: 'success', text: 'Job deployed successfully!' });
-        setDeployLoading(false);
-        setTimeout(() => {
-            router.push("/recruiter/candidates");
-        }, 1500);
+        setFeedbackMessage(null);
+
+        try {
+            const token = localStorage.getItem("authToken");
+            if (!token) {
+                setFeedbackMessage({ type: 'error', text: 'Authentication required. Please log in.' });
+                setDeployLoading(false);
+                return;
+            }
+
+            const res = await fetch("/api/recruiter/jobs", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    title: editableData.job_title,
+                    location: editableData.location,
+                    salary: editableData.salary
+                        ? `$${editableData.salary.min.toLocaleString()}-$${editableData.salary.max.toLocaleString()}`
+                        : null,
+                    type: editableData.workplace_type,
+                    experience: editableData.experience,
+                    description: editableData.description || null,
+                    skills: editableData.skills,
+                }),
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
+                setFeedbackMessage({ type: 'success', text: `"${editableData.job_title}" deployed to production!` });
+                // Reset form after short delay
+                setTimeout(() => {
+                    router.push("/recruiter/dashboard");
+                }, 1500);
+            } else {
+                setFeedbackMessage({ type: 'error', text: data.error || 'Deployment failed.' });
+            }
+        } catch (error) {
+            console.error("Deploy Error:", error);
+            setFeedbackMessage({ type: 'error', text: 'Network error. Please try again.' });
+        } finally {
+            setDeployLoading(false);
+        }
     };
+
 
     return (
         <div className="min-h-screen bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white flex overflow-hidden selection:bg-blue-500/30 font-sans transition-colors duration-300">

@@ -19,6 +19,8 @@ model Waitlist {
 
 model Candidate {
   id                String   @id @default(cuid())
+  userId            String?  @unique
+  user              User?    @relation(fields: [userId], references: [id])
   name              String
   email             String   @unique
   role              String?
@@ -38,6 +40,8 @@ model Candidate {
 
 model Recruiter {
   id          String   @id @default(cuid())
+  userId      String?  @unique
+  user        User?    @relation(fields: [userId], references: [id])
   name        String
   email       String   @unique
   companyName String
@@ -79,7 +83,25 @@ model Shortlist {
   jobId       String
   job         Job       @relation(fields: [jobId], references: [id])
 
+  interviews  Interview[]
+
   @@unique([candidateId, jobId])
+}
+
+model Interview {
+  id              String   @id @default(cuid())
+  date            DateTime?
+  time            String?
+  platform        String?  // Zoom, Google Meet, In-person
+  interviewerName String?
+  interviewerTitle String?
+  status          String   @default("SCHEDULED")
+  prepNotes       String[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  shortlistId     String
+  shortlist       Shortlist @relation(fields: [shortlistId], references: [id])
 }
 
 model Message {
@@ -95,18 +117,21 @@ model Message {
   candidate   Candidate @relation(fields: [candidateId], references: [id])
 }
 
-// Added for Backend Migration
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
   password  String
   name      String
-  phone      String?
-  website    String?
-  industry   String?
-  teamSize   String?
-  role      String   // "candidate" or "recruiter"
-  resumes   Resume[]
+  phone     String?
+  website   String?
+  industry  String?
+  teamSize  String?
+  role      String   @default("candidate") // "candidate" or "recruiter"
+  
+  candidateProfile Candidate?
+  recruiterProfile Recruiter?
+  resumes          Resume[]
+
   createdAt DateTime @default(now())
 }
 

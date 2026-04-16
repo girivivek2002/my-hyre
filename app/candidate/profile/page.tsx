@@ -80,9 +80,80 @@ function PremiumInput({ icon, label, ...props }: PremiumInputProps) {
 }
 
 export default function CandidateProfile() {
-  const [skills, setSkills] = useState(["React", "TypeScript", "Node.js", "AI/ML"]);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    linkedin: "",
+    github: "",
+    website: "",
+    desiredRole: "",
+    experience: "",
+    workType: "Full-Time",
+    salary: "",
+    location: "",
+    noticePeriod: ""
+  });
+  const [skills, setSkills] = useState<string[]>([]);
   const [skillInput, setSkillInput] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    setMounted(true);
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      router.push("/login");
+      return;
+    }
+
+    const fetchData = async () => {
+      try {
+        const headers = { "Authorization": `Bearer ${token}` };
+        const [userRes, profileRes] = await Promise.all([
+          fetch("/api/user/me", { headers }),
+          fetch("/api/candidate/profile", { headers })
+        ]);
+
+        if (userRes.ok) {
+          const uData = await userRes.json();
+          setFormData(prev => ({ ...prev, name: uData.user.name, email: uData.user.email }));
+        }
+
+        if (profileRes.ok) {
+          const pData = await profileRes.json();
+          if (pData.profile) {
+            setFormData(p => ({
+              ...p,
+              phone: pData.profile.phone || "",
+              linkedin: pData.profile.linkedin || "",
+              github: pData.profile.github || "",
+              website: pData.profile.website || "",
+              desiredRole: pData.profile.desiredRole || "",
+              experience: pData.profile.experienceYears || "",
+              salary: pData.profile.expectedSalary || "",
+            }));
+            if (pData.profile.skills) {
+              setSkills(pData.profile.skills.split(",").map((s: string) => s.trim()).filter(Boolean));
+            }
+          }
+        }
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Profile Fetch Error:", err);
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [router]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   const addSkill = () => {
     if (skillInput.trim() !== "" && !skills.includes(skillInput.trim())) {
@@ -95,13 +166,32 @@ export default function CandidateProfile() {
     setSkills(skills.filter(s => s !== skillToRemove));
   };
 
-  const router = useRouter();
-
   const handleApply = async () => {
     setIsSubmitting(true);
-    // Simulate AI processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    router.push("/candidate/dashboard");
+    const token = localStorage.getItem("authToken");
+    try {
+      const res = await fetch("/api/candidate/profile", {
+        method: "POST",
+        headers: { 
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          ...formData,
+          skills: skills.join(", "),
+        })
+      });
+
+      if (res.ok) {
+        router.push("/candidate/dashboard");
+      } else {
+        alert("Failed to save profile. Please try again.");
+      }
+    } catch (err) {
+      console.error("Profile Save Error:", err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const containerVars: Variants = {
@@ -117,6 +207,15 @@ export default function CandidateProfile() {
     visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 20, duration: 0.8 } }
   };
 
+  if (!mounted || isLoading) return (
+    <div className="min-h-screen bg-slate-50 dark:bg-[#050505] flex flex-col items-center justify-center text-slate-500 gap-4">
+      <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 2, ease: "linear" }}>
+        <Sparkles size={40} className="text-blue-500" />
+      </motion.div>
+      <div className="text-xs font-bold tracking-widest uppercase animate-pulse">Syncing Intelligence Matrix...</div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white selection:bg-blue-500/30 font-sans transition-colors duration-300 relative overflow-x-hidden">
 
@@ -130,7 +229,7 @@ export default function CandidateProfile() {
         animate={{ opacity: 1, y: 0 }}
         className="px-6 sm:px-12 lg:px-20 py-8 flex justify-between items-center relative z-20 backdrop-blur-sm border-b border-slate-200/50 dark:border-neutral-800/50"
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push("/candidate/dashboard")}>
           <Image src="/logo.png" alt="Logo" width={32} height={32} className="rounded-xl shadow-lg" />
           <div>
             <span className="text-xl font-bold tracking-tight">Mr. Hyre</span>
@@ -175,12 +274,12 @@ export default function CandidateProfile() {
             icon={<User className="text-blue-500" size={24} />}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <PremiumInput icon={<User size={18} />} label="Full Name" placeholder="Ex: Sterling Archer" />
-              <PremiumInput icon={<Mail size={18} />} label="Email Address" placeholder="archer@agency.com" />
-              <PremiumInput icon={<Phone size={18} />} label="Phone Number" placeholder="+1 (555) 000-0000" />
-              <PremiumInput icon={<LinkedinIcon />} label="LinkedIn Profile" placeholder="linkedin.com/in/username" />
-              <PremiumInput icon={<GithubIcon />} label="GitHub Profile" placeholder="github.com/username" />
-              <PremiumInput icon={<Globe size={18} />} label="Portfolio Website" placeholder="sterling-archer.com" />
+              <PremiumInput icon={<User size={18} />} label="Full Name" name="name" value={formData.name} onChange={handleInputChange} placeholder="Ex: Sterling Archer" />
+              <PremiumInput icon={<Mail size={18} />} label="Email Address" name="email" value={formData.email} onChange={handleInputChange} placeholder="archer@agency.com" disabled />
+              <PremiumInput icon={<Phone size={18} />} label="Phone Number" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="+1 (555) 000-0000" />
+              <PremiumInput icon={<LinkedinIcon />} label="LinkedIn Profile" name="linkedin" value={formData.linkedin} onChange={handleInputChange} placeholder="linkedin.com/in/username" />
+              <PremiumInput icon={<GithubIcon />} label="GitHub Profile" name="github" value={formData.github} onChange={handleInputChange} placeholder="github.com/username" />
+              <PremiumInput icon={<Globe size={18} />} label="Portfolio Website" name="website" value={formData.website} onChange={handleInputChange} placeholder="sterling-archer.com" />
             </div>
           </SectionWrapper>
 
@@ -191,8 +290,8 @@ export default function CandidateProfile() {
             icon={<Briefcase className="text-indigo-500" size={24} />}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <PremiumInput icon={<Briefcase size={18} />} label="Desired Role" placeholder="Ex: Lead Software Engineer" />
-              <PremiumInput icon={<Clock size={18} />} label="Years of Experience" placeholder="Ex: 8+" />
+              <PremiumInput icon={<Briefcase size={18} />} label="Desired Role" name="desiredRole" value={formData.desiredRole} onChange={handleInputChange} placeholder="Ex: Lead Software Engineer" />
+              <PremiumInput icon={<Clock size={18} />} label="Years of Experience" name="experience" value={formData.experience} onChange={handleInputChange} placeholder="Ex: 8+" />
             </div>
           </SectionWrapper>
 
@@ -285,16 +384,21 @@ export default function CandidateProfile() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-[10px] font-bold tracking-widest text-slate-400 dark:text-neutral-500 uppercase ml-1">Work Type</label>
-                <select className="w-full px-4 py-3.5 rounded-2xl bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 transition-all appearance-none cursor-pointer shadow-inner">
-                  <option>Full-Time</option>
-                  <option>Remote</option>
-                  <option>Contract (Long term)</option>
-                  <option>Hybrid</option>
+                <select 
+                  name="workType" 
+                  value={formData.workType} 
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3.5 rounded-2xl bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 transition-all appearance-none cursor-pointer shadow-inner"
+                >
+                  <option value="Full-Time">Full-Time</option>
+                  <option value="Remote">Remote</option>
+                  <option value="Contract (Long term)">Contract (Long term)</option>
+                  <option value="Hybrid">Hybrid</option>
                 </select>
               </div>
-              <PremiumInput icon={<Sparkles size={18} />} label="Expected Salary ($)" placeholder="Ex: 150k - 180k" />
-              <PremiumInput icon={<Globe size={18} />} label="Preferred Location" placeholder="Ex: New York, NY / Remote" />
-              <PremiumInput icon={<Clock size={18} />} label="Notice Period" placeholder="Ex: 2 weeks" />
+              <PremiumInput icon={<Sparkles size={18} />} label="Expected Salary ($)" name="salary" value={formData.salary} onChange={handleInputChange} placeholder="Ex: 150k - 180k" />
+              <PremiumInput icon={<Globe size={18} />} label="Preferred Location" name="location" value={formData.location} onChange={handleInputChange} placeholder="Ex: New York, NY / Remote" />
+              <PremiumInput icon={<Clock size={18} />} label="Notice Period" name="noticePeriod" value={formData.noticePeriod} onChange={handleInputChange} placeholder="Ex: 2 weeks" />
             </div>
           </SectionWrapper>
 

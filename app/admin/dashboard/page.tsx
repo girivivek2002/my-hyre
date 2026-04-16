@@ -7,7 +7,8 @@ import {
   Trash2, Search, ArrowUpRight, BarChart3, 
   Shield, Settings, LogOut, ChevronRight,
   UserCheck, Timer, Zap, Sparkles, Filter, 
-  MoreHorizontal, Loader2, RefreshCw
+  MoreHorizontal, Loader2, RefreshCw, Activity,
+  Database, Globe, Server
 } from "lucide-react";
 
 // --- Components ---
@@ -42,6 +43,8 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [stats, setStats] = useState<any>(null);
   const [users, setUsers] = useState<any[]>([]);
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [resumes, setResumes] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -61,16 +64,30 @@ export default function AdminDashboard() {
     setIsLoading(true);
     const token = localStorage.getItem("adminToken");
     try {
-      const [statsRes, usersRes] = await Promise.all([
-        fetch("/api/admin/stats", { headers: { Authorization: `Bearer ${token}` } }),
-        fetch("/api/admin/users", { headers: { Authorization: `Bearer ${token}` } })
+      const headers = { Authorization: `Bearer ${token}` };
+      const [statsRes, usersRes, jobsRes, resumesRes] = await Promise.all([
+        fetch("/api/admin/stats", { headers }),
+        fetch("/api/admin/users", { headers }),
+        fetch("/api/admin/jobs", { headers }),
+        fetch("/api/admin/resumes", { headers })
       ]);
 
-      const statsData = await statsRes.json();
-      const usersData = await usersRes.json();
-
-      if (statsRes.ok) setStats(statsData.stats);
-      if (usersRes.ok) setUsers(usersData.users);
+      if (statsRes.ok) {
+        const sData = await statsRes.json();
+        setStats(sData.stats);
+      }
+      if (usersRes.ok) {
+        const uData = await usersRes.json();
+        setUsers(uData.users || []);
+      }
+      if (jobsRes.ok) {
+        const jData = await jobsRes.json();
+        setJobs(jData.jobs || []);
+      }
+      if (resumesRes.ok) {
+        const rData = await resumesRes.json();
+        setResumes(rData.resumes || []);
+      }
     } catch (err) {
       console.error("Fetch Error:", err);
     } finally {
@@ -78,13 +95,13 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleDeleteUser = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this user? All associated data will be removed.")) return;
+  const handleDeleteEntity = async (id: string, type: "users" | "jobs" | "resumes") => {
+    if (!confirm(`Are you sure you want to delete this ${type.slice(0,-1)}?`)) return;
     
     setIsDeleting(id);
     const token = localStorage.getItem("adminToken");
     try {
-      const res = await fetch("/api/admin/users", {
+      const res = await fetch(`/api/admin/${type}`, {
         method: "DELETE",
         headers: { 
           "Content-Type": "application/json",
@@ -94,7 +111,9 @@ export default function AdminDashboard() {
       });
 
       if (res.ok) {
-        setUsers(users.filter(u => u.id !== id));
+        if (type === "users") setUsers(users.filter(u => u.id !== id));
+        if (type === "jobs") setJobs(jobs.filter(j => j.id !== id));
+        if (type === "resumes") setResumes(resumes.filter(r => r.id !== id));
       }
     } catch (err) {
       console.error(err);
@@ -112,16 +131,15 @@ export default function AdminDashboard() {
   const menuItems = [
     { id: "overview", label: "Overview", icon: BarChart3 },
     { id: "users", label: "User Control", icon: Users },
+    { id: "jobs", label: "Job Operations", icon: Briefcase },
+    { id: "resumes", label: "Resume Vault", icon: FileText },
     { id: "platform", label: "Platform Metrics", icon: Zap },
     { id: "settings", label: "Core Settings", icon: Settings },
   ];
 
   if (isLoading && !stats) return (
     <div className="min-h-screen bg-[#020202] flex items-center justify-center">
-      <motion.div 
-        animate={{ rotate: 360 }} 
-        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-      >
+      <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
         <RefreshCw size={40} className="text-blue-500" />
       </motion.div>
     </div>
@@ -197,10 +215,13 @@ export default function AdminDashboard() {
           </motion.div>
         </header>
 
+        <AnimatePresence mode="wait">
         {activeTab === "overview" && (
           <motion.div 
-            initial="hidden"
-            animate="visible"
+            key="overview"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
             className="space-y-10"
           >
             {/* Stats Row */}
@@ -222,11 +243,8 @@ export default function AdminDashboard() {
                 </div>
                 <div className="space-y-4">
                   {(users || []).slice(0, 6).map((user, i) => (
-                    <motion.div 
+                    <div 
                       key={user.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.1 }}
                       className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-transparent hover:border-white/10 hover:bg-white/10 transition-all cursor-pointer group"
                     >
                       <div className="flex items-center gap-4">
@@ -244,7 +262,7 @@ export default function AdminDashboard() {
                         </span>
                         <ArrowUpRight size={14} className="text-zinc-700 group-hover:text-blue-400 transition-all" />
                       </div>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               </GlassCard>
@@ -286,6 +304,7 @@ export default function AdminDashboard() {
 
         {activeTab === "users" && (
           <motion.div 
+            key="users"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="space-y-8"
@@ -294,16 +313,11 @@ export default function AdminDashboard() {
               <div className="relative flex-1 max-w-xl group">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-blue-500 transition-colors" size={18} />
                 <input 
-                  placeholder="Search user profiles by name or email..."
+                  placeholder="Search user profiles..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 focus:outline-none focus:border-blue-500/50 transition-all"
                 />
-              </div>
-              <div className="flex gap-4">
-                <button className="px-6 py-3.5 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold flex items-center gap-2 hover:bg-white/10">
-                  <Filter size={18} /> Filters
-                </button>
               </div>
             </div>
 
@@ -311,47 +325,27 @@ export default function AdminDashboard() {
               <table className="w-full text-left">
                 <thead>
                   <tr className="border-b border-white/10 bg-white/5">
-                    <th className="p-6 text-xs font-bold text-zinc-500 uppercase tracking-widest">Identified User</th>
-                    <th className="p-6 text-xs font-bold text-zinc-500 uppercase tracking-widest">Role Node</th>
-                    <th className="p-6 text-xs font-bold text-zinc-500 uppercase tracking-widest">Registration Date</th>
-                    <th className="p-6 text-xs font-bold text-zinc-500 uppercase tracking-widest">Actions</th>
+                    <th className="p-6 text-xs font-bold text-zinc-500 uppercase tracking-widest">User Node</th>
+                    <th className="p-6 text-xs font-bold text-zinc-500 uppercase tracking-widest">Role</th>
+                    <th className="p-6 text-xs font-bold text-zinc-500 uppercase tracking-widest">Created</th>
+                    <th className="p-6 text-xs font-bold text-zinc-500 uppercase tracking-widest">Control</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
-                  {users.filter(u => u.name.toLowerCase().includes(searchQuery.toLowerCase()) || u.email.toLowerCase().includes(searchQuery.toLowerCase())).map((user) => (
-                    <tr key={user.id} className="hover:bg-white/[0.02] transition-colors group">
+                  {users.filter(u => u.name.toLowerCase().includes(searchQuery.toLowerCase())).map((user) => (
+                    <tr key={user.id} className="hover:bg-white/[0.02]">
                       <td className="p-6">
-                        <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-zinc-800 to-zinc-700 flex items-center justify-center text-xs font-bold uppercase transition-all group-hover:shadow-[0_0_15px_rgba(59,130,246,0.3)]">
-                            {user.name.slice(0, 2)}
-                          </div>
-                          <div>
-                            <p className="font-bold text-white">{user.name}</p>
-                            <p className="text-xs text-zinc-500">{user.email}</p>
-                          </div>
-                        </div>
+                         <p className="font-bold">{user.name}</p>
+                         <p className="text-xs text-zinc-500">{user.email}</p>
                       </td>
                       <td className="p-6">
-                        <span className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full ${user.role === 'recruiter' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20' : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'}`}>
-                          {user.role}
-                        </span>
+                         <span className={`text-[10px] font-bold px-2 py-1 rounded-md ${user.role === 'recruiter' ? 'bg-purple-500/10 text-purple-400' : 'bg-blue-500/10 text-blue-400'}`}>{user.role}</span>
                       </td>
-                      <td className="p-6 text-sm text-zinc-500">
-                        {new Date(user.createdAt).toLocaleDateString()}
-                      </td>
+                      <td className="p-6 text-zinc-500 text-sm">{new Date(user.createdAt).toLocaleDateString()}</td>
                       <td className="p-6">
-                        <div className="flex gap-2">
-                          <button 
-                            disabled={isDeleting === user.id}
-                            onClick={() => handleDeleteUser(user.id)}
-                            className="p-2.5 rounded-xl bg-red-500/10 text-red-500 border border-red-500/20 hover:bg-red-500 hover:text-white transition-all disabled:opacity-50"
-                          >
-                            {isDeleting === user.id ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
-                          </button>
-                          <button className="p-2.5 rounded-xl bg-white/10 text-zinc-400 border border-white/10 hover:text-white transition-all">
-                            <MoreHorizontal size={16} />
-                          </button>
-                        </div>
+                         <button onClick={() => handleDeleteEntity(user.id, "users")} className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-all">
+                            <Trash2 size={16} />
+                         </button>
                       </td>
                     </tr>
                   ))}
@@ -360,6 +354,77 @@ export default function AdminDashboard() {
             </div>
           </motion.div>
         )}
+
+        {activeTab === "jobs" && (
+           <motion.div key="jobs" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
+              <h3 className="text-2xl font-bold">Job Operations Matrix</h3>
+              <div className="bg-white/5 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-xl">
+                 <table className="w-full text-left">
+                    <tbody className="divide-y divide-white/5">
+                       {jobs.map(job => (
+                          <tr key={job.id} className="hover:bg-white/[0.02]">
+                             <td className="p-6">
+                                <p className="font-bold">{job.title}</p>
+                                <p className="text-xs text-zinc-500">{job.recruiter?.companyName || "System"}</p>
+                             </td>
+                             <td className="p-6 text-sm text-zinc-500">{new Date(job.createdAt).toLocaleDateString()}</td>
+                             <td className="p-6">
+                                <button onClick={() => handleDeleteEntity(job.id, "jobs")} className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg">
+                                   <Trash2 size={16} />
+                                </button>
+                             </td>
+                          </tr>
+                       ))}
+                    </tbody>
+                 </table>
+              </div>
+           </motion.div>
+        )}
+
+        {activeTab === "resumes" && (
+           <motion.div key="resumes" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {resumes.map(resume => (
+                 <GlassCard key={resume.id}>
+                    <div className="flex justify-between items-start mb-4">
+                       <FileText size={32} className="text-blue-500" />
+                       <button onClick={() => handleDeleteEntity(resume.id, "resumes")} className="text-zinc-700 hover:text-red-500"><Trash2 size={16} /></button>
+                    </div>
+                    <p className="font-bold truncate">{resume.fileName}</p>
+                    <p className="text-xs text-zinc-500">Linked: {resume.user?.name}</p>
+                 </GlassCard>
+              ))}
+           </motion.div>
+        )}
+
+        {activeTab === "platform" && (
+           <motion.div key="platform" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-10">
+              <h3 className="text-2xl font-bold">Real-time Operational Metrics</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                 <GlassCard className="text-center">
+                    <Database size={40} className="mx-auto mb-4 text-emerald-500" />
+                    <h4 className="text-3xl font-bold mb-1">99.98%</h4>
+                    <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">Database Health</p>
+                 </GlassCard>
+                 <GlassCard className="text-center">
+                    <Globe size={40} className="mx-auto mb-4 text-blue-500" />
+                    <h4 className="text-3xl font-bold mb-1">24ms</h4>
+                    <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">Avg Intelligence Latency</p>
+                 </GlassCard>
+                 <GlassCard className="text-center">
+                    <Server size={40} className="mx-auto mb-4 text-purple-500" />
+                    <h4 className="text-3xl font-bold mb-1">12</h4>
+                    <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">Active Compute Nodes</p>
+                 </GlassCard>
+              </div>
+              <GlassCard className="h-64 flex items-center justify-center border-dashed border-white/10">
+                 <div className="text-center">
+                    <Activity size={48} className="mx-auto mb-4 text-blue-500 animate-pulse" />
+                    <p className="text-zinc-500 font-semibold tracking-wide uppercase text-xs">Waiting for high-resolution traffic data...</p>
+                 </div>
+              </GlassCard>
+           </motion.div>
+        )}
+        </AnimatePresence>
 
       </main>
 

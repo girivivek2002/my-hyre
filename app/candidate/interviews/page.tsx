@@ -47,65 +47,54 @@ function GlassCard({ children, className = "", delay = 0 }: { children: ReactNod
 // ─── Interview Data ────────────────────────────────────────────────────────────
 const INTERVIEWS = [
   {
-    id: 1,
-    company: "Linear",
-    role: "Senior Product Designer",
-    date: "Tomorrow, April 11",
-    time: "10:00 AM - 11:00 AM",
-    type: "Portfolio Review",
-    interviewer: "Karri Saarinen",
-    title: "CEO / Founder",
-    platform: "Zoom",
+    id: "1",
+    date: "Apr 18, 2026",
+    time: "10:00 AM",
+    company: "Nexus Technologies",
+    role: "Senior Frontend Engineer",
     status: "Upcoming",
-    prep: [
-       "Review 'Linear Method' documentation",
-       "Prepare case study on design systems",
-       "Draft questions about engineering parity"
-    ]
-  },
-  {
-    id: 2,
-    company: "Vercel",
-    role: "Design Systems Lead",
-    date: "Monday, April 14",
-    time: "2:30 PM - 3:30 PM",
-    type: "Technical Deep-dive",
-    interviewer: "Rauno Freiberg",
-    title: "Staff Designer",
     platform: "Google Meet",
-    status: "Confirmed",
+    interviewer: "Sarah Chen — VP Engineering",
     prep: [
-       "Understand Turborepo visual architecture",
-       "Demo motion system implementation",
-       "Discuss RSC impact on UI interaction"
-    ]
+      "Review system design fundamentals — focus on scalable UI architectures.",
+      "Prepare examples of complex state management solutions you've built.",
+      "Research Nexus's recent product launches and their tech stack.",
+    ],
   },
   {
-    id: 3,
-    company: "OpenAI",
-    role: "AI Experience Designer",
-    date: "Wednesday, April 16",
-    time: "11:00 AM - 12:00 PM",
-    type: "Culture & Research",
-    interviewer: "Mira Murati",
-    title: "CTO",
-    platform: "OpenAI HQ (In-person)",
-    status: "Pending Sync",
+    id: "2",
+    date: "Apr 21, 2026",
+    time: "2:30 PM",
+    company: "Orbital Labs",
+    role: "Full Stack Developer",
+    status: "Upcoming",
+    platform: "Zoom",
+    interviewer: "James Wright — Lead Architect",
     prep: [
-       "Review recent safety alignment papers",
-       "Prepare thoughts on multimodal UX",
-       "Analyze AGI interaction metaphors"
-    ]
-  }
+      "Brush up on Node.js event loop and concurrency patterns.",
+      "Prepare a walkthrough of your most complex API project.",
+      "Review Orbital's open-source contributions on GitHub.",
+    ],
+  },
+  {
+    id: "3",
+    date: "Apr 14, 2026",
+    time: "11:00 AM",
+    company: "Sterling & Co.",
+    role: "Product Designer",
+    status: "Completed",
+    platform: "In-person — London HQ",
+    interviewer: "Alex Sterling — Founder",
+    prep: [
+      "Portfolio presentation went well — positive feedback received.",
+      "Follow up on the design systems case study they requested.",
+      "Awaiting final decision from the hiring committee.",
+    ],
+  },
 ];
 
-export default function CandidateInterviewsPage() {
+export default function InterviewsPage() {
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const containerVars: Variants = {
     hidden: { opacity: 0 },
@@ -113,11 +102,9 @@ export default function CandidateInterviewsPage() {
   };
 
   const itemVars: Variants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
   };
-
-  if (!mounted) return null;
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white flex overflow-hidden selection:bg-blue-500/30 font-sans transition-colors duration-300">

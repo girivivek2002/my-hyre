@@ -129,6 +129,7 @@ exports.Prisma.WaitlistScalarFieldEnum = {
 
 exports.Prisma.CandidateScalarFieldEnum = {
   id: 'id',
+  userId: 'userId',
   name: 'name',
   email: 'email',
   role: 'role',
@@ -145,6 +146,7 @@ exports.Prisma.CandidateScalarFieldEnum = {
 
 exports.Prisma.RecruiterScalarFieldEnum = {
   id: 'id',
+  userId: 'userId',
   name: 'name',
   email: 'email',
   companyName: 'companyName',
@@ -176,6 +178,20 @@ exports.Prisma.ShortlistScalarFieldEnum = {
   updatedAt: 'updatedAt',
   candidateId: 'candidateId',
   jobId: 'jobId'
+};
+
+exports.Prisma.InterviewScalarFieldEnum = {
+  id: 'id',
+  date: 'date',
+  time: 'time',
+  platform: 'platform',
+  interviewerName: 'interviewerName',
+  interviewerTitle: 'interviewerTitle',
+  status: 'status',
+  prepNotes: 'prepNotes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  shortlistId: 'shortlistId'
 };
 
 exports.Prisma.MessageScalarFieldEnum = {
@@ -231,6 +247,7 @@ exports.Prisma.ModelName = {
   Recruiter: 'Recruiter',
   Job: 'Job',
   Shortlist: 'Shortlist',
+  Interview: 'Interview',
   Message: 'Message',
   User: 'User',
   Resume: 'Resume'

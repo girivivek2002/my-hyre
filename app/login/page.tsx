@@ -3,8 +3,9 @@ import { motion, Variants } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Mail, KeyRound, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { signIn, getSession } from "next-auth/react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -13,6 +14,28 @@ export default function LoginPage() {
   const [errorObj, setErrorObj] = useState<string | null>(null);
 
   const router = useRouter();
+
+  // Synchronize NextAuth Session with existing Custom JWT localStorage architecture
+  useEffect(() => {
+    const syncOAuth = async () => {
+      try {
+        const session = await getSession();
+        if (session && (session as any).customJwt) {
+          localStorage.setItem("authToken", (session as any).customJwt);
+          localStorage.setItem("userRole", (session as any).userRole || "candidate");
+          
+          if ((session as any).userRole === "candidate") {
+            router.push("/candidate/dashboard");
+          } else {
+            router.push("/recruiter/dashboard");
+          }
+        }
+      } catch (err) {
+        console.error("Session sync failed:", err);
+      }
+    };
+    syncOAuth();
+  }, [router]);
 
   // Stagger variants for smooth form entry
   const containerVars: Variants = {
@@ -188,6 +211,8 @@ export default function LoginPage() {
           {/* Social Buttons */}
           <motion.div variants={itemVars} className="grid grid-cols-2 gap-4">
             <motion.button 
+              onClick={() => signIn("google", { callbackUrl: "/login" })}
+              type="button"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="flex items-center justify-center gap-2 border border-slate-200 dark:border-neutral-700 bg-slate-50 dark:bg-neutral-900/50 py-3 rounded-xl hover:border-slate-300 dark:hover:border-neutral-500 hover:bg-slate-100 dark:hover:bg-neutral-800 transition-colors text-sm font-semibold text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white"
@@ -197,6 +222,8 @@ export default function LoginPage() {
             </motion.button>
 
             <motion.button 
+              onClick={() => signIn("linkedin", { callbackUrl: "/login" })}
+              type="button"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               className="flex items-center justify-center gap-2 border border-slate-200 dark:border-neutral-700 bg-slate-50 dark:bg-neutral-900/50 py-3 rounded-xl hover:border-slate-300 dark:hover:border-neutral-500 hover:bg-slate-100 dark:hover:bg-neutral-800 transition-colors text-sm font-semibold text-slate-700 dark:text-neutral-300 hover:text-slate-900 dark:hover:text-white"

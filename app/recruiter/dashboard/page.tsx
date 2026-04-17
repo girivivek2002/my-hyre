@@ -94,160 +94,11 @@ export default function RecruiterDashboard() {
     visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
   };
 
-  if (!mounted || isLoading) return (
-    <div className="min-h-screen bg-[#050505] flex items-center justify-center text-blue-500 font-bold tracking-widest uppercase animate-pulse">
-      Syncing Intelligence Pipeline...
-    </div>
-  );
+  if (!mounted) return null;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white flex overflow-hidden selection:bg-blue-500/30 font-sans transition-colors duration-300">
-
-      {/* Ambient Background Glow */}
-      <div className="absolute top-[-20%] left-[-10%] w-[120%] h-[120%] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100/50 via-slate-50 to-slate-50 dark:from-blue-900/10 dark:via-neutral-950 dark:to-[#050505] pointer-events-none -z-10 blur-[100px]"></div>
-
-      {/* Sidebar */}
-      <motion.div
-        initial={{ x: -100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 200, damping: 20 }}
-        className="w-72 bg-white/50 dark:bg-neutral-950/50 backdrop-blur-2xl border-r border-slate-200 dark:border-neutral-800/60 p-6 flex flex-col z-20 shrink-0 shadow-2xl relative"
-      >
-        <div className="flex items-center gap-3 mb-10 pl-2">
-          <Image src="/logo.png" alt="Logo" width={32} height={32} className="rounded-lg shadow-[0_0_15px_rgba(59,130,246,0.3)]" />
-          <div>
-            <h1 className="text-xl font-bold tracking-tight">Mr. Hyre</h1>
-            <p className="text-[10px] text-blue-400 font-semibold tracking-widest uppercase">Intelligence</p>
-          </div>
-        </div>
-
-        <div className="space-y-2 text-slate-600 dark:text-neutral-400 flex-1">
-          {[
-            { icon: <LayoutDashboard size={20} />, label: "Dashboard", active: true },
-            { icon: <Users size={20} />, label: "Candidates", path: "/recruiter/candidates" },
-            { icon: <Briefcase size={20} />, label: "Jobs", path: "/recruiter/post-job" },
-            { icon: <BarChart3 size={20} />, label: "Analytics", path: "/recruiter/analytics" },
-            { icon: <CalendarDays size={20} />, label: "Schedule", path: "/recruiter/schedule" },
-          ].map((item, i) => (
-            <div
-              key={i}
-              onClick={() => item.path && router.push(item.path)}
-              className={`flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer transition-all duration-300 font-medium ${item.active ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 shadow-inner' : 'hover:bg-slate-100 dark:hover:bg-neutral-900 hover:text-slate-900 dark:hover:text-white border border-transparent'}`}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </div>
-          ))}
-
-          <div className="mt-8 mb-2 px-4 text-xs font-semibold tracking-widest text-slate-400 dark:text-neutral-600 uppercase">Configuration</div>
-          <div onClick={() => router.push("/recruiter/settings")} className="flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer transition-all duration-300 hover:bg-slate-100 dark:hover:bg-neutral-900 hover:text-slate-900 dark:hover:text-white border border-transparent font-medium">
-            <Settings size={20} />
-            <span>Settings</span>
-          </div>
-        </div>
-
-        {/* Post Job Button */}
-        <motion.button
-          whileHover={{ scale: 1.02, y: -2 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => router.push("/recruiter/post-job")}
-          className="w-full bg-gradient-to-tr from-blue-600 to-indigo-500 text-white px-4 py-3.5 rounded-xl font-bold flex justify-center items-center gap-2 shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] transition-all"
-        >
-          <Plus size={18} strokeWidth={3} />
-          Post New Job
-        </motion.button>
-      </motion.div>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
-
-        {/* Topbar */}
-        <motion.div
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.1, type: "spring", stiffness: 200, damping: 20 }}
-          className="h-20 border-b border-slate-200 dark:border-neutral-800/60 bg-white/30 dark:bg-neutral-950/30 backdrop-blur-md px-10 flex justify-between items-center z-10 shrink-0"
-        >
-          <div className="relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-neutral-500 group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors" size={20} />
-            <input
-              placeholder="Search algorithms or candidates..."
-              className="bg-slate-100/50 dark:bg-neutral-900/50 border border-slate-200 dark:border-neutral-800/80 px-4 py-2.5 pl-12 rounded-full w-[400px] text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-500/50 focus:bg-white dark:focus:bg-neutral-900 focus:ring-1 focus:ring-blue-500/50 transition-all shadow-inner"
-            />
-          </div>
-
-          <div className="flex items-center gap-6">
-            <div className="relative">
-              <button 
-                onClick={() => { setShowNotifications(!showNotifications); setShowProfileMenu(false); }}
-                className="relative text-slate-400 hover:text-slate-900 dark:text-neutral-400 dark:hover:text-white transition-colors p-2"
-              >
-                <Bell size={22} />
-                <span className="absolute top-1 right-1 w-2.5 h-2.5 bg-blue-500 border-2 border-white dark:border-neutral-950 rounded-full"></span>
-              </button>
-              
-              {showNotifications && (
-                <div className="absolute right-0 mt-3 w-80 bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl shadow-xl z-50 overflow-hidden">
-                  <div className="p-4 border-b border-slate-100 dark:border-neutral-800">
-                    <h3 className="font-bold text-slate-900 dark:text-white">Notifications</h3>
-                  </div>
-                  <div className="p-4 text-center text-sm text-slate-500 dark:text-neutral-400">
-                    You're all caught up!
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="w-px h-8 bg-slate-200 dark:bg-neutral-800"></div>
-
-            <div className="relative">
-              <div 
-                className="flex items-center gap-3 cursor-pointer group"
-                onClick={() => { setShowProfileMenu(!showProfileMenu); setShowNotifications(false); }}
-              >
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-lg">
-                  {userData?.name?.slice(0,2).toUpperCase()}
-                </div>
-                <div className="hidden md:block">
-                  <p className="text-sm font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{userData?.name || "Initializing..."}</p>
-                  <p className="text-[11px] text-slate-500 dark:text-neutral-500 font-medium tracking-tight uppercase">Corporate Node</p>
-                </div>
-                <ChevronDown size={16} className={`text-slate-400 dark:text-neutral-500 transition-transform ${showProfileMenu ? 'rotate-180' : ''}`} />
-              </div>
-
-              {showProfileMenu && (
-                <div className="absolute right-0 mt-4 w-56 bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl shadow-xl z-50 overflow-hidden flex flex-col py-2">
-                  <div className="px-4 py-3 border-b border-slate-100 dark:border-neutral-800 mb-2">
-                    <p className="text-sm font-bold text-slate-900 dark:text-white truncate">{userData?.name}</p>
-                    <p className="text-xs text-slate-500 dark:text-neutral-400 truncate">{userData?.email}</p>
-                  </div>
-                  
-                  <button onClick={() => router.push("/recruiter/profile")} className="w-full text-left px-4 py-2 text-sm font-medium text-slate-600 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-800 flex items-center gap-3 transition-colors">
-                    <User size={16} /> My Profile
-                  </button>
-                  <button onClick={() => router.push("/recruiter/settings")} className="w-full text-left px-4 py-2 text-sm font-medium text-slate-600 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-800 flex items-center gap-3 transition-colors">
-                    <Settings size={16} /> Settings
-                  </button>
-                  
-                  <div className="h-px bg-slate-100 dark:bg-neutral-800 my-2"></div>
-                  
-                  <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-3 transition-colors">
-                    <LogOut size={16} /> Logout
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Scrollable Dashboard Area */}
-        <motion.div
-          variants={containerVars}
-          initial="hidden"
-          animate="visible"
-          className="flex-1 overflow-y-auto px-6 sm:px-10 py-8 pb-20 custom-scrollbar"
-        >
-          <div className="max-w-7xl mx-auto">
+    <div className="flex-1 overflow-y-auto px-6 sm:px-10 py-8 pb-20 custom-scrollbar">
+      <div className="max-w-7xl mx-auto">
 
             {/* Welcome */}
             <motion.div variants={itemVars} className="mb-10">
@@ -316,10 +167,6 @@ export default function RecruiterDashboard() {
                    </motion.div>
                 </div>
             </div>
-
-          </div>
-        </motion.div>
-      </div>
-    </div>
-  );
+        </div>
+    );
 }

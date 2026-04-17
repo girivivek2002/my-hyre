@@ -107,76 +107,6 @@ export default function InterviewsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white flex overflow-hidden selection:bg-blue-500/30 font-sans transition-colors duration-300">
-
-      {/* Ambient Background Glow */}
-      <div className="absolute top-[-10%] right-[-10%] w-[80%] h-[80%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-transparent dark:from-blue-900/10 dark:via-transparent dark:to-transparent pointer-events-none -z-10 blur-[120px]"></div>
-      <div className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[60%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-100/30 via-transparent to-transparent dark:from-indigo-900/10 dark:via-transparent dark:to-transparent pointer-events-none -z-10 blur-[100px]"></div>
-
-      {/* Sidebar */}
-      <motion.div
-        initial={{ x: -100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 200, damping: 20 }}
-        className="w-72 bg-white/50 dark:bg-neutral-950/50 backdrop-blur-2xl border-r border-slate-200 dark:border-neutral-800/60 p-6 flex flex-col z-20 shrink-0 shadow-2xl relative"
-      >
-        <div className="flex items-center gap-3 mb-10 pl-2 cursor-pointer" onClick={() => router.push("/candidate/dashboard")}>
-          <Image src="/logo.png" alt="Logo" width={32} height={32} className="rounded-lg shadow-[0_0_15px_rgba(59,130,246,0.3)]" />
-          <div>
-            <h1 className="text-xl font-bold tracking-tight">Mr. Hyre</h1>
-            <p className="text-[10px] text-blue-500 font-bold tracking-widest uppercase">Candidate Hub</p>
-          </div>
-        </div>
-
-        <div className="space-y-2 text-slate-600 dark:text-neutral-400 flex-1">
-          {[
-            { icon: <LayoutDashboard size={20} />, label: "Dashboard", path: "/candidate/dashboard" },
-            { icon: <Briefcase size={20} />, label: "Shortlisted Roles", path: "/candidate/jobs" },
-            { icon: <CalendarDays size={20} />, label: "Interviews", active: true },
-            { icon: <BarChart3 size={20} />, label: "Talent Profile", path: "/candidate/profile" },
-          ].map((item, i) => (
-            <div
-              key={i}
-              onClick={() => item.path && router.push(item.path)}
-              className={`flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer transition-all duration-300 font-medium ${item.active ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 shadow-inner' : 'hover:bg-slate-100 dark:hover:bg-neutral-900 hover:text-slate-900 dark:hover:text-white border border-transparent'}`}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </div>
-          ))}
-
-          <div className="mt-8 mb-2 px-4 text-xs font-semibold tracking-widest text-slate-400 dark:text-neutral-600 uppercase">System</div>
-          <div onClick={() => router.push("/candidate/settings")} className="flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer transition-all duration-300 hover:bg-slate-100 dark:hover:bg-neutral-900 hover:text-slate-900 dark:hover:text-white border border-transparent font-medium">
-            <Settings size={20} />
-            <span>Settings</span>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
-
-        {/* Topbar */}
-        <motion.div
-           initial={{ y: -50, opacity: 0 }}
-           animate={{ y: 0, opacity: 1 }}
-           transition={{ delay: 0.1, type: "spring", stiffness: 200, damping: 20 }}
-           className="h-20 border-b border-slate-200 dark:border-neutral-800/60 bg-white/30 dark:bg-neutral-950/30 backdrop-blur-md px-10 flex justify-between items-center z-10 shrink-0"
-        >
-          <h2 className="text-sm font-bold tracking-widest uppercase text-slate-400 dark:text-neutral-500">Interview Architecture</h2>
-          <div className="flex items-center gap-6">
-            <button className="flex items-center gap-2 bg-blue-500/10 text-blue-500 border border-blue-500/20 px-4 py-2 rounded-xl text-xs font-bold hover:bg-blue-500/20 transition-all">
-               <Calendar size={14} /> Sync External Calendar
-            </button>
-            <div className="w-px h-6 bg-slate-200 dark:bg-neutral-800"></div>
-            <div className="flex items-center gap-3 cursor-pointer group">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-lg">
-                SA
-              </div>
-              <ChevronDown size={14} className="text-slate-400 dark:text-neutral-500 group-hover:text-blue-600 transition-colors" />
-            </div>
-          </div>
-        </motion.div>
 
         {/* Scrollable Content */}
         <motion.div
@@ -353,7 +283,5 @@ export default function InterviewsPage() {
 
           </div>
         </motion.div>
-      </div>
-    </div>
   );
 }

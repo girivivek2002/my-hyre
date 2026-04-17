@@ -85,71 +85,6 @@ export default function SchedulePage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white flex overflow-hidden selection:bg-blue-500/30 font-sans transition-colors duration-300">
-            <div className="absolute top-[-20%] left-[-10%] w-[120%] h-[120%] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100/50 via-slate-50 to-slate-50 dark:from-blue-900/10 dark:via-neutral-950 dark:to-[#050505] pointer-events-none -z-10 blur-[100px]" />
-
-            {/* ── Sidebar ──────────────────────────────────────────── */}
-            <motion.div
-                initial={{ x: -100, opacity: 0 }} animate={{ x: 0, opacity: 1 }}
-                transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                className="w-72 bg-white/50 dark:bg-neutral-950/50 backdrop-blur-2xl border-r border-slate-200 dark:border-neutral-800/60 p-6 flex flex-col z-20 shrink-0 shadow-2xl"
-            >
-                <div className="flex items-center gap-3 mb-10 pl-2 cursor-pointer" onClick={() => router.push("/recruiter/dashboard")}>
-                    <Image src="/logo.png" alt="Logo" width={32} height={32} className="rounded-lg shadow-[0_0_15px_rgba(59,130,246,0.3)]" />
-                    <div>
-                        <h1 className="text-xl font-bold tracking-tight">Mr. Hyre</h1>
-                        <p className="text-[10px] text-blue-400 font-semibold tracking-widest uppercase">Intelligence</p>
-                    </div>
-                </div>
-                <div className="space-y-2 text-slate-600 dark:text-neutral-400 flex-1">
-                    {[
-                        { icon: <LayoutDashboard size={20} />, label: "Dashboard", path: "/recruiter/dashboard" },
-                        { icon: <Briefcase size={20} />, label: "Active Jobs", path: "/recruiter/post-job" },
-                        { icon: <Users size={20} />, label: "Candidates", path: "/recruiter/candidates" },
-                        { icon: <BarChart3 size={20} />, label: "Analytics", path: "/recruiter/analytics" },
-                        { icon: <CalendarDays size={20} />, label: "Schedule", active: true },
-                    ].map((item, i) => (
-                        <div key={i} onClick={() => item.path && router.push(item.path)}
-                            className={`flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer transition-all duration-300 font-medium ${item.active ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 shadow-inner' : 'hover:bg-slate-100 dark:hover:bg-neutral-900 hover:text-slate-900 dark:hover:text-white border border-transparent'}`}>
-                            {item.icon}
-                            <span>{item.label}</span>
-                        </div>
-                    ))}
-                    <div className="mt-8 mb-2 px-4 text-xs font-semibold tracking-widest text-slate-400 dark:text-neutral-600 uppercase">Configuration</div>
-                    <div onClick={() => router.push("/recruiter/settings")} className="flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer transition-all duration-300 hover:bg-slate-100 dark:hover:bg-neutral-900 hover:text-slate-900 dark:hover:text-white border border-transparent font-medium">
-                        <Settings size={20} /><span>Settings</span>
-                    </div>
-                </div>
-            </motion.div>
-
-            {/* ── Main ─────────────────────────────────────────────── */}
-            <div className="flex-1 flex flex-col h-screen overflow-hidden">
-
-                {/* Topbar */}
-                <motion.div initial={{ y: -50, opacity: 0 }} animate={{ y: 0, opacity: 1 }}
-                    transition={{ delay: 0.1, type: "spring", stiffness: 200, damping: 20 }}
-                    className="h-20 border-b border-slate-200 dark:border-neutral-800/60 bg-white/30 dark:bg-neutral-950/30 backdrop-blur-md px-10 flex justify-between items-center z-10 shrink-0">
-                    <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-neutral-500 group-focus-within:text-blue-500 dark:group-focus-within:text-blue-400 transition-colors" size={20} />
-                        <input placeholder="Search meetings..." className="bg-slate-100/50 dark:bg-neutral-900/50 border border-slate-200 dark:border-neutral-800/80 px-4 py-2.5 pl-12 rounded-full w-[400px] text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-500 focus:outline-none focus:border-blue-500/50 dark:focus:border-blue-500/50 focus:bg-white dark:focus:bg-neutral-900 focus:ring-1 focus:ring-blue-500/50 transition-all shadow-inner dark:shadow-none" />
-                    </div>
-                    <div className="flex items-center gap-6">
-                        <button className="relative text-slate-400 hover:text-slate-900 dark:text-neutral-400 dark:hover:text-white transition-colors">
-                            <Bell size={22} /><span className="absolute top-0 right-0 w-2.5 h-2.5 bg-blue-500 border-2 border-white dark:border-neutral-950 rounded-full" />
-                        </button>
-                        <div className="w-px h-8 bg-slate-200 dark:bg-neutral-800" />
-                        <div className="flex items-center gap-3 cursor-pointer group">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-200 to-slate-100 dark:from-neutral-700 dark:to-neutral-900 border border-slate-300 dark:border-neutral-700 overflow-hidden relative shadow-[0_0_10px_rgba(0,0,0,0.1)] dark:shadow-[0_0_10px_rgba(0,0,0,0.5)]">
-                                <Image src="/logo.png" alt="Profile" fill className="object-cover opacity-80" />
-                            </div>
-                            <div className="hidden md:block">
-                                <p className="text-sm font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">Sterling & Co.</p>
-                                <p className="text-[11px] text-slate-500 dark:text-neutral-500 font-medium">Enterprise Admin</p>
-                            </div>
-                            <ChevronDown size={16} className="text-slate-400 dark:text-neutral-500 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors ml-1" />
-                        </div>
-                    </div>
-                </motion.div>
 
                 {/* ── Content ──────────────────────────────────────── */}
                 <motion.div variants={containerVars} initial="hidden" animate="visible"
@@ -383,7 +318,5 @@ export default function SchedulePage() {
 
                     </div>
                 </motion.div>
-            </div>
-        </div>
     );
 }

@@ -216,32 +216,9 @@ export default function CandidateProfile() {
     </div>
   );
 
-  return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white selection:bg-blue-500/30 font-sans transition-colors duration-300 relative overflow-x-hidden">
+    return (
+      <main className="flex-1 overflow-y-auto max-w-6xl mx-auto px-6 sm:px-12 lg:px-20 py-16 pb-32 custom-scrollbar">
 
-      {/* Extraordinary Ambient Glows */}
-      <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-blue-600/10 blur-[140px] rounded-full pointer-events-none -z-10"></div>
-      <div className="absolute bottom-[-10%] left-[-10%] w-[60%] h-[60%] bg-indigo-600/10 blur-[140px] rounded-full pointer-events-none -z-10"></div>
-
-      {/* Header */}
-      <motion.nav 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="px-6 sm:px-12 lg:px-20 py-8 flex justify-between items-center relative z-20 backdrop-blur-sm border-b border-slate-200/50 dark:border-neutral-800/50"
-      >
-        <div className="flex items-center gap-3 cursor-pointer" onClick={() => router.push("/candidate/dashboard")}>
-          <Image src="/logo.png" alt="Logo" width={32} height={32} className="rounded-xl shadow-lg" />
-          <div>
-            <span className="text-xl font-bold tracking-tight">Mr. Hyre</span>
-            <span className="ml-2 text-[10px] font-bold text-blue-500 tracking-widest uppercase">Candidate Platform</span>
-          </div>
-        </div>
-        <button className="text-sm font-semibold text-slate-500 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white transition-colors bg-white/50 dark:bg-neutral-900 px-5 py-2.5 rounded-full border border-slate-200 dark:border-neutral-800 shadow-sm">
-          Need Help?
-        </button>
-      </motion.nav>
-
-      <main className="max-w-6xl mx-auto px-6 sm:px-12 lg:px-20 py-16 pb-32">
         
         {/* Hero Title */}
         <motion.div 
@@ -436,15 +413,6 @@ export default function CandidateProfile() {
 
         </motion.div>
       </main>
-
-      {/* Extraordinary Scroll Progress (Side) */}
-      <div className="fixed right-8 top-1/2 -translate-y-1/2 flex flex-col gap-3 pointer-events-none hidden lg:flex">
-        {[0, 1, 2, 3, 4].map(i => (
-          <div key={i} className={`w-1 h-8 rounded-full bg-slate-200 dark:bg-neutral-800 transition-all duration-500 ${i === 0 ? 'bg-blue-500 h-12' : ''}`}></div>
-        ))}
-      </div>
-
-    </div>
   );
 }
 

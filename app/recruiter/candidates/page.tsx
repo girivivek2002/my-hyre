@@ -120,58 +120,7 @@ export default function CandidatesPage() {
     );
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white flex overflow-hidden selection:bg-blue-500/30 font-sans transition-colors duration-300">
-
-            <div className="absolute top-[-20%] left-[-10%] w-[120%] h-[120%] bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-100/50 via-slate-50 to-slate-50 dark:from-blue-900/10 dark:via-neutral-950 dark:to-[#050505] pointer-events-none -z-10 blur-[100px]" />
-
-            <motion.div
-                initial={{ x: -100, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                className="w-72 bg-white/50 dark:bg-neutral-950/50 backdrop-blur-2xl border-r border-slate-200 dark:border-neutral-800/60 p-6 flex flex-col z-20 shrink-0 shadow-2xl"
-            >
-                <div className="flex items-center gap-3 mb-10 pl-2 cursor-pointer" onClick={() => router.push("/recruiter/dashboard")}>
-                    <Image src="/logo.png" alt="Logo" width={32} height={32} className="rounded-lg shadow-[0_0_15px_rgba(59,130,246,0.3)]" />
-                    <div>
-                        <h1 className="text-xl font-bold tracking-tight">Mr. Hyre</h1>
-                        <p className="text-[10px] text-blue-400 font-semibold tracking-widest uppercase">Intelligence</p>
-                    </div>
-                </div>
-
-                <div className="space-y-2 text-slate-600 dark:text-neutral-400 flex-1">
-                    {[
-                        { icon: <LayoutDashboard size={20} />, label: "Dashboard", path: "/recruiter/dashboard" },
-                        { icon: <Briefcase size={20} />, label: "Active Jobs", path: "/recruiter/post-job" },
-                        { icon: <Users size={20} />, label: "Candidates", active: true },
-                        { icon: <BarChart3 size={20} />, label: "Analytics", path: "/recruiter/analytics" },
-                    ].map((item, i) => (
-                        <div
-                            key={i}
-                            onClick={() => item.path && router.push(item.path)}
-                            className={`flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer transition-all duration-300 font-medium ${item.active ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 shadow-inner' : 'hover:bg-slate-100 dark:hover:bg-neutral-900 hover:text-slate-900 dark:hover:text-white border border-transparent'}`}
-                        >
-                            {item.icon}
-                            <span>{item.label}</span>
-                        </div>
-                    ))}
-                </div>
-            </motion.div>
-
-            <div className="flex-1 flex flex-col h-screen overflow-hidden">
-                <div className="h-20 border-b border-slate-200 dark:border-neutral-800/60 bg-white/30 dark:bg-neutral-950/30 backdrop-blur-md px-10 flex justify-between items-center shrink-0">
-                    <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-neutral-500 group-focus-within:text-blue-500 transition-colors" size={20} />
-                        <input
-                            placeholder="Search citizens..."
-                            className="bg-slate-100/50 dark:bg-neutral-900/50 border border-slate-200 dark:border-neutral-800 px-4 py-2.5 pl-12 rounded-full w-[400px] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500/50 transition-all"
-                        />
-                    </div>
-                    <div className="flex items-center gap-3 cursor-pointer group">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold">
-                            {candidates[0]?.initials || "R"}
-                        </div>
-                        <ChevronDown size={16} className="text-slate-400" />
-                    </div>
-                </div>
+    return (
 
                 <div className="flex-1 flex overflow-hidden">
                     <div className="w-[420px] shrink-0 border-r border-slate-200 dark:border-neutral-800/60 flex flex-col bg-slate-100/50 dark:bg-neutral-950/20">
@@ -282,7 +231,5 @@ export default function CandidatesPage() {
                         </AnimatePresence>
                     </div>
                 </div>
-            </div>
-        </div>
     );
 }

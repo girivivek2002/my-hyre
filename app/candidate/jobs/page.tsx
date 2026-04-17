@@ -102,61 +102,7 @@ export default function CandidateJobsPage() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white flex overflow-hidden selection:bg-blue-500/30 font-sans transition-colors duration-300">
-
-      {/* Ambient Background Glow */}
-      <div className="absolute top-[-10%] right-[-10%] w-[80%] h-[80%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-transparent dark:from-blue-900/10 dark:via-transparent dark:to-transparent pointer-events-none -z-10 blur-[120px]"></div>
-
-      {/* Sidebar */}
-      <motion.div
-        initial={{ x: -100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        className="w-72 bg-white/50 dark:bg-neutral-950/50 backdrop-blur-2xl border-r border-slate-200 dark:border-neutral-800/60 p-6 flex flex-col z-20 shrink-0 shadow-2xl relative"
-      >
-        <div className="flex items-center gap-3 mb-10 pl-2 cursor-pointer" onClick={() => router.push("/candidate/dashboard")}>
-          <Image src="/logo.png" alt="Logo" width={32} height={32} className="rounded-lg shadow-[0_0_15px_rgba(59,130,246,0.3)]" />
-          <div>
-            <h1 className="text-xl font-bold tracking-tight">Mr. Hyre</h1>
-            <p className="text-[10px] text-blue-500 font-bold tracking-widest uppercase">Candidate Hub</p>
-          </div>
-        </div>
-
-        <div className="space-y-2 text-slate-600 dark:text-neutral-400 flex-1">
-          {[
-            { icon: <LayoutDashboard size={20} />, label: "Dashboard", path: "/candidate/dashboard" },
-            { icon: <Briefcase size={20} />, label: "Shortlisted Roles", active: true },
-            { icon: <CalendarDays size={20} />, label: "Interviews", path: "/candidate/interviews" },
-            { icon: <BarChart3 size={20} />, label: "Talent Profile", path: "/candidate/profile" },
-          ].map((item, i) => (
-            <div
-              key={i}
-              onClick={() => item.path && router.push(item.path)}
-              className={`flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer transition-all duration-300 font-medium ${item.active ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 shadow-inner' : 'hover:bg-slate-100 dark:hover:bg-neutral-900 hover:text-slate-900 dark:hover:text-white border border-transparent'}`}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </div>
-          ))}
-        </div>
-      </motion.div>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col h-screen overflow-hidden">
-        <div className="h-20 border-b border-white/5 bg-white/5 backdrop-blur-md px-10 flex justify-between items-center z-10 shrink-0">
-          <div className="relative group max-w-md w-full">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500" size={18} />
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search intelligence nodes..."
-              className="bg-neutral-900/50 border border-neutral-800/80 px-4 py-2 pl-11 rounded-full w-full text-sm text-white focus:outline-none focus:border-blue-500/50 transition-all"
-            />
-          </div>
-          <div className="flex items-center gap-3">
-             <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center font-bold text-white text-xs">{userName.slice(0,2)}</div>
-             <p className="text-sm font-bold">{userName}</p>
-          </div>
-        </div>
+    return (
 
         <motion.div
           variants={containerVars}
@@ -197,7 +143,5 @@ export default function CandidateJobsPage() {
             </div>
           </div>
         </motion.div>
-      </div>
-    </div>
-  );
+    );
 }

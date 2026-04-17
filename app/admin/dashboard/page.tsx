@@ -146,74 +146,9 @@ export default function AdminDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-[#020202] text-white flex overflow-hidden font-sans">
-      
-      {/* Dynamic Background Glows */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] right-[-10%] w-[60%] h-[60%] bg-blue-600/5 blur-[150px] rounded-full" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-indigo-600/5 blur-[120px] rounded-full" />
-      </div>
+    return (
+        <main className="flex-1 overflow-y-auto custom-scrollbar relative z-10 p-10">
 
-      {/* Sidebar */}
-      <motion.aside 
-        initial={{ x: -100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        className="w-72 border-r border-white/5 bg-black/40 backdrop-blur-3xl p-8 flex flex-col z-20 shrink-0"
-      >
-        <div className="flex items-center gap-3 mb-10">
-          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-            <Shield size={24} className="text-black" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold tracking-tight">System Admin</h1>
-            <p className="text-[10px] text-zinc-500 font-bold tracking-widest uppercase">Authority Node</p>
-          </div>
-        </div>
-
-        <nav className="space-y-2 flex-1">
-          {menuItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl transition-all group ${activeTab === item.id ? 'bg-white/10 text-white border border-white/10 shadow-lg' : 'text-zinc-500 hover:text-white hover:bg-white/5'}`}
-            >
-              <item.icon size={20} className={activeTab === item.id ? "text-blue-400" : "group-hover:text-white"} />
-              <span className="font-semibold text-sm tracking-wide">{item.label}</span>
-              {activeTab === item.id && <ChevronRight size={14} className="ml-auto opacity-50" />}
-            </button>
-          ))}
-        </nav>
-
-        <div className="mt-auto pt-8 border-t border-white/5">
-          <button 
-            onClick={handleLogout}
-            className="w-full flex items-center gap-4 px-4 py-3.5 rounded-2xl text-red-400 hover:bg-red-500/10 transition-all font-semibold text-sm"
-          >
-            <LogOut size={20} />
-            Logout Session
-          </button>
-        </div>
-      </motion.aside>
-
-      {/* Main Content Area */}
-      <main className="flex-1 h-screen overflow-y-auto custom-scrollbar relative z-10 p-10">
-        
-        {/* Header */}
-        <header className="flex justify-between items-center mb-12">
-          <div>
-            <h2 className="text-4xl font-extrabold tracking-tight mb-2">
-              System <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Intelligence</span>
-            </h2>
-            <p className="text-zinc-500 font-medium">Monitoring platform-wide operational metrics and authority nodes.</p>
-          </div>
-          <motion.div 
-            whileHover={{ scale: 1.05 }}
-            className="flex items-center gap-4 bg-white/5 border border-white/10 px-6 py-3 rounded-2xl backdrop-blur-md"
-          >
-            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
-            <span className="text-xs font-bold tracking-widest uppercase">Live Connection</span>
-          </motion.div>
-        </header>
 
         <AnimatePresence mode="wait">
         {activeTab === "overview" && (
@@ -427,14 +362,8 @@ export default function AdminDashboard() {
         </AnimatePresence>
 
       </main>
-
-      {/* Decorative Sidebar Dots */}
-      <div className="fixed right-6 top-1/2 -translate-y-1/2 flex flex-col gap-3 z-50">
-        {[0, 1, 2].map((i) => (
-          <div key={i} className={`w-1 h-${i === 0 ? '6' : '1'} rounded-full bg-blue-500/20 transition-all`} />
-        ))}
-      </div>
-
-    </div>
+      </main>
+    );
+}
   );
 }

@@ -81,10 +81,9 @@ export default function SettingsPage() {
     };
 
     return (
-                {/* ── Content ──────────────────────────────────────── */}
-                <motion.div variants={containerVars} initial="hidden" animate="visible"
-                    className="flex-1 overflow-y-auto px-6 sm:px-10 py-8 pb-20 custom-scrollbar">
-                    <div className="max-w-5xl mx-auto">
+    <motion.div variants={containerVars} initial="hidden" animate="visible"
+        className="flex-1 overflow-y-auto px-6 sm:px-10 py-8 pb-20 custom-scrollbar">
+        <div className="max-w-5xl mx-auto">
 
                         {/* Header */}
                         <motion.div variants={itemVars} className="mb-8">

@@ -102,7 +102,6 @@ export default function CandidateJobsPage() {
   );
 
   return (
-    return (
 
         <motion.div
           variants={containerVars}

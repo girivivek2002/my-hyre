@@ -146,7 +146,6 @@ export default function AdminDashboard() {
   );
 
   return (
-    return (
         <main className="flex-1 overflow-y-auto custom-scrollbar relative z-10 p-10">
 
 
@@ -361,9 +360,6 @@ export default function AdminDashboard() {
         )}
         </AnimatePresence>
 
-      </main>
-      </main>
-    );
-}
+    </main>
   );
 }

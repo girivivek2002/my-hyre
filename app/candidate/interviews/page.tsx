@@ -107,14 +107,12 @@ export default function InterviewsPage() {
   };
 
   return (
-
-        {/* Scrollable Content */}
-        <motion.div
-          variants={containerVars}
-          initial="hidden"
-          animate="visible"
-          className="flex-1 overflow-y-auto px-6 sm:px-10 py-8 pb-32 custom-scrollbar"
-        >
+    <motion.div
+      variants={containerVars}
+      initial="hidden"
+      animate="visible"
+      className="flex-1 overflow-y-auto px-6 sm:px-10 py-8 pb-32 custom-scrollbar"
+    >
           <div className="max-w-6xl mx-auto">
 
             {/* Hero Section */}

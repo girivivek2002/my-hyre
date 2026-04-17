@@ -64,7 +64,6 @@ export default function CompanyProfile() {
     if (!mounted) return null;
 
     return (
-    return (
                 {/* Scrollable Content */}
                 <motion.div variants={containerVars} initial="hidden" animate="visible"
                     className="flex-1 overflow-y-auto px-6 sm:px-10 py-8 pb-32 custom-scrollbar">

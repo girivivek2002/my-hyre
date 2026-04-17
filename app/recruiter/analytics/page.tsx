@@ -373,6 +373,6 @@ export default function AnalyticsPage() {
                         </motion.div>
 
                     </div>
-                </motion.div>
-    );
-}
+              </motion.div>
+        );
+      }

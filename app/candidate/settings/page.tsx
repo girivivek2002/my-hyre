@@ -108,7 +108,6 @@ export default function CandidateSettingsPage() {
   if (!mounted) return null;
 
   return (
-    return (
         <motion.div
            variants={containerVars}
            initial="hidden"

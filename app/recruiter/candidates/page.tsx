@@ -120,7 +120,6 @@ export default function CandidatesPage() {
     );
 
     return (
-    return (
 
                 <div className="flex-1 flex overflow-hidden">
                     <div className="w-[420px] shrink-0 border-r border-slate-200 dark:border-neutral-800/60 flex flex-col bg-slate-100/50 dark:bg-neutral-950/20">

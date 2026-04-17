@@ -119,7 +119,9 @@ export default function CandidateDashboard() {
     visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
   };
 
-  if (!mounted || isLoading) return (
+  if (!mounted) return null;
+
+  return (
     <motion.div
           variants={containerVars}
           initial="hidden"
@@ -305,5 +307,5 @@ export default function CandidateDashboard() {
 
           </div>
         </motion.div>
-      );
-    }
+    );
+}

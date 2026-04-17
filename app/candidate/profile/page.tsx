@@ -207,17 +207,11 @@ export default function CandidateProfile() {
     visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 20, duration: 0.8 } }
   };
 
-  if (!mounted || isLoading) return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#050505] flex flex-col items-center justify-center text-slate-500 gap-4">
-      <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 2, ease: "linear" }}>
-        <Sparkles size={40} className="text-blue-500" />
-      </motion.div>
-      <div className="text-xs font-bold tracking-widest uppercase animate-pulse">Syncing Intelligence Matrix...</div>
-    </div>
-  );
+  if (!mounted) return null;
 
-    return (
-      <main className="flex-1 overflow-y-auto max-w-6xl mx-auto px-6 sm:px-12 lg:px-20 py-16 pb-32 custom-scrollbar">
+  return (
+    <main className="flex-1 overflow-y-auto max-w-6xl mx-auto px-6 sm:px-12 lg:px-20 py-16 pb-32 custom-scrollbar">
+
 
         
         {/* Hero Title */}

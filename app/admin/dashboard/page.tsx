@@ -138,12 +138,13 @@ export default function AdminDashboard() {
   ];
 
   if (isLoading && !stats) return (
-    <div className="min-h-screen bg-[#020202] flex items-center justify-center">
+    <div className="flex-1 flex items-center justify-center p-10">
       <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
         <RefreshCw size={40} className="text-blue-500" />
       </motion.div>
     </div>
   );
+
 
   return (
         <main className="flex-1 overflow-y-auto custom-scrollbar relative z-10 p-10">

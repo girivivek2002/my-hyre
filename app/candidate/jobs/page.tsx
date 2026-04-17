@@ -96,10 +96,11 @@ export default function CandidateJobsPage() {
   };
 
   if (isLoading) return (
-    <div className="min-h-screen bg-[#050505] flex items-center justify-center text-blue-500 font-bold tracking-widest uppercase animate-pulse">
+    <div className="flex-1 flex items-center justify-center text-blue-500 font-bold tracking-widest uppercase animate-pulse">
       Initialising Intelligence Roadmap...
     </div>
   );
+
 
   return (
 

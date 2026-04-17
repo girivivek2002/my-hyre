@@ -119,14 +119,11 @@ export default function AnalyticsPage() {
     const weeklyHires = [4, 6, 3, 8, 5, 7, 9];
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white flex overflow-hidden selection:bg-blue-500/30 font-sans transition-colors duration-300">
+        <motion.div
+            variants={containerVars} initial="hidden" animate="visible"
+            className="flex-1 overflow-y-auto px-6 sm:px-10 py-8 pb-20 custom-scrollbar"
+        >
 
-            {/* Ambient Glow */}
-                {/* ── Scrollable Content ─────────────────────────────── */}
-                <motion.div
-                    variants={containerVars} initial="hidden" animate="visible"
-                    className="flex-1 overflow-y-auto px-6 sm:px-10 py-8 pb-20 custom-scrollbar"
-                >
                     <div className="max-w-7xl mx-auto">
 
                         {/* Header */}
@@ -373,7 +370,6 @@ export default function AnalyticsPage() {
                         </motion.div>
 
                     </div>
-                </motion.div>
-            </div>
-        );
-  }
+        </motion.div>
+    );
+}

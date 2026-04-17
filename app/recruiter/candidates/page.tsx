@@ -114,10 +114,11 @@ export default function CandidatesPage() {
     );
 
     if (isLoading) return (
-        <div className="min-h-screen bg-slate-50 dark:bg-[#050505] flex items-center justify-center text-slate-500 font-bold uppercase tracking-widest animate-pulse">
+        <div className="flex-1 flex items-center justify-center text-slate-500 font-bold uppercase tracking-widest animate-pulse">
             Synchronizing Citizen Nodes...
         </div>
     );
+
 
     return (
 

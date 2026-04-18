@@ -34,7 +34,7 @@ function GlassCard({ children, className = "" }: { children: ReactNode, classNam
         }}
       />
       <div className="absolute inset-0 bg-slate-50/80 dark:bg-neutral-950/80 -z-10" />
-      <div className="relative z-10 w-full h-full p-6">
+      <div className="relative z-10 w-full h-full p-4 sm:p-6">
         {children}
       </div>
     </div>
@@ -135,16 +135,16 @@ export default function CandidateDashboard() {
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-4">
                   <Zap size={10} fill="currentColor" /> Intelligence Sync Complete
                 </div>
-                <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">
+                <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 leading-tight">
                   Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-400">{userData?.name?.split(' ')[0]}</span>
                 </h1>
-                <p className="text-slate-500 dark:text-neutral-400 font-medium">
-                  Your AI profile is currently optimized for <strong className="text-slate-900 dark:text-white">Professional Growth</strong>.
+                <p className="text-slate-500 dark:text-neutral-400 text-sm sm:text-base font-medium">
+                  Your AI profile is optimized for <strong className="text-slate-900 dark:text-white">Professional Growth</strong>.
                 </p>
             </motion.div>
 
             {/* Stats Grid */}
-            <motion.div variants={itemVars} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <motion.div variants={itemVars} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
               {[
                 { title: "Citizens Stream", value: stats?.totalCitizens || 0, icon: <LayoutDashboard size={20} className="text-blue-500" />, trend: "Global pool size", color: "blue" },
                 { title: "Active Selections", value: stats?.activeJobs || 0, icon: <Briefcase size={20} className="text-purple-500" />, trend: "Recruiter shortlists", color: "purple" },
@@ -180,17 +180,17 @@ export default function CandidateDashboard() {
                   <div className="space-y-6">
                     {recentJobs.length > 0 ? (
                       recentJobs.slice(0, 3).map((job, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-neutral-900 border border-slate-100 dark:border-neutral-800 group hover:border-blue-500/30 transition-all">
+                        <div key={idx} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-neutral-900 border border-slate-100 dark:border-neutral-800 group hover:border-blue-500/30 transition-all gap-4">
                           <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-xl bg-white dark:bg-neutral-950 flex items-center justify-center font-bold text-blue-500 border border-slate-200 dark:border-neutral-800">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-neutral-950 flex items-center justify-center font-bold text-blue-500 border border-slate-200 dark:border-neutral-800 shrink-0">
                               {job.logo}
                             </div>
                             <div>
-                              <p className="text-sm font-bold">{job.role}</p>
-                              <p className="text-xs text-slate-500">{job.company}</p>
+                              <p className="text-sm font-bold truncate max-w-[150px] sm:max-w-none">{job.role}</p>
+                              <p className="text-xs text-slate-500 truncate max-w-[150px] sm:max-w-none">{job.company}</p>
                             </div>
                           </div>
-                          <div className="flex items-center gap-4">
+                          <div className="flex items-center justify-between w-full sm:w-auto gap-4">
                              <span className="px-2 py-1 rounded-md bg-blue-500/10 text-blue-500 text-[10px] font-bold uppercase tracking-widest">{job.status}</span>
                              <ArrowRight size={14} className="text-slate-300 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
                           </div>

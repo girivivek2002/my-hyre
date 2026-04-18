@@ -71,14 +71,14 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
           <motion.div 
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={() => setIsMobileMenuOpen(false)}
-            className="fixed inset-0 bg-neutral-950/80 backdrop-blur-sm z-40 md:hidden"
+            className="fixed inset-0 bg-neutral-950/80 backdrop-blur-sm z-[90] md:hidden"
           />
         )}
       </AnimatePresence>
 
       {/* Responsive Sidebar */}
       <div
-        className={`absolute md:relative w-72 h-full bg-white/90 dark:bg-neutral-950/90 backdrop-blur-3xl border-r border-slate-200 dark:border-neutral-800/60 p-6 flex flex-col z-50 shadow-2xl transition-transform duration-300 ease-in-out md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`absolute md:relative w-72 h-full bg-white/95 dark:bg-neutral-950/95 backdrop-blur-3xl border-r border-slate-200 dark:border-neutral-800/60 p-6 flex flex-col z-[100] md:z-30 shadow-2xl transition-transform duration-300 ease-in-out md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <div className="flex items-center justify-between mb-10 pl-2">
           <div className="flex items-center gap-3">
@@ -100,7 +100,9 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
               <div
                 key={i}
                 onClick={() => handleNavigation(item.path)}
-                className={`flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer transition-all duration-300 font-medium ${isActive ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 shadow-inner' : 'hover:bg-slate-100 dark:hover:bg-neutral-900 hover:text-slate-900 dark:hover:text-white border border-transparent'}`}
+                className={`flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer transition-all duration-300 font-bold group ${isActive 
+                  ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 shadow-[inset_0_2px_10px_rgba(59,130,246,0.1)]' 
+                  : 'hover:bg-slate-50 dark:hover:bg-neutral-900/60 hover:text-slate-900 dark:hover:text-white border border-transparent'}`}
               >
                 {item.icon}
                 <span>{item.label}</span>
@@ -117,7 +119,7 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
       </div>
 
       {/* Main Content Pane */}
-      <div className="flex-1 flex flex-col h-screen overflow-hidden w-full relative z-10 w-full">
+      <div className="flex-1 flex flex-col h-screen overflow-hidden w-full relative z-20">
         
         {/* Topbar */}
         <div className="h-20 border-b border-slate-200 dark:border-neutral-800/60 bg-white/30 dark:bg-neutral-950/30 backdrop-blur-md px-6 sm:px-10 flex justify-between items-center shrink-0">
@@ -140,7 +142,7 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
               </button>
               
               {showNotifications && (
-                <div className="absolute right-0 mt-3 w-80 bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl shadow-xl z-50 overflow-hidden">
+                <div className="absolute right-0 mt-3 w-80 bg-white dark:bg-neutral-900 border border-slate-200/60 dark:border-neutral-800 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.6)] z-[110] overflow-hidden">
                   <div className="p-4 border-b border-slate-100 dark:border-neutral-800">
                     <h3 className="font-bold text-slate-900 dark:text-white">System Notifications</h3>
                   </div>
@@ -169,7 +171,7 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
               </div>
 
               {showProfileMenu && (
-                <div className="absolute right-0 mt-4 w-56 bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl shadow-xl z-50 overflow-hidden flex flex-col py-2">
+                <div className="absolute right-0 mt-4 w-56 bg-white dark:bg-neutral-900 border border-slate-200/60 dark:border-neutral-800 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.2)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.6)] z-[110] overflow-hidden flex flex-col py-2">
                   <div className="px-4 py-3 border-b border-slate-100 dark:border-neutral-800 mb-2">
                     <p className="text-sm font-bold text-slate-900 dark:text-white truncate">{userName}</p>
                   </div>
@@ -193,7 +195,34 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
         </div>
 
         {/* Children Render Pane */}
-        {children}
+        <div className="flex-1 overflow-y-auto pb-24 md:pb-0">
+          {children}
+        </div>
+
+        {/* Mobile Bottom Navigation Bar */}
+        <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 px-4 pb-6 pt-2 pointer-events-none">
+          <div className="max-w-md mx-auto pointer-events-auto">
+             <div className="bg-white/80 dark:bg-neutral-950/80 backdrop-blur-2xl border border-slate-200/50 dark:border-neutral-800/50 rounded-2xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.5)] flex justify-between items-center px-2 py-2">
+                {links.slice(0, 4).map((item, i) => {
+                  const isActive = pathname === item.path;
+                  return (
+                    <div 
+                      key={i} 
+                      onClick={() => handleNavigation(item.path)}
+                      className="flex flex-col items-center justify-center flex-1 py-1 gap-1 cursor-pointer group"
+                    >
+                      <div className={`p-2 rounded-xl transition-all duration-300 ${isActive ? 'bg-blue-500 text-white shadow-[0_0_15px_rgba(59,130,246,0.5)] scale-110' : 'text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white'}`}>
+                        {React.cloneElement(item.icon as React.ReactElement, { size: 20 })}
+                      </div>
+                      <span className={`text-[10px] font-bold tracking-tight transition-colors ${isActive ? 'text-blue-500' : 'text-slate-400'}`}>
+                        {item.label}
+                      </span>
+                    </div>
+                  );
+                })}
+             </div>
+          </div>
+        </div>
 
       </div>
     </div>

@@ -23,7 +23,7 @@ function GlassCard({ children, className = "" }: { children: ReactNode, classNam
         <div onMouseMove={handleMouseMove} className={`group relative bg-white/60 dark:bg-neutral-900/40 backdrop-blur-md border border-slate-200 dark:border-neutral-800/60 rounded-3xl overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.2)] ${className}`}>
             <motion.div className="pointer-events-none absolute -inset-px opacity-0 transition duration-500 group-hover:opacity-100 z-[-1]" style={{ background: useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, rgba(59, 130, 246, 0.15), transparent 80%)` }} />
             <div className="absolute inset-0 bg-slate-50/80 dark:bg-neutral-950/80 -z-10" />
-            <div className="relative z-10 w-full h-full p-6">{children}</div>
+            <div className="relative z-10 w-full h-full p-4 sm:p-6">{children}</div>
         </div>
     );
 }
@@ -90,11 +90,11 @@ function DonutChart({ segments }: { segments: { label: string, value: number, co
                     </div>
                 </div>
             </div>
-            <div className="flex flex-wrap justify-center gap-x-5 gap-y-2">
+            <div className="flex flex-wrap justify-center gap-x-3 gap-y-1.5 px-2">
                 {segments.map((seg, i) => (
-                    <div key={i} className="flex items-center gap-2">
-                        <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: seg.color }} />
-                        <span className="text-xs text-slate-600 dark:text-neutral-400 font-medium">{seg.label} <span className="text-slate-900 dark:text-white font-bold">{seg.value}</span></span>
+                    <div key={i} className="flex items-center gap-1.5">
+                        <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: seg.color }} />
+                        <span className="text-[10px] sm:text-xs text-slate-600 dark:text-neutral-400 font-medium whitespace-nowrap">{seg.label} <span className="text-slate-900 dark:text-white font-bold">{seg.value}</span></span>
                     </div>
                 ))}
             </div>
@@ -127,28 +127,28 @@ export default function AnalyticsPage() {
                     <div className="max-w-7xl mx-auto">
 
                         {/* Header */}
-                        <motion.div variants={itemVars} className="mb-10 flex flex-col sm:flex-row justify-between sm:items-end gap-4">
-                            <div>
-                                <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 text-slate-900 dark:text-white">
+                        <motion.div variants={itemVars} className="mb-8 flex flex-col md:flex-row justify-between md:items-end gap-6">
+                            <div className="max-w-xl">
+                                <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 text-slate-900 dark:text-white leading-tight">
                                     Recruitment <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500 dark:from-blue-400 dark:to-indigo-300">Analytics</span>
                                 </h1>
-                                <p className="text-slate-500 dark:text-neutral-400 text-lg flex items-center gap-2">
-                                    <Sparkles size={18} className="text-blue-500 dark:text-blue-400" />
-                                    Real-time intelligence across your entire hiring pipeline.
+                                <p className="text-slate-500 dark:text-neutral-400 text-sm sm:text-lg flex items-start sm:items-center gap-2">
+                                    <Sparkles size={18} className="text-blue-500 dark:text-blue-400 shrink-0 mt-1 sm:mt-0" />
+                                    <span>Real-time intelligence across your pipeline.</span>
                                 </p>
                             </div>
-                            <div className="flex items-center gap-3">
-                                <button className="flex items-center gap-2 bg-white dark:bg-neutral-900/60 border border-slate-200 dark:border-neutral-800 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-neutral-700 transition-all">
-                                    <Calendar size={16} /> Last 30 Days
+                            <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-2 sm:pb-0 scroll-hide">
+                                <button className="whitespace-nowrap flex items-center gap-2 bg-white dark:bg-neutral-900/60 border border-slate-200 dark:border-neutral-800 px-3 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-neutral-400 transition-all">
+                                    <Calendar size={14} /> Last 30 Days
                                 </button>
-                                <button className="flex items-center gap-2 bg-white dark:bg-neutral-900/60 border border-slate-200 dark:border-neutral-800 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-600 dark:text-neutral-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-neutral-700 transition-all">
-                                    <Filter size={16} /> Filter
+                                <button className="whitespace-nowrap flex items-center gap-2 bg-white dark:bg-neutral-900/60 border border-slate-200 dark:border-neutral-800 px-3 py-2 rounded-xl text-xs font-medium text-slate-600 dark:text-neutral-400 transition-all">
+                                    <Filter size={14} /> Filter
                                 </button>
                             </div>
                         </motion.div>
 
                         {/* ── KPI Row ────────────────────────────────── */}
-                        <motion.div variants={itemVars} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                        <motion.div variants={itemVars} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
                             {[
                                 { title: "Total Applications", value: "4,218", trend: "+18%", positive: true, icon: <Users size={22} className="text-blue-400" />, sub: "vs last month" },
                                 { title: "Avg. Time to Hire", value: "14 days", trend: "-3 days", positive: true, icon: <Clock size={22} className="text-emerald-400" />, sub: "from 17 days" },
@@ -189,16 +189,16 @@ export default function AnalyticsPage() {
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-6">
-                                        <div>
-                                            <p className="text-xs text-slate-500 dark:text-neutral-500 mb-3 font-semibold uppercase tracking-widest">Applicants</p>
+                                    <div className="flex flex-col sm:flex-row gap-8">
+                                        <div className="flex-1">
+                                            <p className="text-xs text-slate-500 dark:text-neutral-400 mb-3 font-semibold uppercase tracking-widest">Applicants</p>
                                             <MiniBarChart data={weeklyApplicants} color="bg-blue-500" />
                                             <div className="flex justify-between mt-2 text-[10px] text-slate-400 dark:text-neutral-600 font-medium">
                                                 {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(d => <span key={d}>{d}</span>)}
                                             </div>
                                         </div>
-                                        <div>
-                                            <p className="text-xs text-slate-500 dark:text-neutral-500 mb-3 font-semibold uppercase tracking-widest">Hires</p>
+                                        <div className="flex-1">
+                                            <p className="text-xs text-slate-500 dark:text-neutral-400 mb-3 font-semibold uppercase tracking-widest">Hires</p>
                                             <MiniBarChart data={weeklyHires} color="bg-emerald-500" />
                                             <div className="flex justify-between mt-2 text-[10px] text-slate-400 dark:text-neutral-600 font-medium">
                                                 {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(d => <span key={d}>{d}</span>)}

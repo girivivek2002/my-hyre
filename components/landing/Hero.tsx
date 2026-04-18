@@ -88,9 +88,9 @@ export default function Hero() {
             AI POWERED INTELLIGENT MATCHING
           </motion.div>
 
-          <motion.h1 variants={itemVars} className="text-5xl sm:text-6xl lg:text-[76px] leading-[1.1] font-bold mb-6 sm:mb-8 tracking-tight text-slate-900 dark:text-white">
+          <motion.h1 variants={itemVars} className="text-4xl sm:text-6xl lg:text-[76px] leading-[1.1] font-bold mb-6 sm:mb-8 tracking-tight text-slate-900 dark:text-white">
             Hire the Right <br className="hidden sm:block" />
-            <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-500">
+            <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-500 pb-2">
               Talent
               {/* Highlight Underline */}
               <motion.span
@@ -155,12 +155,12 @@ export default function Hero() {
               className="w-full h-full object-cover rounded-xl shadow-inner relative z-10"
             />
 
-            {/* Floating AI Score Card (Animated continuously + popped out in 3D space) */}
+            {/* Floating AI Score Card */}
             <motion.div
               initial={{ z: 60 }}
               animate={{ y: [0, -10, 0] }}
               transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-              className="absolute -bottom-4 sm:-bottom-8 -left-2 sm:-left-10 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md border border-slate-200 dark:border-neutral-700/50 px-4 sm:px-6 py-3 sm:py-5 rounded-xl sm:rounded-2xl shadow-xl sm:shadow-[0_20px_40px_rgba(0,0,0,0.4)] flex flex-col gap-1 z-30"
+              className="absolute -bottom-6 sm:-bottom-8 left-1/2 -translate-x-1/2 sm:left-[-40px] sm:translate-x-0 bg-white/90 dark:bg-neutral-900/90 backdrop-blur-md border border-slate-200 dark:border-neutral-700/50 px-4 sm:px-6 py-3 sm:py-5 rounded-xl sm:rounded-2xl shadow-xl sm:shadow-[0_20px_40px_rgba(0,0,0,0.4)] flex flex-col gap-1 z-30 min-w-[140px]"
             >
               <div className="flex items-center gap-2">
                 <span className="flex h-2 w-2 rounded-full bg-green-500"></span>

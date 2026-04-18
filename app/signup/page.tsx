@@ -23,7 +23,7 @@ function SignupCard({ title, desc, icon, href }: { title: string; desc: string; 
                     visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
                 }}
                 onMouseMove={handleMouseMove}
-                className="group relative flex flex-col bg-white/60 dark:bg-neutral-900/60 backdrop-blur-xl border border-slate-200 dark:border-neutral-800/80 rounded-3xl p-8 hover:border-transparent transition-all duration-300 overflow-hidden text-left shadow-lg dark:shadow-[0_20px_40px_rgba(0,0,0,0.3)] h-full"
+                className="group relative flex flex-col bg-white/60 dark:bg-neutral-900/60 backdrop-blur-xl border border-slate-200 dark:border-neutral-800/80 rounded-3xl p-6 sm:p-8 hover:border-transparent transition-all duration-300 overflow-hidden text-left shadow-lg dark:shadow-[0_20px_40px_rgba(0,0,0,0.3)] h-full"
             >
                 {/* Magnetic Glow Border */}
                 <motion.div
@@ -106,13 +106,13 @@ export default function SignupPage() {
                     </motion.div>
 
                     {/* Title */}
-                    <motion.h1 variants={itemVars} className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 pb-3 tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-slate-900 to-slate-600 dark:from-white dark:to-neutral-400">
+                    <motion.h1 variants={itemVars} className="text-3xl sm:text-5xl lg:text-6xl font-extrabold mb-6 pb-3 tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-slate-900 to-slate-600 dark:from-white dark:to-neutral-400 leading-tight">
                         The Intelligent Workspace.
                     </motion.h1>
 
                     {/* Subtitle */}
-                    <motion.p variants={itemVars} className="text-slate-600 dark:text-neutral-400 text-lg md:text-xl mb-16 max-w-2xl mx-auto transition-colors">
-                        Choose your path to begin your journey with the world's most sophisticated AI recruitment suite.
+                    <motion.p variants={itemVars} className="text-slate-600 dark:text-neutral-400 text-base sm:text-xl mb-12 sm:mb-16 max-w-2xl mx-auto transition-colors">
+                        Choose your path to begin your journey with our AI recruitment suite.
                     </motion.p>
 
                     {/* Cards Container */}

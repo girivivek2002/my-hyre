@@ -111,7 +111,7 @@ export default function LoginPage() {
           variants={containerVars}
           initial="hidden"
           animate="visible"
-          className="w-full max-w-[440px] bg-white/60 dark:bg-neutral-900/60 backdrop-blur-xl border border-slate-200 dark:border-neutral-800/80 rounded-3xl p-6 sm:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden text-slate-900 dark:text-white"
+          className="w-full max-w-[440px] bg-white/60 dark:bg-neutral-900/60 backdrop-blur-xl border border-slate-200 dark:border-neutral-800/80 rounded-3xl p-6 sm:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] relative overflow-hidden text-slate-900 dark:text-white mx-4"
         >
           {/* Inner glossy highlight bounding box */}
           <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-50 pointer-events-none"></div>
@@ -123,11 +123,11 @@ export default function LoginPage() {
           </motion.div>
 
           {/* Title */}
-          <motion.div variants={itemVars} className="text-center mb-10">
-            <h2 className="text-3xl font-extrabold mb-3 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-500 dark:from-white dark:to-neutral-400">
+          <motion.div variants={itemVars} className="text-center mb-8 sm:mb-10">
+            <h2 className="text-2xl sm:text-3xl font-extrabold mb-3 tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-slate-900 to-slate-500 dark:from-white dark:to-neutral-400">
               Welcome Back
             </h2>
-            <p className="text-slate-500 dark:text-neutral-400 text-sm">
+            <p className="text-slate-500 dark:text-neutral-400 text-xs sm:text-sm px-2">
               Sign in to your intelligent hiring workspace
             </p>
           </motion.div>

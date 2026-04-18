@@ -32,7 +32,7 @@ function GlassCard({ children, className = "" }: { children: ReactNode, classNam
         }}
       />
       <div className="absolute inset-0 bg-slate-50/80 dark:bg-neutral-950/80 -z-10" />
-      <div className="relative z-10 w-full h-full p-6">
+      <div className="relative z-10 w-full h-full p-4 sm:p-6">
         {children}
       </div>
     </div>
@@ -101,18 +101,18 @@ export default function RecruiterDashboard() {
       <div className="max-w-7xl mx-auto">
 
             {/* Welcome */}
-            <motion.div variants={itemVars} className="mb-10">
-                <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-3 text-slate-900 dark:text-white leading-none">
-                  Authority Center, <span className="text-blue-500">{userData?.name}</span>
+            <motion.div variants={itemVars} className="mb-8">
+                <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-3 text-slate-900 dark:text-white leading-tight">
+                  Authority Center, <span className="text-blue-500">{userData?.name?.split(' ')[0]}</span>
                 </h1>
-                <p className="text-slate-500 dark:text-neutral-400 text-lg flex items-center gap-2 font-medium">
-                  <Sparkles size={18} className="text-blue-500" />
-                  Your talent ecosystem is active and synchronizing in real-time.
+                <p className="text-slate-500 dark:text-neutral-400 text-sm sm:text-lg flex items-start sm:items-center gap-2 font-medium">
+                  <Sparkles size={18} className="text-blue-500 shrink-0 mt-1 sm:mt-0" />
+                  <span>Your talent ecosystem is active and synchronizing.</span>
                 </p>
             </motion.div>
 
             {/* Stats Cards */}
-            <motion.div variants={itemVars} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <motion.div variants={itemVars} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
               {[
                 { title: "Active Jobs", value: stats?.activeJobs || "0", icon: <Briefcase size={22} className="text-blue-400" />, trend: "+12.5%", positive: true },
                 { title: "Talent Pipeline", value: stats?.candidates || "0", icon: <Users size={22} className="text-purple-400" />, trend: "+48 new", positive: true },
@@ -125,9 +125,9 @@ export default function RecruiterDashboard() {
                       {card.icon}
                     </div>
                   </div>
-                  <p className="text-slate-500 dark:text-neutral-400 font-bold text-[10px] tracking-widest uppercase mb-1">{card.title}</p>
-                  <div className="flex items-end gap-3">
-                    <h2 className="text-4xl font-black pb-0.5">{card.value}</h2>
+                  <p className="text-slate-500 dark:text-neutral-400 font-bold text-[9px] sm:text-[10px] tracking-widest uppercase mb-1">{card.title}</p>
+                  <div className="flex items-end gap-2 sm:gap-3">
+                    <h2 className="text-3xl sm:text-4xl font-black pb-0.5">{card.value}</h2>
                     <span className={`text-[10px] font-bold pb-2 ${card.positive ? 'text-emerald-500' : 'text-neutral-500'}`}>{card.trend}</span>
                   </div>
                 </GlassCard>

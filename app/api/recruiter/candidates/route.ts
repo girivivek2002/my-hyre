@@ -32,31 +32,39 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ candidates: [] });
     }
 
-    let candidates = await prisma.user.findMany({
-      where: { role: "candidate" },
-      include: {
-        candidateProfile: true,
-        resumes: { take: 1, orderBy: { createdAt: "desc" } }
-      },
-      orderBy: { createdAt: "desc" }
-    });
-
-    // If jobId is provided, find which ones are already shortlisted
-    let shortlistedMap: Record<string, string> = {};
+    let candidates = [];
     if (jobId) {
+      // Strictly filter by jobId: Only show candidates already in this pipeline
       const shortlists = await prisma.shortlist.findMany({
-        where: { jobId: jobId, job: { recruiterId: recruiter.id } }
+        where: { jobId: jobId, job: { recruiterId: recruiter.id } },
+        include: {
+          candidate: {
+            include: {
+              user: {
+                include: {
+                  resumes: { take: 1, orderBy: { createdAt: "desc" } }
+                }
+              }
+            }
+          }
+        }
       });
-      shortlists.forEach(s => {
-        shortlistedMap[s.candidateId] = s.status;
+      candidates = shortlists.map(s => ({
+        ...s.candidate.user,
+        candidateProfile: s.candidate,
+        shortlistStatus: s.status
+      }));
+    } else {
+      // Global Talent Pool: Show everyone
+      candidates = await prisma.user.findMany({
+        where: { role: "candidate" },
+        include: {
+          candidateProfile: true,
+          resumes: { take: 1, orderBy: { createdAt: "desc" } }
+        },
+        orderBy: { createdAt: "desc" }
       });
     }
-
-    // Attach shortlist status to candidates
-    const candidatesWithStatus = candidates.map(c => ({
-      ...c,
-      shortlistStatus: c.candidateProfile ? shortlistedMap[c.candidateProfile.id] : null
-    }));
 
     // Find latest job for matching if not filtering by specific job
     let scoringJob = null;
@@ -69,7 +77,7 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    const formatted = await Promise.all(candidatesWithStatus.map(async (c) => {
+    const formatted = await Promise.all(candidates.map(async (c) => {
       // Self-healing: Create profile if missing
       let profile = c.candidateProfile;
       if (!profile) {

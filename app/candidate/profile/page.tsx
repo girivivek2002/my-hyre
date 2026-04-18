@@ -99,6 +99,8 @@ export default function CandidateProfile() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -131,12 +133,15 @@ export default function CandidateProfile() {
               linkedin: pData.profile.linkedin || "",
               github: pData.profile.github || "",
               website: pData.profile.website || "",
-              desiredRole: pData.profile.desiredRole || "",
-              experience: pData.profile.experienceYears || "",
-              salary: pData.profile.expectedSalary || "",
+              desiredRole: pData.profile.role || "",
+              experience: pData.profile.experience || "",
+              salary: pData.profile.salaryExpectation || "",
+              location: pData.profile.location || "",
+              workType: pData.profile.workPreference || "Full-Time",
+              noticePeriod: pData.profile.noticePeriod || "",
             }));
             if (pData.profile.skills) {
-              setSkills(pData.profile.skills.split(",").map((s: string) => s.trim()).filter(Boolean));
+              setSkills(pData.profile.skills); // DB now returns String[]
             }
           }
         }
@@ -164,6 +169,12 @@ export default function CandidateProfile() {
 
   const removeSkill = (skillToRemove: string) => {
     setSkills(skills.filter(s => s !== skillToRemove));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setResumeFile(e.target.files[0]);
+    }
   };
 
   const handleApply = async () => {
@@ -274,21 +285,39 @@ export default function CandidateProfile() {
             description="Upload your high-fidelity resume for AI parsing."
             icon={<Upload className="text-emerald-500" size={24} />}
           >
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleFileChange} 
+              className="hidden" 
+              accept=".pdf,.docx"
+            />
             <motion.div 
               whileHover={{ scale: 1.005 }}
+              onClick={() => fileInputRef.current?.click()}
               className="relative group cursor-pointer"
             >
               <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-[28px] blur opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
               <div className="relative aspect-[3/1] rounded-[24px] border-2 border-dashed border-slate-300 dark:border-neutral-800 bg-white/50 dark:bg-neutral-900/50 flex flex-col items-center justify-center transition-all group-hover:border-blue-500/50 group-hover:bg-blue-500/5 shadow-inner">
-                <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500 shadow-md">
-                  <CloudUpload size={28} />
-                </div>
-                <p className="text-slate-600 dark:text-neutral-300 font-bold text-lg mb-1">Drag and drop your resume</p>
-                <p className="text-slate-400 dark:text-neutral-500 text-sm font-medium">PDF, DOCX (Max 10MB)</p>
+                {resumeFile ? (
+                  <div className="flex flex-col items-center animate-in fade-in zoom-in duration-300">
+                    <CheckCircle2 size={40} className="text-emerald-500 mb-2" />
+                    <p className="text-slate-900 dark:text-white font-bold text-lg">{resumeFile.name}</p>
+                    <p className="text-slate-400 text-xs font-medium uppercase tracking-widest mt-1">Ready for Intelligence Injection</p>
+                  </div>
+                ) : (
+                  <>
+                    <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-neutral-800 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-blue-500 group-hover:text-white transition-all duration-500 shadow-md">
+                      <CloudUpload size={28} />
+                    </div>
+                    <p className="text-slate-600 dark:text-neutral-300 font-bold text-lg mb-1">Drag and drop your resume</p>
+                    <p className="text-slate-400 dark:text-neutral-500 text-sm font-medium">PDF, DOCX (Max 10MB)</p>
+                  </>
+                )}
                 
                 <div className="mt-6">
                   <span className="bg-slate-900 dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-full text-sm font-bold shadow-lg group-hover:shadow-blue-500/20 transition-all">
-                    Select File
+                    {resumeFile ? 'Change File' : 'Select File'}
                   </span>
                 </div>
               </div>

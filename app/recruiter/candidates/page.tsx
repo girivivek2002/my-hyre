@@ -247,56 +247,34 @@ export default function CandidatesPage() {
                                 Extracting Nodes...
                             </div>
                         ) : filteredCandidates.length > 0 ? (
-                            <>
-                                {filteredCandidates.filter(c => c.shortlistStatus).length > 0 && (
-                                    <div className="px-3 py-2 text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Active Pipeline</div>
-                                )}
-                                {filteredCandidates.filter(c => c.shortlistStatus).map((c) => (
-                                    <div
-                                        key={c.id}
-                                        onClick={() => setSelectedCandidateId(c.id)}
-                                        className={`flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all border ${selectedCandidateId === c.id ? 'bg-blue-500/10 border-blue-500/30' : 'border-transparent hover:bg-white dark:hover:bg-neutral-900'}`}
-                                    >
-                                        <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                                            {c.initials}
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="font-semibold text-sm truncate">{c.name}</p>
-                                            <p className="text-xs text-slate-500 truncate">{c.role}</p>
-                                        </div>
-                                        <div className="text-right">
-                                            <p className="text-lg font-extrabold text-blue-400">{c.match}%</p>
-                                        </div>
+                            filteredCandidates.map((c) => (
+                                <div
+                                    key={c.id}
+                                    onClick={() => setSelectedCandidateId(c.id)}
+                                    className={`flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all border ${selectedCandidateId === c.id ? 'bg-blue-500/10 border-blue-500/30' : 'border-transparent hover:bg-white dark:hover:bg-neutral-900'}`}
+                                >
+                                    <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm ${c.shortlistStatus ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-slate-200 dark:bg-neutral-800'}`}>
+                                        {c.initials}
                                     </div>
-                                ))}
-
-                                {selectedJobId !== "talent-pool" && filteredCandidates.filter(c => !c.shortlistStatus).length > 0 && (
-                                    <div className="mt-6 px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Available Talent Hub</div>
-                                )}
-                                {selectedJobId !== "talent-pool" && filteredCandidates.filter(c => !c.shortlistStatus).map((c) => (
-                                    <div
-                                        key={c.id}
-                                        onClick={() => setSelectedCandidateId(c.id)}
-                                        className={`flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all border ${selectedCandidateId === c.id ? 'bg-blue-500/10 border-blue-500/30' : 'border-transparent hover:bg-white dark:hover:bg-neutral-900'}`}
-                                    >
-                                        <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm bg-slate-200 dark:bg-neutral-800">
-                                            {c.initials}
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <p className="font-semibold text-sm truncate">{c.name}</p>
-                                            <p className="text-xs text-slate-500 truncate">{c.role}</p>
-                                        </div>
-                                        <div className="text-right">
-                                            <p className="text-lg font-extrabold text-slate-400">{c.match}%</p>
-                                        </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="font-semibold text-sm truncate">{c.name}</p>
+                                        <p className="text-xs text-slate-500 truncate">{c.role}</p>
                                     </div>
-                                ))}
-                            </>
+                                    <div className="text-right">
+                                        <p className="text-lg font-extrabold text-blue-400">{c.match}%</p>
+                                    </div>
+                                </div>
+                            ))
                         ) : (
-                            <div className="text-center py-10">
+                            <div className="text-center py-10 px-6">
                                 <Users size={40} className="mx-auto text-slate-300 dark:text-neutral-800 mb-4" />
-                                <p className="text-sm text-slate-500 font-medium">No candidates detected</p>
-                                <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-widest">Sector Empty</p>
+                                <p className="text-slate-500 font-medium mb-4">No candidates in this pipeline yet.</p>
+                                <button 
+                                    onClick={() => { setSelectedJobId("talent-pool"); setSelectedCandidateId(null); }}
+                                    className="px-6 py-2 rounded-xl bg-blue-500 text-white font-bold text-sm shadow-lg shadow-blue-500/20 hover:scale-105 transition-all"
+                                >
+                                    Source from Talent Pool
+                                </button>
                             </div>
                         )
                     )}

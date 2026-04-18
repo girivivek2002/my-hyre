@@ -37,11 +37,18 @@ export async function POST(req: NextRequest) {
       user: { id: user.id, name: user.name, role, email: user.email },
     }, { status: 200 });
   } catch (error: any) {
-    console.error("Login Error Detailed:", error);
+    console.error("CRITICAL AUTH FAILURE:", error);
+    
+    // Check if it's a Prisma/Database connection error
+    const isDbError = error.message?.includes("Can't reach database") || 
+                      error.code === 'P1001' || 
+                      error.name === 'PrismaClientInitializationError';
+
     return NextResponse.json({ 
-      error: "Authentication Node Failure.", 
+      error: isDbError ? "Database Connectivity Failure." : "Authentication Node Failure.", 
       message: error.message,
-      stack: error.stack
+      code: error.code,
+      suggestion: isDbError ? "Check your Supabase pooler settings and Vercel environment variables." : "Consult the system logs for trace ID."
     }, { status: 500 });
   }
 }

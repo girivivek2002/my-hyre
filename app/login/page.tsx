@@ -64,10 +64,15 @@ export default function LoginPage() {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await res.json();
+      let data;
+      try {
+        data = await res.json();
+      } catch (parseError) {
+        throw new Error(`Invalid response format from server (Status: ${res.status})`);
+      }
 
       if (!res.ok) {
-        setErrorObj(data.error || "Login failed. Please check your credentials.");
+        setErrorObj(data.error || data.message || "Authentication rejected.");
         setIsLoading(false);
         return;
       }
@@ -82,9 +87,9 @@ export default function LoginPage() {
       } else {
         router.push("/recruiter/dashboard");
       }
-    } catch (err) {
-      console.error(err);
-      setErrorObj("Network error: Could not reach the authentication server.");
+    } catch (err: any) {
+      console.error("Login submission error:", err);
+      setErrorObj(err.message || "Network error: Could not reach the authentication server.");
       setIsLoading(false);
     }
   };

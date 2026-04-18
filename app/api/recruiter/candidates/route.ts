@@ -20,7 +20,7 @@ async function verifyRecruiter(req: NextRequest) {
 export async function GET(req: NextRequest) {
   const authUser = await verifyRecruiter(req);
   if (!authUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
+  try {
     const url = new URL(req.url);
     const jobId = url.searchParams.get("jobId");
 

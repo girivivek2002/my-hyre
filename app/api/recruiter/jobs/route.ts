@@ -7,19 +7,32 @@ const JWT_SECRET = (process.env.JWT_SECRET || "super-secret-fallback-key").repla
 async function verifyRecruiter(req: NextRequest) {
   const auth = req.headers.get("authorization");
   if (!auth?.startsWith("Bearer ")) {
-    console.error("Auth Header Missing or Invalid:", auth);
+    console.error("[AUTH DEBUG] Header Missing or Invalid:", auth);
     return null;
   }
   try {
     const token = auth.split(" ")[1];
+    // console.log("[AUTH DEBUG] Verifying token with secret length:", JWT_SECRET.length);
     const decoded: any = jwt.verify(token, JWT_SECRET);
+    
     if (decoded.role !== "recruiter") {
-      console.error("User role mismatch. Expected recruiter, got:", decoded.role);
+      console.error("[AUTH DEBUG] Role Mismatch. Expected 'recruiter', got:", decoded.role, "for user:", decoded.email);
       return null;
     }
+    
+    // Check if the user exists in the Recruiter table
+    const recruiter = await prisma.recruiter.findUnique({
+      where: { userId: decoded.id }
+    });
+    
+    if (!recruiter) {
+      console.error("[AUTH DEBUG] Valid recruiter token but no entry in Recruiter table for userId:", decoded.id);
+      return null;
+    }
+
     return decoded;
   } catch (err: any) {
-    console.error("JWT Verification Failed:", err.message);
+    console.error("[AUTH DEBUG] JWT Verification Failed:", err.message);
     return null;
   }
 }

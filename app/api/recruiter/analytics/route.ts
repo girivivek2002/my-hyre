@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import prisma from "@/lib/db";
 
-const JWT_SECRET = process.env.JWT_SECRET || "super-secret-fallback-key";
+const JWT_SECRET = (process.env.JWT_SECRET || "super-secret-fallback-key").replace(/['"]+/g, '');
 
 async function verifyRecruiter(req: NextRequest) {
   const auth = req.headers.get("authorization");

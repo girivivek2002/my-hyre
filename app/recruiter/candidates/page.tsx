@@ -247,24 +247,51 @@ export default function CandidatesPage() {
                                 Extracting Nodes...
                             </div>
                         ) : filteredCandidates.length > 0 ? (
-                            filteredCandidates.map((c) => (
-                                <div
-                                    key={c.id}
-                                    onClick={() => setSelectedCandidateId(c.id)}
-                                    className={`flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all border ${selectedCandidateId === c.id ? 'bg-blue-500/10 border-blue-500/30' : 'border-transparent hover:bg-white dark:hover:bg-neutral-900'}`}
-                                >
-                                    <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm bg-slate-200 dark:bg-neutral-800">
-                                        {c.initials}
+                            <>
+                                {filteredCandidates.filter(c => c.shortlistStatus).length > 0 && (
+                                    <div className="px-3 py-2 text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Active Pipeline</div>
+                                )}
+                                {filteredCandidates.filter(c => c.shortlistStatus).map((c) => (
+                                    <div
+                                        key={c.id}
+                                        onClick={() => setSelectedCandidateId(c.id)}
+                                        className={`flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all border ${selectedCandidateId === c.id ? 'bg-blue-500/10 border-blue-500/30' : 'border-transparent hover:bg-white dark:hover:bg-neutral-900'}`}
+                                    >
+                                        <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                                            {c.initials}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-semibold text-sm truncate">{c.name}</p>
+                                            <p className="text-xs text-slate-500 truncate">{c.role}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-lg font-extrabold text-blue-400">{c.match}%</p>
+                                        </div>
                                     </div>
-                                    <div className="flex-1 min-w-0">
-                                        <p className="font-semibold text-sm truncate">{c.name}</p>
-                                        <p className="text-xs text-slate-500 truncate">{c.role}</p>
+                                ))}
+
+                                {selectedJobId !== "talent-pool" && filteredCandidates.filter(c => !c.shortlistStatus).length > 0 && (
+                                    <div className="mt-6 px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Available Talent Hub</div>
+                                )}
+                                {selectedJobId !== "talent-pool" && filteredCandidates.filter(c => !c.shortlistStatus).map((c) => (
+                                    <div
+                                        key={c.id}
+                                        onClick={() => setSelectedCandidateId(c.id)}
+                                        className={`flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all border ${selectedCandidateId === c.id ? 'bg-blue-500/10 border-blue-500/30' : 'border-transparent hover:bg-white dark:hover:bg-neutral-900'}`}
+                                    >
+                                        <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm bg-slate-200 dark:bg-neutral-800">
+                                            {c.initials}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-semibold text-sm truncate">{c.name}</p>
+                                            <p className="text-xs text-slate-500 truncate">{c.role}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-lg font-extrabold text-slate-400">{c.match}%</p>
+                                        </div>
                                     </div>
-                                    <div className="text-right">
-                                        <p className="text-lg font-extrabold text-blue-400">{c.match}%</p>
-                                    </div>
-                                </div>
-                            ))
+                                ))}
+                            </>
                         ) : (
                             <div className="text-center py-10">
                                 <Users size={40} className="mx-auto text-slate-300 dark:text-neutral-800 mb-4" />
@@ -301,10 +328,11 @@ export default function CandidatesPage() {
                                     <p className="text-sm font-medium truncate">{selectedCandidate.email}</p>
                                 </div>
                                 
-                                {selectedJobId === 'talent-pool' ? (
+                                {!selectedCandidate.shortlistStatus ? (
                                     <div className="bg-white dark:bg-neutral-900 border border-white/5 rounded-2xl p-4">
                                         <p className="text-[10px] uppercase font-bold text-neutral-500 mb-1">Align with Sector</p>
                                         <select 
+                                            value={selectedJobId !== "talent-pool" ? selectedJobId || "" : ""}
                                             onChange={(e) => {
                                                 if (e.target.value) handleShortlist(selectedCandidate.id, e.target.value);
                                             }}

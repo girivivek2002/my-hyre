@@ -234,14 +234,14 @@ export default function AnalyticsPage() {
                                             <p className="text-xs text-slate-500 dark:text-neutral-400 mb-3 font-semibold uppercase tracking-widest">Applicants</p>
                                             <MiniBarChart data={data.weeklyVolume.applicants} color="bg-blue-500" />
                                             <div className="flex justify-between mt-2 text-[10px] text-slate-400 dark:text-neutral-600 font-medium">
-                                                {data.weeklyVolume.labels.map(d => <span key={d}>{d}</span>)}
+                                                {data.weeklyVolume.labels.map((d: string) => <span key={d}>{d}</span>)}
                                             </div>
                                         </div>
                                         <div className="flex-1">
                                             <p className="text-xs text-slate-500 dark:text-neutral-400 mb-3 font-semibold uppercase tracking-widest">Hires</p>
                                             <MiniBarChart data={data.weeklyVolume.hires} color="bg-emerald-500" />
                                             <div className="flex justify-between mt-2 text-[10px] text-slate-400 dark:text-neutral-600 font-medium">
-                                                {data.weeklyVolume.labels.map(d => <span key={d}>{d}</span>)}
+                                                {data.weeklyVolume.labels.map((d: string) => <span key={d}>{d}</span>)}
                                             </div>
                                         </div>
                                     </div>

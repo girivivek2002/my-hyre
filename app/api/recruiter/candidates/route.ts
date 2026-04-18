@@ -84,8 +84,8 @@ export async function GET(req: NextRequest) {
         profile = await prisma.candidate.create({
           data: {
             userId: c.id,
-            name: c.name,
-            email: c.email,
+            name: c.name || "Unknown Node",
+            email: c.email || `${c.id}@citizen.node`,
             role: "Citizen Node",
             biography: "Identity synthesized via automated recovery."
           }
@@ -110,9 +110,9 @@ export async function GET(req: NextRequest) {
 
       return {
         id: c.id,
-        name: c.name,
-        email: c.email,
-        initials: c.name.slice(0, 2).toUpperCase(),
+        name: c.name || "Unknown",
+        email: c.email || "no-email@mrhyre.com",
+        initials: (c.name || "UN").slice(0, 2).toUpperCase(),
         role: profile.role || "Job Seeker",
         location: profile.location || "Remote",
         experience: profile.experience || "Entry Level",

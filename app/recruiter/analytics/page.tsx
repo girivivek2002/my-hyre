@@ -190,10 +190,10 @@ export default function AnalyticsPage() {
                         {/* ── KPI Row ────────────────────────────────── */}
                         <motion.div variants={itemVars} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
                             {[
-                                { title: "Total Applications", value: data.kpis.totalApplications, trend: "+18%", positive: true, icon: <Users size={22} className="text-blue-400" />, sub: "vs last month" },
-                                { title: "Avg. Time to Hire", value: data.kpis.avgTimeToHire, trend: "-3 days", positive: true, icon: <Clock size={22} className="text-emerald-400" />, sub: "from 17 days" },
-                                { title: "Offer Acceptance", value: data.kpis.offerAcceptance, trend: "+5%", positive: true, icon: <UserCheck size={22} className="text-purple-400" />, sub: "industry avg 72%" },
-                                { title: "Cost per Hire", value: data.kpis.costPerHire, trend: "-12%", positive: true, icon: <Target size={22} className="text-amber-400" />, sub: "from $2,432" },
+                                { title: "Total Applications", value: data.kpis.totalApplications, trend: "+100%", positive: true, icon: <Users size={22} className="text-blue-400" />, sub: "direct applications" },
+                                { title: "Avg. Time to Hire", value: data.kpis.avgTimeToHire, trend: "Real-time", positive: true, icon: <Clock size={22} className="text-emerald-400" />, sub: "node latency" },
+                                { title: "Offer Acceptance", value: data.kpis.offerAcceptance, trend: "Active", positive: true, icon: <UserCheck size={22} className="text-purple-400" />, sub: "conversion rate" },
+                                { title: "Talent Pool", value: data.kpis.talentPool, trend: "Global", positive: true, icon: <Target size={22} className="text-amber-400" />, sub: "available nodes" },
                             ].map((kpi, i) => (
                                 <GlassCard key={i}>
                                     <div className="flex justify-between items-start mb-4">
@@ -362,25 +362,26 @@ export default function AnalyticsPage() {
                                     </h2>
                                     <p className="text-xs text-slate-500 dark:text-neutral-500 mb-6">Where your top applicants are located</p>
                                     <div className="space-y-4">
-                                        {[
-                                            { region: "San Francisco Bay Area", count: 892, pct: 21 },
-                                            { region: "New York Metro", count: 634, pct: 15 },
-                                            { region: "Remote (Global)", count: 1265, pct: 30 },
-                                            { region: "London / EU", count: 507, pct: 12 },
-                                            { region: "Austin / Denver", count: 423, pct: 10 },
-                                            { region: "Other", count: 497, pct: 12 },
-                                        ].map((loc, i) => (
-                                            <div key={i} className="flex items-center justify-between">
-                                                <div className="flex items-center gap-3 flex-1 min-w-0">
-                                                    <div className="w-1.5 h-8 rounded-full bg-gradient-to-b from-blue-500 to-indigo-500" style={{ opacity: 0.4 + (loc.pct / 100) * 2 }} />
-                                                    <div className="min-w-0">
-                                                        <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{loc.region}</p>
-                                                        <p className="text-[11px] text-slate-500 dark:text-neutral-500">{loc.count.toLocaleString()} applicants</p>
+                                        {data.geography && data.geography.length > 0 ? (
+                                            data.geography.map((loc: any, i: number) => (
+                                                <div key={i} className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                                                        <div className="w-1.5 h-8 rounded-full bg-gradient-to-b from-blue-500 to-indigo-500" style={{ opacity: 0.4 + (loc.pct / 100) * 2 }} />
+                                                        <div className="min-w-0">
+                                                            <p className="text-sm font-medium text-slate-900 dark:text-white truncate">{loc.region}</p>
+                                                            <p className="text-[11px] text-slate-500 dark:text-neutral-500">{loc.count.toLocaleString()} applicants</p>
+                                                        </div>
                                                     </div>
+                                                    <span className="text-sm font-bold text-slate-700 dark:text-neutral-300 shrink-0 ml-3">{loc.pct}%</span>
                                                 </div>
-                                                <span className="text-sm font-bold text-slate-700 dark:text-neutral-300 shrink-0 ml-3">{loc.pct}%</span>
+                                            ))
+                                        ) : (
+                                            <div className="flex flex-col items-center justify-center py-10 text-center opacity-50">
+                                                <Globe size={40} className="mb-4 text-slate-300 dark:text-neutral-700" />
+                                                <p className="text-sm font-medium text-slate-500">No geographic data available</p>
+                                                <p className="text-[11px] text-slate-400">Waiting for first application...</p>
                                             </div>
-                                        ))}
+                                        )}
                                     </div>
                                 </GlassCard>
                             </motion.div>

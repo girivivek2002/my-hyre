@@ -32,18 +32,51 @@ export async function GET(req: NextRequest) {
 
     const jobIds = recruiter.jobs.map(j => j.id);
 
-    // 1. KPI Metrics
-    const totalApplications = await prisma.shortlist.count({
-      where: { jobId: { in: jobIds } }
+    // Count jobs, candidates, and interviews in parallel
+    const [totalApplications, totalSelected, totalInterviewed, talentPool, geographyRaw] = await Promise.all([
+      prisma.shortlist.count({ where: { jobId: { in: jobIds } } }),
+      prisma.shortlist.count({ where: { jobId: { in: jobIds }, status: "SELECTED" } }),
+      prisma.interview.count({ where: { shortlist: { jobId: { in: jobIds } } } }),
+      prisma.user.count({ where: { role: "candidate" } }),
+      prisma.shortlist.findMany({
+        where: { jobId: { in: jobIds } },
+        include: { candidate: { select: { location: true } } },
+      }),
+    ]);
+
+    // Calculate Geographic Distribution
+    const locationCounts: Record<string, number> = {};
+    geographyRaw.forEach(s => {
+      const loc = s.candidate?.location || "Unknown";
+      locationCounts[loc] = (locationCounts[loc] || 0) + 1;
     });
 
-    const totalSelected = await prisma.shortlist.count({
-      where: { jobId: { in: jobIds }, status: "SELECTED" }
+    const geography = Object.entries(locationCounts)
+      .map(([region, count]) => ({
+        region,
+        count,
+        pct: totalApplications > 0 ? Math.round((count / totalApplications) * 100) : 0
+      }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 6); // Top 6 regions
+
+    // Calculate actual Avg. Time to Hire
+    const hires = await prisma.shortlist.findMany({
+      where: { jobId: { in: jobIds }, status: "SELECTED" },
+      select: {
+        createdAt: true,
+        job: { select: { createdAt: true } }
+      }
     });
 
-    const totalInterviewed = await prisma.interview.count({
-      where: { shortlist: { jobId: { in: jobIds } } }
-    });
+    let avgDays = 0;
+    if (hires.length > 0) {
+      const totalDays = hires.reduce((acc, h) => {
+        const diff = new Date(h.createdAt).getTime() - new Date(h.job.createdAt).getTime();
+        return acc + (diff / (1000 * 60 * 60 * 24));
+      }, 0);
+      avgDays = Math.max(1, Math.round(totalDays / hires.length));
+    }
 
     const offerAcceptance = totalInterviewed > 0 
       ? Math.round((totalSelected / totalInterviewed) * 100) 
@@ -83,22 +116,22 @@ export async function GET(req: NextRequest) {
       sortedLabels.push(days[dayIndex]);
     }
 
-    // 3. Source Breakdown (Simulated)
+    // 3. Source Breakdown (Simulated based on real counts if 0)
     const sources = [
-      { label: "LinkedIn", value: Math.round(totalApplications * 0.45) || 142, color: "#3b82f6" },
-      { label: "Referrals", value: Math.round(totalApplications * 0.25) || 89, color: "#8b5cf6" },
-      { label: "Direct", value: Math.round(totalApplications * 0.20) || 67, color: "#10b981" },
-      { label: "Job Boards", value: Math.round(totalApplications * 0.10) || 45, color: "#f59e0b" },
+      { label: "LinkedIn", value: Math.round(totalApplications * 0.45), color: "#3b82f6" },
+      { label: "Referrals", value: Math.round(totalApplications * 0.25), color: "#8b5cf6" },
+      { label: "Direct", value: Math.round(totalApplications * 0.20), color: "#10b981" },
+      { label: "Job Boards", value: Math.round(totalApplications * 0.10), color: "#f59e0b" },
     ];
 
     // 4. Funnel
     const funnel = [
-      { label: "Applications Received", value: totalApplications || 4218 },
-      { label: "Screening Passed", value: Math.round(totalApplications * 0.5) || 2106 },
-      { label: "Technical Assessment", value: Math.round(totalApplications * 0.2) || 843 },
-      { label: "Interviews Completed", value: totalInterviewed || 421 },
-      { label: "Offers Extended", value: Math.round(totalSelected * 1.2) || 168 },
-      { label: "Hires Made", value: totalSelected || 142 },
+      { label: "Applications Received", value: totalApplications },
+      { label: "Screening Passed", value: Math.round(totalApplications * 0.5) },
+      { label: "Technical Assessment", value: Math.round(totalApplications * 0.2) },
+      { label: "Interviews Completed", value: totalInterviewed },
+      { label: "Offers Extended", value: Math.round(totalSelected * 1.2) },
+      { label: "Hires Made", value: totalSelected },
     ];
 
     // 5. Top Roles
@@ -118,35 +151,34 @@ export async function GET(req: NextRequest) {
       role: j.title,
       apps: j._count.shortlists,
       hires: j.shortlists.length,
-      conversion: j._count.shortlists > 0 ? ((j.shortlists.length / j._count.shortlists) * 100).toFixed(1) + "%" : "2.4%",
-      trend: "+0.4%",
+      conversion: j._count.shortlists > 0 ? ((j.shortlists.length / j._count.shortlists) * 100).toFixed(1) + "%" : "0%",
+      trend: "+0%",
       positive: true
     }));
 
     return NextResponse.json({
       kpis: {
-        totalApplications: (totalApplications || 4218).toLocaleString(),
-        avgTimeToHire: "14 days",
-        offerAcceptance: (offerAcceptance || 89) + "%",
-        costPerHire: "$2,140",
+        totalApplications: totalApplications.toLocaleString(),
+        avgTimeToHire: avgDays > 0 ? `${avgDays} days` : "N/A",
+        offerAcceptance: offerAcceptance + "%",
+        costPerHire: totalSelected > 0 ? `$${(totalSelected * 450).toLocaleString()}` : "$0",
+        talentPool: talentPool.toLocaleString(),
       },
       weeklyVolume: {
         labels: sortedLabels,
-        applicants: sortedApplicants.some(v => v > 0) ? sortedApplicants : [42, 58, 35, 72, 65, 80, 91],
-        hires: sortedHires.some(v => v > 0) ? sortedHires : [4, 6, 3, 8, 5, 7, 9],
-        total: totalApplications || 443,
-        peakDay: sortedLabels[sortedApplicants.indexOf(Math.max(...sortedApplicants))] || "Sunday",
-        conversion: totalApplications > 0 ? ((totalSelected / totalApplications) * 100).toFixed(1) + "%" : "9.5%"
+        applicants: sortedApplicants,
+        hires: sortedHires,
+        total: totalApplications,
+        peakDay: sortedApplicants.some(v => v > 0) ? sortedLabels[sortedApplicants.indexOf(Math.max(...sortedApplicants))] : "No activity",
+        conversion: totalApplications > 0 ? ((totalSelected / totalApplications) * 100).toFixed(1) + "%" : "0%"
       },
       sources,
       funnel,
-      topRoles: topRoles.length > 0 ? topRoles : [
-        { role: "Senior Frontend Engineer", apps: 312, hires: 8, conversion: "2.6%", trend: "+0.4%", positive: true },
-        { role: "Product Designer", apps: 256, hires: 6, conversion: "2.3%", trend: "+0.2%", positive: true },
-      ],
+      topRoles: topRoles,
+      geography,
       insights: [
-        { insight: "Your frontend engineering pipeline converts 34% faster when candidates come from referrals.", action: "Boost referral program →" },
-        { insight: "Tuesday and Thursday job posts receive 28% more applications than weekend posts.", action: "Optimize posting schedule →" },
+        { insight: totalApplications > 0 ? `Your recruitment funnel is active with ${totalApplications} total applications.` : "No applications received yet. Try promoting your job listings.", action: totalApplications > 0 ? "View candidates →" : "Post jobs →" },
+        { insight: totalInterviewed > 0 ? `You have ${totalInterviewed} interviews in progress.` : "No interviews scheduled yet.", action: "View schedule →" },
       ]
     });
 

@@ -7,7 +7,7 @@ import {
     LayoutDashboard, Users, Briefcase, BarChart3, Settings,
     Search, Bell, ChevronDown, Sparkles, TrendingUp, TrendingDown,
     Clock, Target, Zap, Eye, UserCheck, ArrowUpRight, ArrowDownRight,
-    Globe, Calendar, Filter, CalendarDays
+    Globe, Calendar, Filter, CalendarDays, Loader2, AlertCircle
 } from "lucide-react";
 
 // ─── Glass Card ───────────────────────────────────────────────────────────────
@@ -105,6 +105,34 @@ function DonutChart({ segments }: { segments: { label: string, value: number, co
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function AnalyticsPage() {
     const router = useRouter();
+    const [data, setData] = React.useState<any>(null);
+    const [isLoading, setIsLoading] = React.useState(true);
+    const [error, setError] = React.useState<string | null>(null);
+
+    React.useEffect(() => {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+            router.push("/login");
+            return;
+        }
+
+        const fetchAnalytics = async () => {
+            try {
+                const res = await fetch("/api/recruiter/analytics", {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                if (!res.ok) throw new Error("Failed to synchronize analytics nodes.");
+                const result = await res.json();
+                setData(result);
+            } catch (err: any) {
+                setError(err.message);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchAnalytics();
+    }, [router]);
 
     const containerVars: Variants = {
         hidden: { opacity: 0 },
@@ -123,6 +151,18 @@ export default function AnalyticsPage() {
             variants={containerVars} initial="hidden" animate="visible"
             className="flex-1 overflow-y-auto px-6 sm:px-10 py-8 pb-20 custom-scrollbar"
         >
+            {isLoading ? (
+                <div className="flex flex-col items-center justify-center h-full gap-4 text-slate-500 animate-pulse">
+                    <Loader2 size={40} className="animate-spin text-blue-500" />
+                    <p className="font-bold uppercase tracking-widest text-sm">Synchronizing Intelligence Stream...</p>
+                </div>
+            ) : error ? (
+                <div className="flex flex-col items-center justify-center h-full gap-4 text-red-500">
+                    <AlertCircle size={40} />
+                    <p className="font-bold uppercase tracking-widest text-sm">{error}</p>
+                    <button onClick={() => window.location.reload()} className="bg-slate-200 dark:bg-neutral-800 px-4 py-2 rounded-xl text-xs font-bold text-slate-900 dark:text-white mt-2">Retry Connection</button>
+                </div>
+            ) : data && (
 
                     <div className="max-w-7xl mx-auto">
 
@@ -150,10 +190,10 @@ export default function AnalyticsPage() {
                         {/* ── KPI Row ────────────────────────────────── */}
                         <motion.div variants={itemVars} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
                             {[
-                                { title: "Total Applications", value: "4,218", trend: "+18%", positive: true, icon: <Users size={22} className="text-blue-400" />, sub: "vs last month" },
-                                { title: "Avg. Time to Hire", value: "14 days", trend: "-3 days", positive: true, icon: <Clock size={22} className="text-emerald-400" />, sub: "from 17 days" },
-                                { title: "Offer Acceptance", value: "89%", trend: "+5%", positive: true, icon: <UserCheck size={22} className="text-purple-400" />, sub: "industry avg 72%" },
-                                { title: "Cost per Hire", value: "$2,140", trend: "-12%", positive: true, icon: <Target size={22} className="text-amber-400" />, sub: "from $2,432" },
+                                { title: "Total Applications", value: data.kpis.totalApplications, trend: "+18%", positive: true, icon: <Users size={22} className="text-blue-400" />, sub: "vs last month" },
+                                { title: "Avg. Time to Hire", value: data.kpis.avgTimeToHire, trend: "-3 days", positive: true, icon: <Clock size={22} className="text-emerald-400" />, sub: "from 17 days" },
+                                { title: "Offer Acceptance", value: data.kpis.offerAcceptance, trend: "+5%", positive: true, icon: <UserCheck size={22} className="text-purple-400" />, sub: "industry avg 72%" },
+                                { title: "Cost per Hire", value: data.kpis.costPerHire, trend: "-12%", positive: true, icon: <Target size={22} className="text-amber-400" />, sub: "from $2,432" },
                             ].map((kpi, i) => (
                                 <GlassCard key={i}>
                                     <div className="flex justify-between items-start mb-4">
@@ -192,16 +232,16 @@ export default function AnalyticsPage() {
                                     <div className="flex flex-col sm:flex-row gap-8">
                                         <div className="flex-1">
                                             <p className="text-xs text-slate-500 dark:text-neutral-400 mb-3 font-semibold uppercase tracking-widest">Applicants</p>
-                                            <MiniBarChart data={weeklyApplicants} color="bg-blue-500" />
+                                            <MiniBarChart data={data.weeklyVolume.applicants} color="bg-blue-500" />
                                             <div className="flex justify-between mt-2 text-[10px] text-slate-400 dark:text-neutral-600 font-medium">
-                                                {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(d => <span key={d}>{d}</span>)}
+                                                {data.weeklyVolume.labels.map(d => <span key={d}>{d}</span>)}
                                             </div>
                                         </div>
                                         <div className="flex-1">
                                             <p className="text-xs text-slate-500 dark:text-neutral-400 mb-3 font-semibold uppercase tracking-widest">Hires</p>
-                                            <MiniBarChart data={weeklyHires} color="bg-emerald-500" />
+                                            <MiniBarChart data={data.weeklyVolume.hires} color="bg-emerald-500" />
                                             <div className="flex justify-between mt-2 text-[10px] text-slate-400 dark:text-neutral-600 font-medium">
-                                                {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(d => <span key={d}>{d}</span>)}
+                                                {data.weeklyVolume.labels.map(d => <span key={d}>{d}</span>)}
                                             </div>
                                         </div>
                                     </div>
@@ -209,17 +249,17 @@ export default function AnalyticsPage() {
                                     <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-slate-200 dark:border-neutral-800/50">
                                         <div>
                                             <p className="text-[10px] text-slate-500 dark:text-neutral-500 uppercase tracking-widest font-bold">Peak Day</p>
-                                            <p className="text-lg font-extrabold text-slate-900 dark:text-white">Sunday</p>
-                                            <p className="text-xs text-slate-500 dark:text-neutral-400">91 applicants</p>
+                                            <p className="text-lg font-extrabold text-slate-900 dark:text-white">{data.weeklyVolume.peakDay}</p>
+                                            <p className="text-xs text-slate-500 dark:text-neutral-400">{Math.max(...data.weeklyVolume.applicants)} applicants</p>
                                         </div>
                                         <div>
                                             <p className="text-[10px] text-slate-500 dark:text-neutral-500 uppercase tracking-widest font-bold">Weekly Total</p>
-                                            <p className="text-lg font-extrabold text-slate-900 dark:text-white">443</p>
+                                            <p className="text-lg font-extrabold text-slate-900 dark:text-white">{data.weeklyVolume.total}</p>
                                             <p className="text-xs text-emerald-600 dark:text-emerald-400">+22% from prev</p>
                                         </div>
                                         <div>
                                             <p className="text-[10px] text-slate-500 dark:text-neutral-500 uppercase tracking-widest font-bold">Conversion</p>
-                                            <p className="text-lg font-extrabold text-slate-900 dark:text-white">9.5%</p>
+                                            <p className="text-lg font-extrabold text-slate-900 dark:text-white">{data.weeklyVolume.conversion}</p>
                                             <p className="text-xs text-slate-500 dark:text-neutral-400">applicant → hire</p>
                                         </div>
                                     </div>
@@ -232,12 +272,7 @@ export default function AnalyticsPage() {
                                     <h2 className="text-lg font-bold tracking-tight mb-2 text-slate-900 dark:text-white">Source Breakdown</h2>
                                     <p className="text-xs text-slate-500 dark:text-neutral-500 mb-6">Where your candidates come from</p>
                                     <div className="flex-1 flex items-center justify-center">
-                                        <DonutChart segments={[
-                                            { label: "LinkedIn", value: 142, color: "#3b82f6" },
-                                            { label: "Referrals", value: 89, color: "#8b5cf6" },
-                                            { label: "Direct", value: 67, color: "#10b981" },
-                                            { label: "Job Boards", value: 45, color: "#f59e0b" },
-                                        ]} />
+                                        <DonutChart segments={data.sources} />
                                     </div>
                                 </GlassCard>
                             </motion.div>
@@ -252,12 +287,9 @@ export default function AnalyticsPage() {
                                     <h2 className="text-lg font-bold tracking-tight mb-2 text-slate-900 dark:text-white">Hiring Funnel</h2>
                                     <p className="text-xs text-slate-500 dark:text-neutral-500 mb-6">Conversion rates across pipeline stages</p>
                                     <div className="space-y-5">
-                                        <ProgressBar label="Applications Received" value={4218} max={4218} color="bg-blue-500" delay={0.1} />
-                                        <ProgressBar label="Screening Passed" value={2106} max={4218} color="bg-indigo-500" delay={0.2} />
-                                        <ProgressBar label="Technical Assessment" value={843} max={4218} color="bg-purple-500" delay={0.3} />
-                                        <ProgressBar label="Interviews Completed" value={421} max={4218} color="bg-violet-500" delay={0.4} />
-                                        <ProgressBar label="Offers Extended" value={168} max={4218} color="bg-amber-500" delay={0.5} />
-                                        <ProgressBar label="Hires Made" value={142} max={4218} color="bg-emerald-500" delay={0.6} />
+                                        {data.funnel.map((item: any, idx: number) => (
+                                            <ProgressBar key={idx} label={item.label} value={item.value} max={data.funnel[0].value} color={["bg-blue-500", "bg-indigo-500", "bg-purple-500", "bg-violet-500", "bg-amber-500", "bg-emerald-500"][idx] || "bg-blue-500"} delay={0.1 * (idx + 1)} />
+                                        ))}
                                     </div>
                                 </GlassCard>
                             </motion.div>
@@ -272,13 +304,7 @@ export default function AnalyticsPage() {
                                         </div>
                                     </div>
                                     <div className="space-y-4">
-                                        {[
-                                            { role: "Senior Frontend Engineer", apps: 312, hires: 8, conversion: "2.6%", trend: "+0.4%", positive: true },
-                                            { role: "Product Designer", apps: 256, hires: 6, conversion: "2.3%", trend: "+0.2%", positive: true },
-                                            { role: "DevOps Architect", apps: 189, hires: 5, conversion: "2.6%", trend: "+0.8%", positive: true },
-                                            { role: "Data Scientist", apps: 203, hires: 4, conversion: "2.0%", trend: "-0.1%", positive: false },
-                                            { role: "Marketing Lead", apps: 145, hires: 3, conversion: "2.1%", trend: "+0.3%", positive: true },
-                                        ].map((job, i) => (
+                                        {data.topRoles.map((job: any, i: number) => (
                                             <div key={i} className="flex items-center justify-between bg-white dark:bg-neutral-900/50 border border-slate-200 dark:border-neutral-800/60 p-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-neutral-800/50 hover:border-slate-300 dark:hover:border-neutral-700 transition-all cursor-pointer">
                                                 <div className="flex items-center gap-4">
                                                     <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-neutral-800 flex items-center justify-center text-slate-500 dark:text-neutral-400 font-bold text-sm border border-slate-200 dark:border-neutral-700/50">
@@ -316,11 +342,7 @@ export default function AnalyticsPage() {
                                         <Sparkles size={20} /> AI-Powered Recommendations
                                     </h2>
                                     <div className="space-y-4 relative z-10">
-                                        {[
-                                            { insight: "Your frontend engineering pipeline converts 34% faster when candidates come from referrals vs. cold outreach.", action: "Boost referral program →" },
-                                            { insight: "Tuesday and Thursday job posts receive 28% more applications than weekend posts.", action: "Optimize posting schedule →" },
-                                            { insight: "Candidates who complete the technical assessment within 48 hours have a 91% higher chance of accepting an offer.", action: "Shorten assessment window →" },
-                                        ].map((item, i) => (
+                                        {data.insights.map((item: any, i: number) => (
                                             <div key={i} className="bg-white/10 backdrop-blur-sm p-4 rounded-2xl border border-white/20">
                                                 <p className="text-sm text-blue-50 leading-relaxed font-medium mb-2">{item.insight}</p>
                                                 <button className="text-xs text-white font-bold flex items-center gap-1 hover:underline underline-offset-2">
@@ -370,6 +392,7 @@ export default function AnalyticsPage() {
                         </motion.div>
 
                     </div>
+            )}
         </motion.div>
     );
 }

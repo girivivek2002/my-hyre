@@ -7,7 +7,7 @@ import {
     LayoutDashboard, Users, Briefcase, BarChart3, Settings,
     Search, Bell, ChevronDown, Sparkles, MapPin, Mail, Phone,
     GraduationCap, Clock, ExternalLink,
-    Award, CheckCircle2, TrendingUp, Zap, CalendarDays, Loader2
+    Award, CheckCircle2, TrendingUp, Zap, CalendarDays, Loader2, Plus
 } from "lucide-react";
 
 // --- Components ---

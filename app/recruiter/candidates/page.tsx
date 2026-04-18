@@ -86,7 +86,11 @@ export default function CandidatesPage() {
             setCandidatesLoading(true);
             const token = localStorage.getItem("authToken");
             try {
-                const res = await fetch(`/api/recruiter/candidates?jobId=${selectedJobId}`, {
+                const url = selectedJobId === "talent-pool" 
+                    ? "/api/recruiter/candidates" 
+                    : `/api/recruiter/candidates?jobId=${selectedJobId}`;
+                    
+                const res = await fetch(url, {
                     headers: { "Authorization": `Bearer ${token}` }
                 });
                 if (res.ok) {
@@ -108,8 +112,37 @@ export default function CandidatesPage() {
         fetchCandidates();
     }, [selectedJobId]);
 
+    const handleShortlist = async (candidateId: string, jobId: string) => {
+        const token = localStorage.getItem("authToken");
+        try {
+            const res = await fetch("/api/recruiter/candidates", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ candidateId, jobId }),
+            });
+            if (res.ok) {
+                alert("Candidate synchronized to job pipeline.");
+                // Refresh candidates if viewing a specific job
+                if (selectedJobId !== "talent-pool") {
+                    const freshRes = await fetch(`/api/recruiter/candidates?jobId=${selectedJobId}`, {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    });
+                    if (freshRes.ok) {
+                        const data = await freshRes.json();
+                        setCandidates(data.candidates || []);
+                    }
+                }
+            }
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     const selectedCandidate = candidates.find(c => c.id === selectedCandidateId);
-    const selectedJob = jobs.find(j => j.id === selectedJobId);
+    const selectedJob = selectedJobId === "talent-pool" ? { title: "Talent Pool", id: "talent-pool" } : jobs.find(j => j.id === selectedJobId);
 
     const filteredCandidates = candidates.filter(c =>
         c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -129,21 +162,21 @@ export default function CandidatesPage() {
                 <div className="p-6 pb-4 border-b border-slate-200 dark:border-neutral-800/50">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-xl font-bold tracking-tight tracking-tighter">
-                            {selectedJobId ? "Candidate Pipeline" : "Select Job Post"}
+                            {selectedJobId ? "Citizen Nodes" : "Intelligence Hub"}
                         </h2>
                         {selectedJobId && (
                             <button 
                                 onClick={() => { setSelectedJobId(null); setSelectedCandidateId(null); }}
                                 className="text-xs font-bold text-blue-500 hover:underline flex items-center gap-1"
                             >
-                                <ChevronDown size={14} className="rotate-90" /> All Jobs
+                                <ChevronDown size={14} className="rotate-90" /> All Sectors
                             </button>
                         )}
                     </div>
                     
                     {selectedJobId && (
                         <div className="mb-4 bg-blue-500/10 border border-blue-500/30 p-3 rounded-xl">
-                            <p className="text-[10px] uppercase font-bold text-blue-500 mb-1">Active Context</p>
+                            <p className="text-[10px] uppercase font-bold text-blue-500 mb-1">{selectedJobId === 'talent-pool' ? 'Global Stream' : 'Active Sector'}</p>
                             <p className="text-sm font-bold truncate">{selectedJob?.title}</p>
                         </div>
                     )}
@@ -153,7 +186,7 @@ export default function CandidatesPage() {
                         <input
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
-                            placeholder={selectedJobId ? "Search candidates..." : "Search jobs..."}
+                            placeholder={selectedJobId ? "Search candidates..." : "Search jobs or talent..."}
                             className="w-full bg-white dark:bg-neutral-900/50 border border-slate-200 dark:border-neutral-800 px-3 py-2 pl-10 rounded-xl text-sm"
                         />
                     </div>
@@ -161,23 +194,41 @@ export default function CandidatesPage() {
 
                 <div className="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
                     {!selectedJobId ? (
-                        /* Level 1: Jobs List */
-                        jobs.filter(j => j.title.toLowerCase().includes(searchQuery.toLowerCase())).map((j) => (
+                        /* Level 1: Jobs List + Talent Pool */
+                        <>
+                            <div className="px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Active Recruitment Sectors</div>
+                            {jobs.filter(j => j.title.toLowerCase().includes(searchQuery.toLowerCase())).map((j) => (
+                                <div
+                                    key={j.id}
+                                    onClick={() => setSelectedJobId(j.id)}
+                                    className="flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all border border-transparent hover:bg-white dark:hover:bg-neutral-900 group"
+                                >
+                                    <div className="w-12 h-12 rounded-xl bg-slate-200 dark:bg-neutral-800 flex items-center justify-center">
+                                        <Briefcase size={20} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="font-semibold text-sm truncate">{j.title}</p>
+                                        <p className="text-xs text-slate-500 truncate">{j.applicants} shortlisted nodes</p>
+                                    </div>
+                                    <ChevronDown size={16} className="-rotate-90 text-slate-300" />
+                                </div>
+                            ))}
+
+                            <div className="mt-6 px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Global Talent Stream</div>
                             <div
-                                key={j.id}
-                                onClick={() => setSelectedJobId(j.id)}
-                                className="flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all border border-transparent hover:bg-white dark:hover:bg-neutral-900 group"
+                                onClick={() => setSelectedJobId("talent-pool")}
+                                className="flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all border border-transparent hover:bg-white dark:hover:bg-neutral-900 group bg-blue-500/5"
                             >
-                                <div className="w-12 h-12 rounded-xl bg-slate-200 dark:bg-neutral-800 flex items-center justify-center">
-                                    <Briefcase size={20} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
+                                <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                                    <Users size={20} className="text-blue-500" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="font-semibold text-sm truncate">{j.title}</p>
-                                    <p className="text-xs text-slate-500 truncate">{j.applicants} applicants matched</p>
+                                    <p className="font-semibold text-sm truncate text-blue-600 dark:text-blue-400">Talent Pool</p>
+                                    <p className="text-xs text-slate-500 truncate">Explore all available nodes</p>
                                 </div>
-                                <ChevronDown size={16} className="-rotate-90 text-slate-300" />
+                                <Sparkles size={16} className="text-blue-400" />
                             </div>
-                        ))
+                        </>
                     ) : (
                         /* Level 2: Candidates List */
                         candidatesLoading ? (
@@ -206,8 +257,8 @@ export default function CandidatesPage() {
                         ) : (
                             <div className="text-center py-10">
                                 <Users size={40} className="mx-auto text-slate-300 dark:text-neutral-800 mb-4" />
-                                <p className="text-sm text-slate-500 font-medium">No candidates yet</p>
-                                <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-widest">Pipeline Empty</p>
+                                <p className="text-sm text-slate-500 font-medium">No candidates detected</p>
+                                <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-widest">Sector Empty</p>
                             </div>
                         )
                     )}
@@ -238,12 +289,29 @@ export default function CandidatesPage() {
                                     <p className="text-[10px] uppercase font-bold text-neutral-500 mb-1">Email Node</p>
                                     <p className="text-sm font-medium truncate">{selectedCandidate.email}</p>
                                 </div>
-                                <div className="bg-white dark:bg-neutral-900 border border-white/5 rounded-2xl p-4">
-                                    <p className="text-[10px] uppercase font-bold text-neutral-500 mb-1">Shortlist Status</p>
-                                    <p className="text-sm font-bold text-emerald-500 flex items-center gap-1.5">
-                                        <CheckCircle2 size={14} /> {selectedCandidate.shortlistStatus || "SHORTLISTED"}
-                                    </p>
-                                </div>
+                                
+                                {selectedJobId === 'talent-pool' ? (
+                                    <div className="bg-white dark:bg-neutral-900 border border-white/5 rounded-2xl p-4">
+                                        <p className="text-[10px] uppercase font-bold text-neutral-500 mb-1">Align with Sector</p>
+                                        <select 
+                                            onChange={(e) => {
+                                                if (e.target.value) handleShortlist(selectedCandidate.id, e.target.value);
+                                            }}
+                                            className="bg-transparent text-sm font-bold text-blue-500 focus:outline-none w-full cursor-pointer"
+                                        >
+                                            <option value="">Select Job...</option>
+                                            {jobs.map(j => <option key={j.id} value={j.id}>{j.title}</option>)}
+                                        </select>
+                                    </div>
+                                ) : (
+                                    <div className="bg-white dark:bg-neutral-900 border border-white/5 rounded-2xl p-4">
+                                        <p className="text-[10px] uppercase font-bold text-neutral-500 mb-1">Current Status</p>
+                                        <p className="text-sm font-bold text-emerald-500 flex items-center gap-1.5">
+                                            <CheckCircle2 size={14} /> {selectedCandidate.shortlistStatus || "SHORTLISTED"}
+                                        </p>
+                                    </div>
+                                )}
+
                                 <button 
                                     className="bg-blue-600 rounded-2xl p-4 flex items-center justify-center gap-2 text-white font-bold text-sm"
                                     onClick={() => router.push(`/recruiter/schedule?candidate=${selectedCandidateId}&job=${selectedJobId}`)}
@@ -271,14 +339,18 @@ export default function CandidatesPage() {
                                 </GlassCard>
                                 <div className="bg-gradient-to-br from-blue-600 to-indigo-800 p-6 rounded-3xl border border-blue-500/30">
                                     <h2 className="text-lg font-bold text-white mb-3">AI Alignment</h2>
-                                    <p className="text-sm text-blue-100">Profile matches job requirements by {selectedCandidate.match}%. Recommendation: Immediate Interview.</p>
+                                    <p className="text-sm text-blue-100">
+                                        {selectedJobId === 'talent-pool' 
+                                            ? "Profile has high semantic overlap with your current recruitment needs. Align to a sector for detailed scoring."
+                                            : `Profile matches job requirements by ${selectedCandidate.match}%. Recommendation: Immediate Interview.`}
+                                    </p>
                                 </div>
                             </div>
                         </motion.div>
                     ) : (
                         <div className="h-full flex flex-col items-center justify-center text-zinc-600 font-bold uppercase tracking-widest text-center">
                             <Zap size={40} className="mb-4 text-zinc-800" />
-                            {selectedJobId ? "Select a candidate node" : "Select a job post to view nodes"}
+                            {selectedJobId ? "Select a candidate node" : "Select an intelligence stream to view nodes"}
                         </div>
                     )}
                 </AnimatePresence>

@@ -21,28 +21,61 @@ export async function GET(req: NextRequest) {
   const authUser = await verifyRecruiter(req);
   if (!authUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  try {
+    const url = new URL(req.url);
+    const jobId = url.searchParams.get("jobId");
+
     const recruiter = await prisma.recruiter.findUnique({
       where: { userId: authUser.id }
     });
 
-    // Find the recruiter's most recent job to score candidates against it
-    let latestJob = null;
-    if (recruiter) {
-      latestJob = await prisma.job.findFirst({
-        where: { recruiterId: recruiter.id },
+    if (!recruiter) {
+      return NextResponse.json({ candidates: [] });
+    }
+
+    let candidates = [];
+    if (jobId) {
+      // Fetch candidates shortlisted for this specific job
+      const shortlists = await prisma.shortlist.findMany({
+        where: { jobId: jobId, job: { recruiterId: recruiter.id } },
+        include: {
+          candidate: {
+            include: {
+              user: {
+                include: {
+                  resumes: { take: 1, orderBy: { createdAt: "desc" } }
+                }
+              }
+            }
+          }
+        }
+      });
+      candidates = shortlists.map(s => ({
+        ...s.candidate.user,
+        candidateProfile: s.candidate,
+        shortlistStatus: s.status
+      }));
+    } else {
+      // Original behavior: Talent Pool
+      candidates = await prisma.user.findMany({
+        where: { role: "candidate" },
+        include: {
+          candidateProfile: true,
+          resumes: { take: 1, orderBy: { createdAt: "desc" } }
+        },
         orderBy: { createdAt: "desc" }
       });
     }
 
-    const candidates = await prisma.user.findMany({
-      where: { role: "candidate" },
-      include: {
-        candidateProfile: true,
-        resumes: { take: 1, orderBy: { createdAt: "desc" } }
-      },
-      orderBy: { createdAt: "desc" }
-    });
+    // Find latest job for matching if not filtering by specific job
+    let scoringJob = null;
+    if (jobId) {
+      scoringJob = await prisma.job.findUnique({ where: { id: jobId } });
+    } else {
+      scoringJob = await prisma.job.findFirst({
+        where: { recruiterId: recruiter.id },
+        orderBy: { createdAt: "desc" }
+      });
+    }
 
     const formatted = await Promise.all(candidates.map(async (c) => {
       // Self-healing: Create profile if missing
@@ -60,7 +93,7 @@ export async function GET(req: NextRequest) {
       }
 
       let matchScore = 85; // Baseline
-      if (latestJob) {
+      if (scoringJob) {
          matchScore = await calculateCandidateMatch(
            {
              skills: profile.skills || [],
@@ -68,9 +101,9 @@ export async function GET(req: NextRequest) {
              experience: profile.experience
            },
            {
-             title: latestJob.title,
-             skills: latestJob.skills,
-             description: latestJob.description
+             title: scoringJob.title,
+             skills: scoringJob.skills,
+             description: scoringJob.description
            }
          );
       }

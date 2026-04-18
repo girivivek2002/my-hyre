@@ -43,11 +43,11 @@ export default function CandidatesPage() {
     const router = useRouter();
     const [candidates, setCandidates] = useState<any[]>([]);
     const [jobs, setJobs] = useState<any[]>([]);
-    const [selectedId, setSelectedId] = useState<string | null>(null);
+    const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+    const [selectedCandidateId, setSelectedCandidateId] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [isLoading, setIsLoading] = useState(true);
-    const [shortlistLoading, setShortlistLoading] = useState(false);
-    const [selectedJobId, setSelectedJobId] = useState("");
+    const [candidatesLoading, setCandidatesLoading] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem("authToken");
@@ -56,23 +56,14 @@ export default function CandidatesPage() {
             return;
         }
 
-        const fetchData = async () => {
+        const fetchJobs = async () => {
             try {
-                const headers = { "Authorization": `Bearer ${token}` };
-                const [cRes, jRes] = await Promise.all([
-                    fetch("/api/recruiter/candidates", { headers }),
-                    fetch("/api/recruiter/jobs", { headers })
-                ]);
-
-                if (cRes.ok) {
-                    const cData = await cRes.json();
-                    setCandidates(cData.candidates || []);
-                    if (cData.candidates?.length > 0) setSelectedId(cData.candidates[0].id);
-                }
-                if (jRes.ok) {
-                    const jData = await jRes.json();
-                    setJobs(jData.jobs || []);
-                    if (jData.jobs?.length > 0) setSelectedJobId(jData.jobs[0].id);
+                const res = await fetch("/api/recruiter/jobs", {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    setJobs(data.jobs || []);
                 }
             } catch (err) {
                 console.error(err);
@@ -81,68 +72,124 @@ export default function CandidatesPage() {
             }
         };
 
-        fetchData();
+        fetchJobs();
     }, [router]);
 
-    const handleShortlist = async () => {
-        if (!selectedId || !selectedJobId) return;
-        setShortlistLoading(true);
-        const token = localStorage.getItem("authToken");
-        try {
-            const res = await fetch("/api/recruiter/candidates", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`
-                },
-                body: JSON.stringify({ candidateId: selectedId, jobId: selectedJobId }),
-            });
-            if (res.ok) {
-                alert("Candidate successfully shortlisted!");
-            }
-        } catch (err) {
-            console.error(err);
-        } finally {
-            setShortlistLoading(false);
+    useEffect(() => {
+        if (!selectedJobId) {
+            setCandidates([]);
+            setSelectedCandidateId(null);
+            return;
         }
-    };
 
-    const selected = candidates.find(c => c.id === selectedId);
-    const filtered = candidates.filter(c =>
+        const fetchCandidates = async () => {
+            setCandidatesLoading(true);
+            const token = localStorage.getItem("authToken");
+            try {
+                const res = await fetch(`/api/recruiter/candidates?jobId=${selectedJobId}`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    setCandidates(data.candidates || []);
+                    if (data.candidates?.length > 0) {
+                        setSelectedCandidateId(data.candidates[0].id);
+                    } else {
+                        setSelectedCandidateId(null);
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+            } finally {
+                setCandidatesLoading(false);
+            }
+        };
+
+        fetchCandidates();
+    }, [selectedJobId]);
+
+    const selectedCandidate = candidates.find(c => c.id === selectedCandidateId);
+    const selectedJob = jobs.find(j => j.id === selectedJobId);
+
+    const filteredCandidates = candidates.filter(c =>
         c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         c.role.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     if (isLoading) return (
         <div className="flex-1 flex items-center justify-center text-slate-500 font-bold uppercase tracking-widest animate-pulse">
-            Synchronizing Citizen Nodes...
+            <Loader2 className="animate-spin mr-2" /> Synchronizing Intelligence...
         </div>
     );
 
-
     return (
-
-                <div className="flex-1 flex overflow-hidden">
-                    <div className="w-[420px] shrink-0 border-r border-slate-200 dark:border-neutral-800/60 flex flex-col bg-slate-100/50 dark:bg-neutral-950/20">
-                        <div className="p-6 pb-4 border-b border-slate-200 dark:border-neutral-800/50">
-                            <h2 className="text-xl font-bold tracking-tight mb-4 tracking-tighter">Citizen Pipeline</h2>
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-                                <input
-                                    value={searchQuery}
-                                    onChange={e => setSearchQuery(e.target.value)}
-                                    placeholder="Filter by name or role..."
-                                    className="w-full bg-white dark:bg-neutral-900/50 border border-slate-200 dark:border-neutral-800 px-3 py-2 pl-10 rounded-xl text-sm"
-                                />
-                            </div>
+        <div className="flex-1 flex overflow-hidden">
+            {/* Sidebar: Level 1 (Jobs) or Level 2 (Candidates) */}
+            <div className="w-[420px] shrink-0 border-r border-slate-200 dark:border-neutral-800/60 flex flex-col bg-slate-100/50 dark:bg-neutral-950/20">
+                <div className="p-6 pb-4 border-b border-slate-200 dark:border-neutral-800/50">
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xl font-bold tracking-tight tracking-tighter">
+                            {selectedJobId ? "Candidate Pipeline" : "Select Job Post"}
+                        </h2>
+                        {selectedJobId && (
+                            <button 
+                                onClick={() => { setSelectedJobId(null); setSelectedCandidateId(null); }}
+                                className="text-xs font-bold text-blue-500 hover:underline flex items-center gap-1"
+                            >
+                                <ChevronDown size={14} className="rotate-90" /> All Jobs
+                            </button>
+                        )}
+                    </div>
+                    
+                    {selectedJobId && (
+                        <div className="mb-4 bg-blue-500/10 border border-blue-500/30 p-3 rounded-xl">
+                            <p className="text-[10px] uppercase font-bold text-blue-500 mb-1">Active Context</p>
+                            <p className="text-sm font-bold truncate">{selectedJob?.title}</p>
                         </div>
+                    )}
 
-                        <div className="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
-                            {filtered.map((c) => (
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+                        <input
+                            value={searchQuery}
+                            onChange={e => setSearchQuery(e.target.value)}
+                            placeholder={selectedJobId ? "Search candidates..." : "Search jobs..."}
+                            className="w-full bg-white dark:bg-neutral-900/50 border border-slate-200 dark:border-neutral-800 px-3 py-2 pl-10 rounded-xl text-sm"
+                        />
+                    </div>
+                </div>
+
+                <div className="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-2">
+                    {!selectedJobId ? (
+                        /* Level 1: Jobs List */
+                        jobs.filter(j => j.title.toLowerCase().includes(searchQuery.toLowerCase())).map((j) => (
+                            <div
+                                key={j.id}
+                                onClick={() => setSelectedJobId(j.id)}
+                                className="flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all border border-transparent hover:bg-white dark:hover:bg-neutral-900 group"
+                            >
+                                <div className="w-12 h-12 rounded-xl bg-slate-200 dark:bg-neutral-800 flex items-center justify-center">
+                                    <Briefcase size={20} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="font-semibold text-sm truncate">{j.title}</p>
+                                    <p className="text-xs text-slate-500 truncate">{j.applicants} applicants matched</p>
+                                </div>
+                                <ChevronDown size={16} className="-rotate-90 text-slate-300" />
+                            </div>
+                        ))
+                    ) : (
+                        /* Level 2: Candidates List */
+                        candidatesLoading ? (
+                            <div className="flex items-center justify-center h-40 text-slate-500 text-xs font-bold uppercase tracking-widest animate-pulse">
+                                Extracting Nodes...
+                            </div>
+                        ) : filteredCandidates.length > 0 ? (
+                            filteredCandidates.map((c) => (
                                 <div
                                     key={c.id}
-                                    onClick={() => setSelectedId(c.id)}
-                                    className={`flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all border ${selectedId === c.id ? 'bg-blue-500/10 border-blue-500/30' : 'border-transparent hover:bg-white dark:hover:bg-neutral-900'}`}
+                                    onClick={() => setSelectedCandidateId(c.id)}
+                                    className={`flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all border ${selectedCandidateId === c.id ? 'bg-blue-500/10 border-blue-500/30' : 'border-transparent hover:bg-white dark:hover:bg-neutral-900'}`}
                                 >
                                     <div className="w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm bg-slate-200 dark:bg-neutral-800">
                                         {c.initials}
@@ -155,81 +202,87 @@ export default function CandidatesPage() {
                                         <p className="text-lg font-extrabold text-blue-400">{c.match}%</p>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="flex-1 overflow-y-auto px-8 py-8 custom-scrollbar">
-                        <AnimatePresence mode="wait">
-                            {selected ? (
-                                <motion.div key={selected.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-3xl mx-auto space-y-8">
-                                    <GlassCard>
-                                        <div className="flex gap-6 items-start">
-                                            <div className="w-20 h-20 rounded-2xl bg-blue-600 flex items-center justify-center text-2xl font-extrabold text-white">{selected.initials}</div>
-                                            <div className="flex-1">
-                                                <h1 className="text-3xl font-extrabold tracking-tight">{selected.name}</h1>
-                                                <p className="text-slate-500 text-base">{selected.role}</p>
-                                                <div className="flex flex-wrap gap-4 mt-4 text-sm text-neutral-500">
-                                                    <span className="flex items-center gap-1.5"><MapPin size={14} /> {selected.location}</span>
-                                                    <span className="flex items-center gap-1.5"><Clock size={14} /> {selected.experience} exp</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </GlassCard>
-
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                                        <div className="bg-white dark:bg-neutral-900 border border-white/5 rounded-2xl p-4">
-                                            <p className="text-[10px] uppercase font-bold text-neutral-500 mb-1">Email Node</p>
-                                            <p className="text-sm font-medium truncate">{selected.email}</p>
-                                        </div>
-                                        <div className="bg-white dark:bg-neutral-900 border border-white/5 rounded-2xl p-4">
-                                            <p className="text-[10px] uppercase font-bold text-neutral-500 mb-1">Target Authority</p>
-                                            <select 
-                                                value={selectedJobId} 
-                                                onChange={e => setSelectedJobId(e.target.value)}
-                                                className="bg-transparent text-sm font-bold text-blue-500 focus:outline-none w-full"
-                                            >
-                                                {jobs.map(j => <option key={j.id} value={j.id}>{j.title}</option>)}
-                                                {jobs.length === 0 && <option value="">No Active Jobs</option>}
-                                            </select>
-                                        </div>
-                                        <button 
-                                            onClick={handleShortlist}
-                                            disabled={shortlistLoading || jobs.length === 0}
-                                            className="bg-blue-600 rounded-2xl p-4 flex items-center justify-center gap-2 text-white font-bold text-sm disabled:opacity-50"
-                                        >
-                                            {shortlistLoading ? <Loader2 size={18} className="animate-spin" /> : <CheckCircle2 size={18} />}
-                                            Shortlist Node
-                                        </button>
-                                    </div>
-
-                                    <GlassCard>
-                                        <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                                            <Sparkles size={18} className="text-blue-400" /> AI Architecture Summary
-                                        </h2>
-                                        <p className="text-neutral-300 text-sm leading-relaxed">{selected.summary}</p>
-                                    </GlassCard>
-
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                        <GlassCard>
-                                            <h2 className="text-lg font-bold mb-4">Mastery Profile</h2>
-                                            <div className="flex flex-wrap gap-2">
-                                                {selected.skills.map((s: string, i: number) => (
-                                                    <span key={i} className="bg-white/5 border border-white/10 text-xs px-3 py-1.5 rounded-lg">{s}</span>
-                                                ))}
-                                            </div>
-                                        </GlassCard>
-                                        <div className="bg-gradient-to-br from-blue-600 to-indigo-800 p-6 rounded-3xl border border-blue-500/30">
-                                            <h2 className="text-lg font-bold text-white mb-3">AI Alignment</h2>
-                                            <p className="text-sm text-blue-100">Profile matches company ethos by 97.4%. Recommendation: Immediate Shortlist.</p>
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            ) : (
-                                <div className="h-full flex items-center justify-center text-zinc-600 font-bold uppercase tracking-widest">Select a candidate node</div>
-                            )}
-                        </AnimatePresence>
-                    </div>
+                            ))
+                        ) : (
+                            <div className="text-center py-10">
+                                <Users size={40} className="mx-auto text-slate-300 dark:text-neutral-800 mb-4" />
+                                <p className="text-sm text-slate-500 font-medium">No candidates yet</p>
+                                <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-widest">Pipeline Empty</p>
+                            </div>
+                        )
+                    )}
                 </div>
+            </div>
+
+            {/* Level 3: Candidate Details */}
+            <div className="flex-1 overflow-y-auto px-8 py-8 custom-scrollbar">
+                <AnimatePresence mode="wait">
+                    {selectedCandidate ? (
+                        <motion.div key={selectedCandidate.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-3xl mx-auto space-y-8">
+                            <GlassCard>
+                                <div className="flex gap-6 items-start">
+                                    <div className="w-20 h-20 rounded-2xl bg-blue-600 flex items-center justify-center text-2xl font-extrabold text-white">{selectedCandidate.initials}</div>
+                                    <div className="flex-1">
+                                        <h1 className="text-3xl font-extrabold tracking-tight">{selectedCandidate.name}</h1>
+                                        <p className="text-slate-500 text-base">{selectedCandidate.role}</p>
+                                        <div className="flex flex-wrap gap-4 mt-4 text-sm text-neutral-500">
+                                            <span className="flex items-center gap-1.5"><MapPin size={14} /> {selectedCandidate.location}</span>
+                                            <span className="flex items-center gap-1.5"><Clock size={14} /> {selectedCandidate.experience} exp</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </GlassCard>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div className="bg-white dark:bg-neutral-900 border border-white/5 rounded-2xl p-4">
+                                    <p className="text-[10px] uppercase font-bold text-neutral-500 mb-1">Email Node</p>
+                                    <p className="text-sm font-medium truncate">{selectedCandidate.email}</p>
+                                </div>
+                                <div className="bg-white dark:bg-neutral-900 border border-white/5 rounded-2xl p-4">
+                                    <p className="text-[10px] uppercase font-bold text-neutral-500 mb-1">Shortlist Status</p>
+                                    <p className="text-sm font-bold text-emerald-500 flex items-center gap-1.5">
+                                        <CheckCircle2 size={14} /> {selectedCandidate.shortlistStatus || "SHORTLISTED"}
+                                    </p>
+                                </div>
+                                <button 
+                                    className="bg-blue-600 rounded-2xl p-4 flex items-center justify-center gap-2 text-white font-bold text-sm"
+                                    onClick={() => router.push(`/recruiter/schedule?candidate=${selectedCandidateId}&job=${selectedJobId}`)}
+                                >
+                                    <CalendarDays size={18} />
+                                    Schedule Interview
+                                </button>
+                            </div>
+
+                            <GlassCard>
+                                <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                                    <Sparkles size={18} className="text-blue-400" /> AI Architecture Summary
+                                </h2>
+                                <p className="text-neutral-300 text-sm leading-relaxed">{selectedCandidate.summary}</p>
+                            </GlassCard>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <GlassCard>
+                                    <h2 className="text-lg font-bold mb-4">Mastery Profile</h2>
+                                    <div className="flex flex-wrap gap-2">
+                                        {selectedCandidate.skills.map((s: string, i: number) => (
+                                            <span key={i} className="bg-white/5 border border-white/10 text-xs px-3 py-1.5 rounded-lg">{s}</span>
+                                        ))}
+                                    </div>
+                                </GlassCard>
+                                <div className="bg-gradient-to-br from-blue-600 to-indigo-800 p-6 rounded-3xl border border-blue-500/30">
+                                    <h2 className="text-lg font-bold text-white mb-3">AI Alignment</h2>
+                                    <p className="text-sm text-blue-100">Profile matches job requirements by {selectedCandidate.match}%. Recommendation: Immediate Interview.</p>
+                                </div>
+                            </div>
+                        </motion.div>
+                    ) : (
+                        <div className="h-full flex flex-col items-center justify-center text-zinc-600 font-bold uppercase tracking-widest text-center">
+                            <Zap size={40} className="mb-4 text-zinc-800" />
+                            {selectedJobId ? "Select a candidate node" : "Select a job post to view nodes"}
+                        </div>
+                    )}
+                </AnimatePresence>
+            </div>
+        </div>
     );
 }

@@ -140,6 +140,10 @@ exports.Prisma.CandidateScalarFieldEnum = {
   salaryExpectation: 'salaryExpectation',
   noticePeriod: 'noticePeriod',
   skills: 'skills',
+  phone: 'phone',
+  linkedin: 'linkedin',
+  github: 'github',
+  website: 'website',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

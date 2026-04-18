@@ -116,18 +116,49 @@ export async function POST(req: NextRequest) {
         title,
         company: recruiter.companyName,
         location: location || "Remote",
-        salary: salary || null,
-        type: type || "hybrid",
-        experience: experience || "Not specified",
-        description: description || null,
-        skills: skills || [],
+        salary: salary || "Competitive",
+        type: type || "Full-time",
+        experience: experience || "Any",
+        description: description || `Join ${recruiter.companyName} as a ${title}.`,
+        skills: Array.isArray(skills) ? skills : (skills ? String(skills).split(",").map(s => s.trim()) : []),
         recruiterId: recruiter.id,
       },
     });
 
-    return NextResponse.json({ message: "Job deployed successfully", job }, { status: 201 });
+    // AUTO-SHORTLIST LOGIC:
+    // When a job is posted, automatically shortlist candidates whose profile role matches
+    const matchingCandidates = await prisma.candidate.findMany({
+      where: {
+        OR: [
+          { role: { contains: title, mode: 'insensitive' } },
+          { biography: { contains: title, mode: 'insensitive' } }
+        ]
+      },
+      take: 10
+    });
+
+    if (matchingCandidates.length > 0) {
+      await Promise.all(matchingCandidates.map(candidate => 
+        prisma.shortlist.upsert({
+          where: {
+            candidateId_jobId: {
+              candidateId: candidate.id,
+              jobId: job.id
+            }
+          },
+          update: {},
+          create: {
+            candidateId: candidate.id,
+            jobId: job.id,
+            status: "SHORTLISTED"
+          }
+        }).catch(() => null)
+      ));
+    }
+
+    return NextResponse.json({ message: "Job intelligence deployed", job, autoShortlisted: matchingCandidates.length }, { status: 201 });
   } catch (error: any) {
-    console.error("Recruiter Jobs POST Error:", error);
-    return NextResponse.json({ error: "Internal Server Error", details: error.message }, { status: 500 });
+    console.error("Job Creation Error:", error);
+    return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
   }
 }

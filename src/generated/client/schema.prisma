@@ -30,7 +30,11 @@ model Candidate {
   workPreference    String?
   salaryExpectation String?
   noticePeriod      String?
-  skills            String[] // Postgres supports arrays
+  skills            String[]
+  phone             String?
+  linkedin          String?
+  github            String?
+  website           String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 

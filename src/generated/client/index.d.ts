@@ -2775,6 +2775,10 @@ export namespace Prisma {
     workPreference: string | null
     salaryExpectation: string | null
     noticePeriod: string | null
+    phone: string | null
+    linkedin: string | null
+    github: string | null
+    website: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2791,6 +2795,10 @@ export namespace Prisma {
     workPreference: string | null
     salaryExpectation: string | null
     noticePeriod: string | null
+    phone: string | null
+    linkedin: string | null
+    github: string | null
+    website: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2808,6 +2816,10 @@ export namespace Prisma {
     salaryExpectation: number
     noticePeriod: number
     skills: number
+    phone: number
+    linkedin: number
+    github: number
+    website: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -2826,6 +2838,10 @@ export namespace Prisma {
     workPreference?: true
     salaryExpectation?: true
     noticePeriod?: true
+    phone?: true
+    linkedin?: true
+    github?: true
+    website?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2842,6 +2858,10 @@ export namespace Prisma {
     workPreference?: true
     salaryExpectation?: true
     noticePeriod?: true
+    phone?: true
+    linkedin?: true
+    github?: true
+    website?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -2859,6 +2879,10 @@ export namespace Prisma {
     salaryExpectation?: true
     noticePeriod?: true
     skills?: true
+    phone?: true
+    linkedin?: true
+    github?: true
+    website?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -2949,6 +2973,10 @@ export namespace Prisma {
     salaryExpectation: string | null
     noticePeriod: string | null
     skills: string[]
+    phone: string | null
+    linkedin: string | null
+    github: string | null
+    website: string | null
     createdAt: Date
     updatedAt: Date
     _count: CandidateCountAggregateOutputType | null
@@ -2983,6 +3011,10 @@ export namespace Prisma {
     salaryExpectation?: boolean
     noticePeriod?: boolean
     skills?: boolean
+    phone?: boolean
+    linkedin?: boolean
+    github?: boolean
+    website?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | Candidate$userArgs<ExtArgs>
@@ -3004,6 +3036,10 @@ export namespace Prisma {
     salaryExpectation?: boolean
     noticePeriod?: boolean
     skills?: boolean
+    phone?: boolean
+    linkedin?: boolean
+    github?: boolean
+    website?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | Candidate$userArgs<ExtArgs>
@@ -3022,6 +3058,10 @@ export namespace Prisma {
     salaryExpectation?: boolean
     noticePeriod?: boolean
     skills?: boolean
+    phone?: boolean
+    linkedin?: boolean
+    github?: boolean
+    website?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | Candidate$userArgs<ExtArgs>
@@ -3040,11 +3080,15 @@ export namespace Prisma {
     salaryExpectation?: boolean
     noticePeriod?: boolean
     skills?: boolean
+    phone?: boolean
+    linkedin?: boolean
+    github?: boolean
+    website?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type CandidateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "email" | "role" | "experience" | "biography" | "location" | "workPreference" | "salaryExpectation" | "noticePeriod" | "skills" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
+  export type CandidateOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "email" | "role" | "experience" | "biography" | "location" | "workPreference" | "salaryExpectation" | "noticePeriod" | "skills" | "phone" | "linkedin" | "github" | "website" | "createdAt" | "updatedAt", ExtArgs["result"]["candidate"]>
   export type CandidateInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | Candidate$userArgs<ExtArgs>
     shortlists?: boolean | Candidate$shortlistsArgs<ExtArgs>
@@ -3078,6 +3122,10 @@ export namespace Prisma {
       salaryExpectation: string | null
       noticePeriod: string | null
       skills: string[]
+      phone: string | null
+      linkedin: string | null
+      github: string | null
+      website: string | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["candidate"]>
@@ -3518,6 +3566,10 @@ export namespace Prisma {
     readonly salaryExpectation: FieldRef<"Candidate", 'String'>
     readonly noticePeriod: FieldRef<"Candidate", 'String'>
     readonly skills: FieldRef<"Candidate", 'String[]'>
+    readonly phone: FieldRef<"Candidate", 'String'>
+    readonly linkedin: FieldRef<"Candidate", 'String'>
+    readonly github: FieldRef<"Candidate", 'String'>
+    readonly website: FieldRef<"Candidate", 'String'>
     readonly createdAt: FieldRef<"Candidate", 'DateTime'>
     readonly updatedAt: FieldRef<"Candidate", 'DateTime'>
   }
@@ -12042,6 +12094,10 @@ export namespace Prisma {
     salaryExpectation: 'salaryExpectation',
     noticePeriod: 'noticePeriod',
     skills: 'skills',
+    phone: 'phone',
+    linkedin: 'linkedin',
+    github: 'github',
+    website: 'website',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -12302,6 +12358,10 @@ export namespace Prisma {
     salaryExpectation?: StringNullableFilter<"Candidate"> | string | null
     noticePeriod?: StringNullableFilter<"Candidate"> | string | null
     skills?: StringNullableListFilter<"Candidate">
+    phone?: StringNullableFilter<"Candidate"> | string | null
+    linkedin?: StringNullableFilter<"Candidate"> | string | null
+    github?: StringNullableFilter<"Candidate"> | string | null
+    website?: StringNullableFilter<"Candidate"> | string | null
     createdAt?: DateTimeFilter<"Candidate"> | Date | string
     updatedAt?: DateTimeFilter<"Candidate"> | Date | string
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
@@ -12322,6 +12382,10 @@ export namespace Prisma {
     salaryExpectation?: SortOrderInput | SortOrder
     noticePeriod?: SortOrderInput | SortOrder
     skills?: SortOrder
+    phone?: SortOrderInput | SortOrder
+    linkedin?: SortOrderInput | SortOrder
+    github?: SortOrderInput | SortOrder
+    website?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -12345,6 +12409,10 @@ export namespace Prisma {
     salaryExpectation?: StringNullableFilter<"Candidate"> | string | null
     noticePeriod?: StringNullableFilter<"Candidate"> | string | null
     skills?: StringNullableListFilter<"Candidate">
+    phone?: StringNullableFilter<"Candidate"> | string | null
+    linkedin?: StringNullableFilter<"Candidate"> | string | null
+    github?: StringNullableFilter<"Candidate"> | string | null
+    website?: StringNullableFilter<"Candidate"> | string | null
     createdAt?: DateTimeFilter<"Candidate"> | Date | string
     updatedAt?: DateTimeFilter<"Candidate"> | Date | string
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
@@ -12365,6 +12433,10 @@ export namespace Prisma {
     salaryExpectation?: SortOrderInput | SortOrder
     noticePeriod?: SortOrderInput | SortOrder
     skills?: SortOrder
+    phone?: SortOrderInput | SortOrder
+    linkedin?: SortOrderInput | SortOrder
+    github?: SortOrderInput | SortOrder
+    website?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: CandidateCountOrderByAggregateInput
@@ -12388,6 +12460,10 @@ export namespace Prisma {
     salaryExpectation?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
     noticePeriod?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
     skills?: StringNullableListFilter<"Candidate">
+    phone?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
+    linkedin?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
+    github?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
+    website?: StringNullableWithAggregatesFilter<"Candidate"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Candidate"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Candidate"> | Date | string
   }
@@ -12990,6 +13066,10 @@ export namespace Prisma {
     salaryExpectation?: string | null
     noticePeriod?: string | null
     skills?: CandidateCreateskillsInput | string[]
+    phone?: string | null
+    linkedin?: string | null
+    github?: string | null
+    website?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutCandidateProfileInput
@@ -13010,6 +13090,10 @@ export namespace Prisma {
     salaryExpectation?: string | null
     noticePeriod?: string | null
     skills?: CandidateCreateskillsInput | string[]
+    phone?: string | null
+    linkedin?: string | null
+    github?: string | null
+    website?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     shortlists?: ShortlistUncheckedCreateNestedManyWithoutCandidateInput
@@ -13028,6 +13112,10 @@ export namespace Prisma {
     salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
     noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: CandidateUpdateskillsInput | string[]
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedin?: NullableStringFieldUpdateOperationsInput | string | null
+    github?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutCandidateProfileNestedInput
@@ -13048,6 +13136,10 @@ export namespace Prisma {
     salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
     noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: CandidateUpdateskillsInput | string[]
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedin?: NullableStringFieldUpdateOperationsInput | string | null
+    github?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     shortlists?: ShortlistUncheckedUpdateManyWithoutCandidateNestedInput
@@ -13067,6 +13159,10 @@ export namespace Prisma {
     salaryExpectation?: string | null
     noticePeriod?: string | null
     skills?: CandidateCreateskillsInput | string[]
+    phone?: string | null
+    linkedin?: string | null
+    github?: string | null
+    website?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -13083,6 +13179,10 @@ export namespace Prisma {
     salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
     noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: CandidateUpdateskillsInput | string[]
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedin?: NullableStringFieldUpdateOperationsInput | string | null
+    github?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13100,6 +13200,10 @@ export namespace Prisma {
     salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
     noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: CandidateUpdateskillsInput | string[]
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedin?: NullableStringFieldUpdateOperationsInput | string | null
+    github?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13836,6 +13940,10 @@ export namespace Prisma {
     salaryExpectation?: SortOrder
     noticePeriod?: SortOrder
     skills?: SortOrder
+    phone?: SortOrder
+    linkedin?: SortOrder
+    github?: SortOrder
+    website?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -13852,6 +13960,10 @@ export namespace Prisma {
     workPreference?: SortOrder
     salaryExpectation?: SortOrder
     noticePeriod?: SortOrder
+    phone?: SortOrder
+    linkedin?: SortOrder
+    github?: SortOrder
+    website?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -13868,6 +13980,10 @@ export namespace Prisma {
     workPreference?: SortOrder
     salaryExpectation?: SortOrder
     noticePeriod?: SortOrder
+    phone?: SortOrder
+    linkedin?: SortOrder
+    github?: SortOrder
+    website?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -15468,6 +15584,10 @@ export namespace Prisma {
     salaryExpectation?: string | null
     noticePeriod?: string | null
     skills?: CandidateCreateskillsInput | string[]
+    phone?: string | null
+    linkedin?: string | null
+    github?: string | null
+    website?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutCandidateProfileInput
@@ -15487,6 +15607,10 @@ export namespace Prisma {
     salaryExpectation?: string | null
     noticePeriod?: string | null
     skills?: CandidateCreateskillsInput | string[]
+    phone?: string | null
+    linkedin?: string | null
+    github?: string | null
+    website?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     messages?: MessageUncheckedCreateNestedManyWithoutCandidateInput
@@ -15591,6 +15715,10 @@ export namespace Prisma {
     salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
     noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: CandidateUpdateskillsInput | string[]
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedin?: NullableStringFieldUpdateOperationsInput | string | null
+    github?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutCandidateProfileNestedInput
@@ -15610,6 +15738,10 @@ export namespace Prisma {
     salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
     noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: CandidateUpdateskillsInput | string[]
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedin?: NullableStringFieldUpdateOperationsInput | string | null
+    github?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUncheckedUpdateManyWithoutCandidateNestedInput
@@ -15784,6 +15916,10 @@ export namespace Prisma {
     salaryExpectation?: string | null
     noticePeriod?: string | null
     skills?: CandidateCreateskillsInput | string[]
+    phone?: string | null
+    linkedin?: string | null
+    github?: string | null
+    website?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutCandidateProfileInput
@@ -15803,6 +15939,10 @@ export namespace Prisma {
     salaryExpectation?: string | null
     noticePeriod?: string | null
     skills?: CandidateCreateskillsInput | string[]
+    phone?: string | null
+    linkedin?: string | null
+    github?: string | null
+    website?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     shortlists?: ShortlistUncheckedCreateNestedManyWithoutCandidateInput
@@ -15873,6 +16013,10 @@ export namespace Prisma {
     salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
     noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: CandidateUpdateskillsInput | string[]
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedin?: NullableStringFieldUpdateOperationsInput | string | null
+    github?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutCandidateProfileNestedInput
@@ -15892,6 +16036,10 @@ export namespace Prisma {
     salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
     noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: CandidateUpdateskillsInput | string[]
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedin?: NullableStringFieldUpdateOperationsInput | string | null
+    github?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     shortlists?: ShortlistUncheckedUpdateManyWithoutCandidateNestedInput
@@ -15909,6 +16057,10 @@ export namespace Prisma {
     salaryExpectation?: string | null
     noticePeriod?: string | null
     skills?: CandidateCreateskillsInput | string[]
+    phone?: string | null
+    linkedin?: string | null
+    github?: string | null
+    website?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     shortlists?: ShortlistCreateNestedManyWithoutCandidateInput
@@ -15927,6 +16079,10 @@ export namespace Prisma {
     salaryExpectation?: string | null
     noticePeriod?: string | null
     skills?: CandidateCreateskillsInput | string[]
+    phone?: string | null
+    linkedin?: string | null
+    github?: string | null
+    website?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     shortlists?: ShortlistUncheckedCreateNestedManyWithoutCandidateInput
@@ -16018,6 +16174,10 @@ export namespace Prisma {
     salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
     noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: CandidateUpdateskillsInput | string[]
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedin?: NullableStringFieldUpdateOperationsInput | string | null
+    github?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     shortlists?: ShortlistUpdateManyWithoutCandidateNestedInput
@@ -16036,6 +16196,10 @@ export namespace Prisma {
     salaryExpectation?: NullableStringFieldUpdateOperationsInput | string | null
     noticePeriod?: NullableStringFieldUpdateOperationsInput | string | null
     skills?: CandidateUpdateskillsInput | string[]
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedin?: NullableStringFieldUpdateOperationsInput | string | null
+    github?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     shortlists?: ShortlistUncheckedUpdateManyWithoutCandidateNestedInput

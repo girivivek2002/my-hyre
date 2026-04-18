@@ -212,7 +212,7 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
                       className="flex flex-col items-center justify-center flex-1 py-1 gap-1 cursor-pointer group"
                     >
                       <div className={`p-2 rounded-xl transition-all duration-300 ${isActive ? 'bg-blue-500 text-white shadow-[0_0_15px_rgba(59,130,246,0.5)] scale-110' : 'text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white'}`}>
-                        {React.cloneElement(item.icon as React.ReactElement, { size: 20 })}
+                        {React.cloneElement(item.icon as React.ReactElement<any>, { size: 20 })}
                       </div>
                       <span className={`text-[10px] font-bold tracking-tight transition-colors ${isActive ? 'text-blue-500' : 'text-slate-400'}`}>
                         {item.label}

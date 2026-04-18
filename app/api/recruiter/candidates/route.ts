@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import prisma from "@/lib/db";
 import { calculateCandidateMatch } from "@/lib/ai-matcher";
 
-const JWT_SECRET = process.env.JWT_SECRET || "super-secret-fallback-key";
+const JWT_SECRET = (process.env.JWT_SECRET || "super-secret-fallback-key").replace(/['"]+/g, '');
 
 async function verifyRecruiter(req: NextRequest) {
   const auth = req.headers.get("authorization");

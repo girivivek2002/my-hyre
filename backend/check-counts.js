@@ -19,7 +19,8 @@ async function main() {
   const recruitersList = await prisma.recruiter.findMany({
     include: { _count: { select: { jobs: true } } }
   });
-  console.log(JSON.stringify({ shortlists, jobs, recruiters, candidates, interviews, users, recruitersList }, null, 2));
+  const allUsers = await prisma.user.findMany({ select: { id: true, email: true, role: true } });
+  console.log(JSON.stringify({ shortlists, jobs, recruiters, candidates, interviews, users, recruitersList, allUsers }, null, 2));
   process.exit(0);
 }
 

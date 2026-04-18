@@ -164,14 +164,25 @@ export default function CandidatesPage() {
                         <h2 className="text-xl font-bold tracking-tight tracking-tighter">
                             {selectedJobId ? "Citizen Nodes" : "Intelligence Hub"}
                         </h2>
-                        {selectedJobId && (
-                            <button 
-                                onClick={() => { setSelectedJobId(null); setSelectedCandidateId(null); }}
-                                className="text-xs font-bold text-blue-500 hover:underline flex items-center gap-1"
-                            >
-                                <ChevronDown size={14} className="rotate-90" /> All Sectors
-                            </button>
-                        )}
+                        <div className="flex gap-2">
+                            {!selectedJobId && (
+                                <button 
+                                    onClick={() => router.push("/recruiter/post-job")}
+                                    className="p-2 rounded-lg bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 transition-all border border-blue-500/20"
+                                    title="Post New Job Role"
+                                >
+                                    <Plus size={18} />
+                                </button>
+                            )}
+                            {selectedJobId && (
+                                <button 
+                                    onClick={() => { setSelectedJobId(null); setSelectedCandidateId(null); }}
+                                    className="text-xs font-bold text-blue-500 hover:underline flex items-center gap-1"
+                                >
+                                    <ChevronDown size={14} className="rotate-90" /> All Sectors
+                                </button>
+                            )}
+                        </div>
                     </div>
                     
                     {selectedJobId && (

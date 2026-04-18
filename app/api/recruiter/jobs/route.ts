@@ -2,16 +2,24 @@ import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import prisma from "@/lib/db";
 
-const JWT_SECRET = process.env.JWT_SECRET || "super-secret-fallback-key";
+const JWT_SECRET = (process.env.JWT_SECRET || "super-secret-fallback-key").replace(/['"]+/g, '');
 
 async function verifyRecruiter(req: NextRequest) {
   const auth = req.headers.get("authorization");
-  if (!auth?.startsWith("Bearer ")) return null;
+  if (!auth?.startsWith("Bearer ")) {
+    console.error("Auth Header Missing or Invalid:", auth);
+    return null;
+  }
   try {
-    const decoded: any = jwt.verify(auth.split(" ")[1], JWT_SECRET);
-    if (decoded.role !== "recruiter") return null;
+    const token = auth.split(" ")[1];
+    const decoded: any = jwt.verify(token, JWT_SECRET);
+    if (decoded.role !== "recruiter") {
+      console.error("User role mismatch. Expected recruiter, got:", decoded.role);
+      return null;
+    }
     return decoded;
-  } catch {
+  } catch (err: any) {
+    console.error("JWT Verification Failed:", err.message);
     return null;
   }
 }

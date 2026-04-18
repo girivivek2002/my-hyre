@@ -78,7 +78,7 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
 
       {/* Responsive Sidebar */}
       <div
-        className={`absolute md:relative w-72 h-full bg-white/95 dark:bg-neutral-950/95 backdrop-blur-3xl border-r border-slate-200 dark:border-neutral-800/60 p-6 flex flex-col z-[100] md:z-30 shadow-2xl transition-transform duration-300 ease-in-out md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`absolute md:relative w-72 h-full bg-white/95 dark:bg-neutral-950/95 backdrop-blur-3xl border-r border-slate-200 dark:border-neutral-800/60 p-6 flex flex-col z-[100] md:z-10 shadow-2xl transition-transform duration-300 ease-in-out md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <div className="flex items-center justify-between mb-10 pl-2">
           <div className="flex items-center gap-3">
@@ -119,10 +119,10 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
       </div>
 
       {/* Main Content Pane */}
-      <div className="flex-1 flex flex-col h-screen overflow-hidden w-full relative z-20">
+      <div className="flex-1 flex flex-col h-screen w-full relative z-30">
         
         {/* Topbar */}
-        <div className="h-20 border-b border-slate-200 dark:border-neutral-800/60 bg-white/30 dark:bg-neutral-950/30 backdrop-blur-md px-6 sm:px-10 flex justify-between items-center shrink-0">
+        <div className="h-20 border-b border-slate-200 dark:border-neutral-800/60 bg-white/30 dark:bg-neutral-950/30 backdrop-blur-md px-6 sm:px-10 flex justify-between items-center shrink-0 relative z-50">
           <div className="flex items-center gap-4">
              {/* Mobile Hamburger Button */}
              <button className="md:hidden p-2 rounded-lg bg-slate-100 dark:bg-neutral-800 text-slate-600 dark:text-neutral-300 hover:bg-slate-200 dark:hover:bg-neutral-700 transition-colors" onClick={() => setIsMobileMenuOpen(true)}>
@@ -195,7 +195,7 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
         </div>
 
         {/* Children Render Pane */}
-        <div className="flex-1 overflow-y-auto pb-24 md:pb-0">
+        <div className="flex-1 overflow-y-auto pb-24 md:pb-0 relative z-10">
           {children}
         </div>
 

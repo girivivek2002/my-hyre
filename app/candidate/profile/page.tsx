@@ -183,9 +183,11 @@ export default function CandidateProfile() {
       });
 
       if (res.ok) {
+        // Redirect to candidate dashboard on success
         router.push("/candidate/dashboard");
       } else {
-        alert("Failed to save profile. Please try again.");
+        const errorData = await res.json();
+        alert(`Failed to save profile: ${errorData.error || 'Please try again.'}`);
       }
     } catch (err) {
       console.error("Profile Save Error:", err);

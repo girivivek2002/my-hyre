@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
             jobId: job.id,
             status: "SHORTLISTED"
           }
-        }).catch(() => { /* ignore */ });
+        }).catch(() => {}); // ignore errors
       ));
     }
 

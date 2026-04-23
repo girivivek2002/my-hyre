@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
 
     // Calculate Geographic Distribution
     const locationCounts: Record<string, number> = {};
-    geographyRaw.forEach(s => {
+    geographyRaw.forEach((s: any) => {
       const loc = s.candidate?.location || "Unknown";
       locationCounts[loc] = (locationCounts[loc] || 0) + 1;
     });
@@ -71,7 +71,7 @@ export async function GET(req: NextRequest) {
 
     let avgDays = 0;
     if (hires.length > 0) {
-      const totalDays = hires.reduce((acc, h) => {
+      const totalDays = hires.reduce((acc: number, h: any) => {
         const diff = new Date(h.createdAt).getTime() - new Date(h.job.createdAt).getTime();
         return acc + (diff / (1000 * 60 * 60 * 24));
       }, 0);
@@ -98,7 +98,7 @@ export async function GET(req: NextRequest) {
     const applicantsByDay = new Array(7).fill(0);
     const hiresByDay = new Array(7).fill(0);
 
-    weeklyShortlists.forEach(s => {
+    weeklyShortlists.forEach((s: any) => {
       const dayIndex = new Date(s.createdAt).getDay();
       applicantsByDay[dayIndex]++;
       if (s.status === "SELECTED") hiresByDay[dayIndex]++;

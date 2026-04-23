@@ -26,7 +26,7 @@ export async function proxy(req: NextRequest) {
     const isCompletingProfile = path === "/complete-profile";
     const isProfileComplete = (token as any).isProfileComplete;
 
-    if (!isProfileComplete && !isCompletingProfile && !path.startsWith("/api")) {
+    if (!isProfileComplete && !isCompletingProfile && !isPublicRoute && !path.startsWith("/api")) {
       return NextResponse.redirect(new URL("/complete-profile", req.url));
     }
 

@@ -23,27 +23,14 @@ export default function LoginPage() {
         if (session && (session as any).customJwt) {
           localStorage.setItem("authToken", (session as any).customJwt);
           localStorage.setItem("userRole", (session as any).userRole || "candidate");
-          
-          if (!(session as any).isProfileComplete) {
-            if ((session as any).userRole === "candidate") {
-              router.push("/candidate/profile");
-            } else {
-              router.push("/recruiter/profile");
-            }
-          } else {
-            if ((session as any).userRole === "candidate") {
-              router.push("/candidate/dashboard");
-            } else {
-              router.push("/recruiter/dashboard");
-            }
-          }
+          localStorage.setItem("userName", (session as any).user?.name || "");
         }
       } catch (err) {
         console.error("Session sync failed:", err);
       }
     };
     syncOAuth();
-  }, [router]);
+  }, []);
 
   // Stagger variants for smooth form entry
   const containerVars: Variants = {

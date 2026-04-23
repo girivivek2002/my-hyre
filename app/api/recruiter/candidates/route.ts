@@ -119,6 +119,7 @@ export async function GET(req: NextRequest) {
         match: matchScore,
         skills: profile.skills || ["Communication", "Research"],
         summary: profile.biography || "No intelligence summary provided.",
+        resume: c.resumes?.[0]?.name || null,
         status: "Verified",
       };
     }));

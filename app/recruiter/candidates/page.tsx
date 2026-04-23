@@ -354,14 +354,48 @@ export default function CandidatesPage() {
                                         ))}
                                     </div>
                                 </GlassCard>
-                                <div className="bg-gradient-to-br from-blue-600 to-indigo-800 p-6 rounded-3xl border border-blue-500/30">
-                                    <h2 className="text-lg font-bold text-white mb-3">AI Alignment</h2>
-                                    <p className="text-sm text-blue-100">
-                                        {selectedJobId === 'talent-pool' 
-                                            ? "Profile has high semantic overlap with your current recruitment needs. Align to a sector for detailed scoring."
-                                            : `Profile matches job requirements by ${selectedCandidate.match}%. Recommendation: Immediate Interview.`}
-                                    </p>
-                                </div>
+
+                                <GlassCard>
+                                    <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                                        <ExternalLink size={18} className="text-emerald-400" /> Resume Architecture
+                                    </h2>
+                                    {selectedCandidate.resume ? (
+                                        <div className="flex flex-col gap-4">
+                                            <div className="flex items-center gap-3 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                                                <div className="w-10 h-10 rounded-lg bg-emerald-500 flex items-center justify-center text-white">
+                                                    <Briefcase size={20} />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-bold truncate">{selectedCandidate.resume}</p>
+                                                    <p className="text-[10px] uppercase font-bold text-emerald-500">High-Fidelity PDF</p>
+                                                </div>
+                                            </div>
+                                            <button 
+                                                className="w-full py-2.5 rounded-xl bg-white dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 text-sm font-bold hover:bg-slate-50 dark:hover:bg-neutral-700 transition-all flex items-center justify-center gap-2"
+                                                onClick={() => alert(`Opening ${selectedCandidate.resume}... (Simulated)`)}
+                                            >
+                                                <ExternalLink size={14} /> View Document
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <div className="flex flex-col items-center justify-center py-6 text-center">
+                                            <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-neutral-800 flex items-center justify-center mb-3 text-slate-400">
+                                                <Clock size={20} />
+                                            </div>
+                                            <p className="text-sm font-medium text-slate-500">No resume uploaded yet</p>
+                                            <p className="text-[10px] uppercase font-bold text-slate-400 mt-1">Pending synchronization</p>
+                                        </div>
+                                    )}
+                                </GlassCard>
+                            </div>
+
+                            <div className="bg-gradient-to-br from-blue-600 to-indigo-800 p-6 rounded-3xl border border-blue-500/30">
+                                <h2 className="text-lg font-bold text-white mb-3">AI Alignment</h2>
+                                <p className="text-sm text-blue-100">
+                                    {selectedJobId === 'talent-pool' 
+                                        ? "Profile has high semantic overlap with your current recruitment needs. Align to a sector for detailed scoring."
+                                        : `Profile matches job requirements by ${selectedCandidate.match}%. Recommendation: Immediate Interview.`}
+                                </p>
                             </div>
                         </motion.div>
                     ) : (

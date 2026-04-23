@@ -28,6 +28,11 @@ export async function GET(req: NextRequest) {
         industry: true,
         teamSize: true,
         createdAt: true,
+        resumes: {
+          take: 1,
+          orderBy: { createdAt: "desc" },
+          select: { name: true }
+        },
         _count: {
           select: {
             resumes: true,

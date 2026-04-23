@@ -100,6 +100,7 @@ export default function CandidateProfile() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [existingResume, setExistingResume] = useState<string | null>(null);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -122,6 +123,9 @@ export default function CandidateProfile() {
         if (userRes.ok) {
           const uData = await userRes.json();
           setFormData(prev => ({ ...prev, name: uData.user.name, email: uData.user.email }));
+          if (uData.user.resumes?.length > 0) {
+            setExistingResume(uData.user.resumes[0].name);
+          }
         }
 
         if (profileRes.ok) {
@@ -194,6 +198,17 @@ export default function CandidateProfile() {
       });
 
       if (res.ok) {
+        // If there's a resume file, upload it separately
+        if (resumeFile) {
+          const resumeFormData = new FormData();
+          resumeFormData.append("file", resumeFile);
+          await fetch("/api/candidate/resume", {
+            method: "POST",
+            headers: { "Authorization": `Bearer ${token}` },
+            body: resumeFormData
+          });
+        }
+        
         // Redirect to candidate dashboard on success
         router.push("/candidate/dashboard");
       } else {
@@ -298,12 +313,16 @@ export default function CandidateProfile() {
               className="relative group cursor-pointer"
             >
               <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-[28px] blur opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
-              <div className="relative aspect-[3/1] rounded-[24px] border-2 border-dashed border-slate-300 dark:border-neutral-800 bg-white/50 dark:bg-neutral-900/50 flex flex-col items-center justify-center transition-all group-hover:border-blue-500/50 group-hover:bg-blue-500/5 shadow-inner">
-                {resumeFile ? (
+              <div className="relative aspect-[3/1] rounded-[24px] border-2 border-dashed border-slate-300 dark:border-neutral-800 bg-white/50 dark:bg-neutral-900/50 flex flex-col items-center justify-center transition-all group-hover:border-blue-500/50 group-hover:bg-blue-500/5 shadow-inner p-8 text-center">
+                {resumeFile || existingResume ? (
                   <div className="flex flex-col items-center animate-in fade-in zoom-in duration-300">
                     <CheckCircle2 size={40} className="text-emerald-500 mb-2" />
-                    <p className="text-slate-900 dark:text-white font-bold text-lg">{resumeFile.name}</p>
-                    <p className="text-slate-400 text-xs font-medium uppercase tracking-widest mt-1">Ready for Intelligence Injection</p>
+                    <p className="text-slate-900 dark:text-white font-bold text-lg truncate max-w-full">
+                        {resumeFile ? resumeFile.name : existingResume}
+                    </p>
+                    <p className="text-slate-400 text-xs font-medium uppercase tracking-widest mt-1">
+                        {resumeFile ? 'Ready for Intelligence Injection' : 'Active Intelligence Node Linked'}
+                    </p>
                   </div>
                 ) : (
                   <>
@@ -317,7 +336,7 @@ export default function CandidateProfile() {
                 
                 <div className="mt-6">
                   <span className="bg-slate-900 dark:bg-white text-white dark:text-black px-6 py-2.5 rounded-full text-sm font-bold shadow-lg group-hover:shadow-blue-500/20 transition-all">
-                    {resumeFile ? 'Change File' : 'Select File'}
+                    {resumeFile || existingResume ? 'Change File' : 'Select File'}
                   </span>
                 </div>
               </div>

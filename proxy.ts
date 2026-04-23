@@ -27,7 +27,11 @@ export async function proxy(req: NextRequest) {
     const isProfileComplete = (token as any).isProfileComplete;
 
     if (!isProfileComplete && !isCompletingProfile && !isPublicRoute && !path.startsWith("/api")) {
-      return NextResponse.redirect(new URL("/complete-profile", req.url));
+      const targetProfile = token.role === "recruiter" ? "/recruiter/profile" : "/candidate/profile";
+      // Prevent redirect loop if already on the target profile page
+      if (path !== targetProfile) {
+        return NextResponse.redirect(new URL(targetProfile, req.url));
+      }
     }
 
     // B. Role-Based Access Control (RBAC)

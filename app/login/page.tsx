@@ -13,6 +13,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorObj, setErrorObj] = useState<string | null>(null);
 
+  const [selectedRole, setSelectedRole] = useState("candidate");
   const router = useRouter();
 
   // Synchronize NextAuth Session with existing Custom JWT localStorage architecture
@@ -209,11 +210,33 @@ export default function LoginPage() {
             </motion.div>
           </form>
 
-          {/* Divider */}
-          <motion.div variants={itemVars} className="flex items-center gap-3 my-8 text-slate-400 dark:text-neutral-600 text-xs font-medium tracking-widest uppercase">
-            <div className="flex-1 h-[1px] bg-slate-200 dark:bg-neutral-800"></div>
-            CONTINUE WITH
-            <div className="flex-1 h-[1px] bg-slate-200 dark:bg-neutral-800"></div>
+          {/* Role Selection for OAuth */}
+          <motion.div variants={itemVars} className="mb-6">
+            <label className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-[0.2em] block mb-3 text-center">
+              Identify your role for Social Login
+            </label>
+            <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 dark:bg-neutral-800/50 rounded-xl border border-slate-200 dark:border-neutral-800">
+              <button 
+                type="button"
+                onClick={() => {
+                  setSelectedRole("candidate");
+                  document.cookie = `selectedRole=candidate; path=/; max-age=3600`;
+                }}
+                className={`py-2 px-3 rounded-lg text-xs font-bold transition-all ${selectedRole === "candidate" ? "bg-white dark:bg-neutral-700 shadow-sm text-blue-600 dark:text-white" : "text-slate-500 dark:text-neutral-400 hover:text-slate-700 dark:hover:text-neutral-300"}`}
+              >
+                Candidate
+              </button>
+              <button 
+                type="button"
+                onClick={() => {
+                  setSelectedRole("recruiter");
+                  document.cookie = `selectedRole=recruiter; path=/; max-age=3600`;
+                }}
+                className={`py-2 px-3 rounded-lg text-xs font-bold transition-all ${selectedRole === "recruiter" ? "bg-white dark:bg-neutral-700 shadow-sm text-blue-600 dark:text-white" : "text-slate-500 dark:text-neutral-400 hover:text-slate-700 dark:hover:text-neutral-300"}`}
+              >
+                Recruiter
+              </button>
+            </div>
           </motion.div>
 
           {/* Social Buttons */}

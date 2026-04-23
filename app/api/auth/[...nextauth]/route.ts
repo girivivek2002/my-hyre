@@ -6,6 +6,8 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
+import { cookies } from "next/headers";
+
 const handler = NextAuth({
   providers: [
     GoogleProvider({
@@ -23,17 +25,20 @@ const handler = NextAuth({
       if (!user.email) return false;
       
       try {
+        const cookieStore = cookies();
+        const selectedRole = cookieStore.get("selectedRole")?.value || "candidate";
+
         // 5. ACCOUNT LINKING: Detect existing user by email
         let dbUser = await prisma.user.findUnique({ where: { email: user.email } });
         
         if (!dbUser) {
-          // New User: Create with OAuth ID
+          // New User: Create with OAuth ID and SELECTED ROLE
           dbUser = await prisma.user.create({
             data: {
               email: user.email,
               name: user.name || "OAuth User",
               password: "oauth-placeholder-password",
-              role: "candidate", // Default, but will be forced to select in onboarding
+              role: selectedRole as any,
               googleId: account?.provider === "google" ? account.providerAccountId : null,
               linkedinId: account?.provider === "linkedin" ? account.providerAccountId : null,
             }

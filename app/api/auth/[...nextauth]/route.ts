@@ -25,7 +25,7 @@ const handler = NextAuth({
       if (!user.email) return false;
       
       try {
-        const cookieStore = cookies();
+        const cookieStore = await cookies();
         const selectedRole = cookieStore.get("selectedRole")?.value || "candidate";
 
         // 5. ACCOUNT LINKING: Detect existing user by email

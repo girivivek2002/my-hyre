@@ -80,13 +80,23 @@ export async function POST(req: NextRequest) {
     });
 
     if (matchingJobs.length > 0) {
-      await Promise.all(matchingJobs.map((job: any) => {
+      await Promise.all(matchingJobs.map((job: any) =>
         prisma.shortlist.upsert({
           where: {
             candidateId_jobId: {
               candidateId: candidate.id,
               jobId: job.id
             }
+          },
+          update: {}, // No change if already exists
+          create: {
+            candidateId: candidate.id,
+            jobId: job.id,
+            status: "SHORTLISTED"
+          }
+        }).catch(() => null) // Ignore errors (like duplicate unique constraint if race condition)
+      ));
+    }
           },
           update: {}, // No change if already exists
           create: {

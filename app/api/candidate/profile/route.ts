@@ -80,7 +80,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (matchingJobs.length > 0) {
-      await Promise.all(matchingJobs.map(job => 
+      await Promise.all(matchingJobs.map((job: any) => {
         prisma.shortlist.upsert({
           where: {
             candidateId_jobId: {

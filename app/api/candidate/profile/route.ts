@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import prisma from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 const JWT_SECRET = (process.env.JWT_SECRET || "super-secret-fallback-key").replace(/['"]+/g, '');
 
 export async function GET(req: NextRequest) {
@@ -94,17 +96,7 @@ export async function POST(req: NextRequest) {
             jobId: job.id,
             status: "SHORTLISTED"
           }
-        }).catch(() => null) // Ignore errors (like duplicate unique constraint if race condition)
-      ));
-    }
-          },
-          update: {}, // No change if already exists
-          create: {
-            candidateId: candidate.id,
-            jobId: job.id,
-            status: "SHORTLISTED"
-          }
-        }).catch(() => null) // Ignore errors (like duplicate unique constraint if race condition)
+        }).catch(() => null); // Ignore errors (like duplicate unique constraint if race condition)
       ));
     }
 

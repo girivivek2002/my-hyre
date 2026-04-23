@@ -82,23 +82,24 @@ export async function POST(req: NextRequest) {
     });
 
     if (matchingJobs.length > 0) {
-      await Promise.all(matchingJobs.map((job: any) =>
-        prisma.shortlist.upsert({
-          where: {
-            candidateId_jobId: {
+      await Promise.all(
+        matchingJobs.map((job: any) =>
+          prisma.shortlist.upsert({
+            where: {
+              candidateId_jobId: {
+                candidateId: candidate.id,
+                jobId: job.id
+              }
+            },
+            update: {}, 
+            create: {
               candidateId: candidate.id,
-              jobId: job.id
+              jobId: job.id,
+              status: "SHORTLISTED"
             }
-          },
-          update: {}, // No change if already exists
-          create: {
-            candidateId: candidate.id,
-            jobId: job.id,
-            status: "SHORTLISTED"
-          }
-        )).catch(() => {})
-      // ignore errors
-      ));
+          }).catch(() => null)
+        )
+      );
     }
 
     return NextResponse.json({ message: "Profile updated successfully", candidate, autoShortlisted: matchingJobs.length });

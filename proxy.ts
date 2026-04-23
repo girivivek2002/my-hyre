@@ -1,5 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = (process.env.JWT_SECRET as string || "").replace(/['"]+/g, '');
 
 export async function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;
@@ -12,8 +15,21 @@ export async function proxy(req: NextRequest) {
     path.endsWith("/signup") ||
     path.includes("/signup");
   
-  // 2. Get Session Token
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  // 2. Get Session Token (NextAuth or Custom)
+  let token: any = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  
+  if (!token) {
+    const customToken = req.cookies.get("authToken")?.value;
+    if (customToken) {
+      try {
+        token = jwt.verify(customToken, JWT_SECRET);
+        // Map custom token fields to match NextAuth token structure if necessary
+        token.isProfileComplete = true; // Manual signups/logins are marked complete
+      } catch (err) {
+        console.error("Custom JWT verification failed:", err);
+      }
+    }
+  }
 
   // 3. Handle Unauthorized Access
   if (!token && !isPublicRoute && !path.startsWith("/api/auth")) {

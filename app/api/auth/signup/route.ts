@@ -78,12 +78,23 @@ export async function POST(req: NextRequest) {
       { expiresIn: "7d" }
     );
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       message: "User registered successfully",
       token,
       isProfileComplete: true,
       user: { id: user.id, name: user.name, role: user.role, email: user.email },
     }, { status: 201 });
+
+    // Set cookie for middleware
+    response.cookies.set("authToken", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60,
+      path: "/",
+    });
+
+    return response;
   } catch (error: any) {
     console.error("Signup Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

@@ -242,7 +242,7 @@ export default function LoginPage() {
           {/* Social Buttons */}
           <motion.div variants={itemVars} className="grid grid-cols-2 gap-4">
             <motion.button 
-              onClick={() => signIn("google", { callbackUrl: "/candidate/dashboard" })}
+              onClick={() => signIn("google", { callbackUrl: `/${selectedRole}/dashboard` })}
               type="button"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -253,7 +253,7 @@ export default function LoginPage() {
             </motion.button>
 
             <motion.button 
-              onClick={() => signIn("linkedin", { callbackUrl: "/candidate/dashboard" })}
+              onClick={() => signIn("linkedin", { callbackUrl: `/${selectedRole}/dashboard` })}
               type="button"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}

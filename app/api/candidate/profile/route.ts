@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
             jobId: job.id,
             status: "SHORTLISTED"
           }
-        }).catch(() => null); // Ignore errors (like duplicate unique constraint if race condition)
+        }).catch(() => { /* ignore */ });
       ));
     }
 

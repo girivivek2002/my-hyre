@@ -67,7 +67,7 @@ const handler = NextAuth({
         
         if (dbUser) {
           token.customJwt = jwt.sign(
-            { id: dbUser.id, role: dbUser.role },
+            { id: dbUser.id, role: dbUser.role, email: dbUser.email },
             JWT_SECRET,
             { expiresIn: "7d" }
           );

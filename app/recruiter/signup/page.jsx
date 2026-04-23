@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { Eye, EyeOff, Building2, Globe, Mail, Briefcase, Users, ArrowRight, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export default function CompanySignup() {
     const [showPassword, setShowPassword] = useState(false);
@@ -253,8 +254,7 @@ export default function CompanySignup() {
                                 </button>
                             </div>
                         </motion.div>
-
-                        {/* Submit Button */}
+                                             {/* Submit Button */}
                         <motion.div variants={itemVars} className="pt-2">
                             <motion.button
                                 type="submit"
@@ -271,6 +271,40 @@ export default function CompanySignup() {
                                         <ArrowRight size={18} className="group-hover/btn:translate-x-1 transition-transform" />
                                     </>
                                 )}
+                            </motion.button>
+                        </motion.div>
+
+                        {/* Divider */}
+                        <motion.div variants={itemVars} className="relative py-4 flex items-center gap-4">
+                            <div className="flex-1 h-px bg-neutral-800"></div>
+                            <span className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest">Or continue with</span>
+                            <div className="flex-1 h-px bg-neutral-800"></div>
+                        </motion.div>
+
+                        {/* OAuth Buttons */}
+                        <motion.div variants={itemVars} className="grid grid-cols-2 gap-4">
+                            <motion.button
+                                type="button"
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={() => signIn("google", { callbackUrl: "/login?role=recruiter" })}
+                                className="flex items-center justify-center gap-3 bg-neutral-950/50 border border-neutral-800 py-3 rounded-xl font-bold text-xs text-white hover:bg-neutral-900 transition-all shadow-sm"
+                            >
+                                <Image src="/google.png" alt="Google" width={16} height={16} />
+                                Google
+                            </motion.button>
+
+                            <motion.button
+                                type="button"
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={() => signIn("linkedin", { callbackUrl: "/login?role=recruiter" })}
+                                className="flex items-center justify-center gap-3 bg-[#0077B5] text-white border border-[#00669c] py-3 rounded-xl font-bold text-xs hover:bg-[#00669c] transition-all shadow-sm"
+                            >
+                                <div className="bg-white rounded-[2px] p-[1px]">
+                                   <Image src="/linkedin.png" alt="LinkedIn" width={14} height={14} />
+                                </div>
+                                LinkedIn
                             </motion.button>
                         </motion.div>
 

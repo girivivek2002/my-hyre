@@ -24,10 +24,18 @@ export default function LoginPage() {
           localStorage.setItem("authToken", (session as any).customJwt);
           localStorage.setItem("userRole", (session as any).userRole || "candidate");
           
-          if ((session as any).userRole === "candidate") {
-            router.push("/candidate/dashboard");
+          if (!(session as any).isProfileComplete) {
+            if ((session as any).userRole === "candidate") {
+              router.push("/candidate/profile");
+            } else {
+              router.push("/recruiter/profile");
+            }
           } else {
-            router.push("/recruiter/dashboard");
+            if ((session as any).userRole === "candidate") {
+              router.push("/candidate/dashboard");
+            } else {
+              router.push("/recruiter/dashboard");
+            }
           }
         }
       } catch (err) {
@@ -191,6 +199,33 @@ export default function LoginPage() {
                   className="w-full px-4 py-3.5 pl-11 rounded-xl bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-neutral-600 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all shadow-inner dark:shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]"
                 />
               </div>
+            </motion.div>
+
+            {/* OAuth Buttons */}
+            <motion.div variants={itemVars} className="grid grid-cols-2 gap-4 mb-8">
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => signIn("google", { callbackUrl: "/login" })}
+                className="flex items-center justify-center gap-3 bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 py-3 rounded-xl font-bold text-xs hover:bg-slate-50 dark:hover:bg-neutral-900 transition-all shadow-sm"
+              >
+                <Image src="/google.png" alt="Google" width={16} height={16} />
+                Google
+              </motion.button>
+
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => signIn("linkedin", { callbackUrl: "/login" })}
+                className="flex items-center justify-center gap-3 bg-[#0077B5] text-white border border-[#00669c] py-3 rounded-xl font-bold text-xs hover:bg-[#00669c] transition-all shadow-sm"
+              >
+                <div className="bg-white rounded-[2px] p-[1px]">
+                   <Image src="/linkedin.png" alt="LinkedIn" width={14} height={14} />
+                </div>
+                LinkedIn
+              </motion.button>
             </motion.div>
 
             {/* Sign In Button */}

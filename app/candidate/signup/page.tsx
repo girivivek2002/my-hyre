@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Eye, EyeOff, User, Mail, Phone, KeyRound, ArrowRight, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export default function CandidateSignup() {
   const [showPassword, setShowPassword] = useState(false);
@@ -226,6 +227,40 @@ export default function CandidateSignup() {
                     <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                   </>
                 )}
+              </motion.button>
+            </motion.div>
+
+            {/* Divider */}
+            <motion.div variants={itemVars} className="relative py-4 flex items-center gap-4">
+              <div className="flex-1 h-px bg-slate-200 dark:bg-neutral-800"></div>
+              <span className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest">Or continue with</span>
+              <div className="flex-1 h-px bg-slate-200 dark:bg-neutral-800"></div>
+            </motion.div>
+
+            {/* OAuth Buttons */}
+            <motion.div variants={itemVars} className="grid grid-cols-2 gap-4">
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => signIn("google", { callbackUrl: "/login" })}
+                className="flex items-center justify-center gap-3 bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 py-3 rounded-xl font-bold text-xs hover:bg-slate-50 dark:hover:bg-neutral-900 transition-all shadow-sm"
+              >
+                <Image src="/google.png" alt="Google" width={16} height={16} />
+                Google
+              </motion.button>
+
+              <motion.button
+                type="button"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => signIn("linkedin", { callbackUrl: "/login" })}
+                className="flex items-center justify-center gap-3 bg-[#0077B5] text-white border border-[#00669c] py-3 rounded-xl font-bold text-xs hover:bg-[#00669c] transition-all shadow-sm"
+              >
+                <div className="bg-white rounded-[2px] p-[1px]">
+                   <Image src="/linkedin.png" alt="LinkedIn" width={14} height={14} />
+                </div>
+                LinkedIn
               </motion.button>
             </motion.div>
 

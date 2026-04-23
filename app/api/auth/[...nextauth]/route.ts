@@ -55,7 +55,10 @@ const handler = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         // Find DB user again to get their custom Role.
-        const dbUser = await prisma.user.findUnique({ where: { email: user.email! } });
+        const dbUser = await prisma.user.findUnique({ 
+          where: { email: user.email! },
+          include: { candidateProfile: true, recruiterProfile: true }
+        });
         if (dbUser) {
           const customToken = jwt.sign(
             { id: dbUser.id, role: dbUser.role },
@@ -64,6 +67,15 @@ const handler = NextAuth({
           );
           token.customJwt = customToken;
           token.role = dbUser.role;
+
+          // Check completeness
+          let isComplete = false;
+          if (dbUser.role === "candidate") {
+            isComplete = !!(dbUser.candidateProfile?.experience && dbUser.candidateProfile?.biography);
+          } else {
+            isComplete = !!(dbUser.recruiterProfile?.industry && dbUser.recruiterProfile?.companySize);
+          }
+          token.isProfileComplete = isComplete;
         }
       }
       return token;
@@ -73,6 +85,7 @@ const handler = NextAuth({
         // Bridge the JWT token string securely so the frontend can retrieve it and mount it to localStorage
         (session as any).customJwt = token.customJwt;
         (session as any).userRole = token.role;
+        (session as any).isProfileComplete = token.isProfileComplete;
       }
       return session;
     }

@@ -53,14 +53,16 @@ export async function proxy(req: NextRequest) {
     }
 
     // B. Role-Based Access Control (RBAC)
-    if (path.startsWith("/candidate") && token.role !== "candidate") {
-      return NextResponse.redirect(new URL("/recruiter/dashboard", req.url));
-    }
-    if (path.startsWith("/recruiter") && token.role !== "recruiter") {
-      return NextResponse.redirect(new URL("/candidate/dashboard", req.url));
-    }
-    if (path.startsWith("/admin") && token.role !== "admin") {
-      return NextResponse.redirect(new URL("/", req.url));
+    if (token.role) {
+      if (path.startsWith("/candidate") && token.role !== "candidate") {
+        return NextResponse.redirect(new URL("/recruiter/dashboard", req.url));
+      }
+      if (path.startsWith("/recruiter") && token.role !== "recruiter") {
+        return NextResponse.redirect(new URL("/candidate/dashboard", req.url));
+      }
+      if (path.startsWith("/admin") && token.role !== "admin") {
+        return NextResponse.redirect(new URL("/", req.url));
+      }
     }
   }
 

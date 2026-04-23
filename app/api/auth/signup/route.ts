@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/db";
+import { Prisma } from "@/src/generated/client";
 import jwt from "jsonwebtoken";
+
+export const dynamic = "force-dynamic";
 
 const JWT_SECRET = (process.env.JWT_SECRET || "super-secret-fallback-key").replace(/['"]+/g, '');
 
@@ -22,7 +25,7 @@ export async function POST(req: NextRequest) {
     const assignedRole = role === "recruiter" ? "recruiter" : "candidate";
 
     // Create user and associated profile in a transaction
-    const user = await prisma.$transaction(async (tx) => {
+    const user = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       const newUser = await tx.user.create({
         data: {
           email,

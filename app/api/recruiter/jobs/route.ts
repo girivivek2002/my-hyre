@@ -126,12 +126,22 @@ export async function POST(req: NextRequest) {
     });
 
     // AUTO-SHORTLIST LOGIC:
-    // When a job is posted, automatically shortlist candidates whose profile role matches
+    // When a job is posted, automatically shortlist candidates whose profile role or skills match
+    const jobSkills = Array.isArray(skills) ? skills : (skills ? String(skills).split(",").map((s: string) => s.trim()) : []);
+    const titleKeywords = title.split(/[\s-]+/).filter(k => k.length > 2);
+    const normalizedTitle = title.replace(/-/g, ' ');
+    const alternateTitle = title.replace(/-/g, '');
+    const searchTerms = Array.from(new Set([title, normalizedTitle, alternateTitle, ...jobSkills]));
+    
     const matchingCandidates = await prisma.candidate.findMany({
       where: {
         OR: [
           { role: { contains: title, mode: 'insensitive' } },
-          { biography: { contains: title, mode: 'insensitive' } }
+          { biography: { contains: title, mode: 'insensitive' } },
+          { skills: { hasSome: searchTerms } },
+          // Keyword matching for role and biography
+          ...titleKeywords.map(k => ({ role: { contains: k, mode: 'insensitive' as const } })),
+          ...titleKeywords.map(k => ({ biography: { contains: k, mode: 'insensitive' as const } }))
         ]
       },
       take: 10

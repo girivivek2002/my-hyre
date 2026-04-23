@@ -70,12 +70,13 @@ export async function POST(req: NextRequest) {
     });
 
     // AUTO-SHORTLIST LOGIC:
-    // If a candidate updates their profile, find jobs that match their desired role
+    // If a candidate updates their profile, find jobs that match their desired role or skills
     const matchingJobs = await prisma.job.findMany({
       where: {
         OR: [
           { title: { contains: candidate.role || "", mode: 'insensitive' } },
-          { description: { contains: candidate.role || "", mode: 'insensitive' } }
+          { description: { contains: candidate.role || "", mode: 'insensitive' } },
+          { skills: { hasSome: candidate.skills } }
         ]
       },
       take: 5

@@ -84,8 +84,19 @@ export default function CandidateSettingsPage() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("profile");
   const [mounted, setMounted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<string | null>(null);
 
-  // States
+  // Profile States
+  const [profileData, setProfileData] = useState({
+    name: "",
+    role: "",
+    biography: "",
+    location: "",
+    workPreference: "Remote Only",
+  });
+
+  // Toggle States
   const [stealthMode, setStealthMode] = useState(false);
   const [aiVisibility, setAiVisibility] = useState(true);
   const [emailNotifs, setEmailNotifs] = useState(true);
@@ -93,7 +104,58 @@ export default function CandidateSettingsPage() {
 
   useEffect(() => {
     setMounted(true);
+    fetchProfile();
   }, []);
+
+  const fetchProfile = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) return;
+
+      const res = await fetch("/api/candidate/profile", {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.profile) {
+        setProfileData({
+          name: data.profile.name || "",
+          role: data.profile.role || "",
+          biography: data.profile.biography || "",
+          location: data.profile.location || "",
+          workPreference: data.profile.workPreference || "Remote Only",
+        });
+      }
+    } catch (err) {
+      console.error("Failed to fetch profile:", err);
+    }
+  };
+
+  const handleSave = async () => {
+    setIsLoading(true);
+    setSaveStatus(null);
+    try {
+      const token = localStorage.getItem("authToken");
+      const res = await fetch("/api/candidate/profile", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(profileData),
+      });
+
+      if (res.ok) {
+        setSaveStatus("Profile architecture updated successfully.");
+        setTimeout(() => setSaveStatus(null), 3000);
+      } else {
+        setSaveStatus("Failed to update profile.");
+      }
+    } catch (err) {
+      setSaveStatus("Network error occurred.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const containerVars: Variants = {
     hidden: { opacity: 0 },
@@ -155,7 +217,7 @@ export default function CandidateSettingsPage() {
                      <div className="flex flex-col md:flex-row gap-8 items-start">
                         <div className="relative group">
                            <div className="w-32 h-32 rounded-[40px] bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-3xl font-extrabold text-white shadow-2xl relative overflow-hidden">
-                              SA
+                              {profileData.name ? profileData.name.split(' ').map(n => n[0]).join('').toUpperCase() : "JD"}
                               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer">
                                  <Upload size={24} />
                                  <span className="text-[8px] font-bold mt-2 uppercase tracking-widest">Update</span>
@@ -165,15 +227,28 @@ export default function CandidateSettingsPage() {
                         <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
                            <div className="space-y-2">
                               <label className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest ml-1">Full Name</label>
-                              <input defaultValue="Sterling Archer" className="w-full bg-slate-50 dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-2xl px-5 py-3 text-sm font-semibold focus:outline-none focus:border-blue-500/50 transition-all" />
+                              <input 
+                                value={profileData.name} 
+                                onChange={(e) => setProfileData({...profileData, name: e.target.value})}
+                                className="w-full bg-slate-50 dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-2xl px-5 py-3 text-sm font-semibold focus:outline-none focus:border-blue-500/50 transition-all" 
+                              />
                            </div>
                            <div className="space-y-2">
                               <label className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest ml-1">Professional Title</label>
-                              <input defaultValue="Principal Experience Designer" className="w-full bg-slate-50 dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-2xl px-5 py-3 text-sm font-semibold focus:outline-none focus:border-blue-500/50 transition-all" />
+                              <input 
+                                value={profileData.role} 
+                                onChange={(e) => setProfileData({...profileData, role: e.target.value})}
+                                className="w-full bg-slate-50 dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-2xl px-5 py-3 text-sm font-semibold focus:outline-none focus:border-blue-500/50 transition-all" 
+                              />
                            </div>
                            <div className="space-y-2 sm:col-span-2">
                               <label className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest ml-1">AI-Augmented Bio</label>
-                              <textarea rows={4} defaultValue="Expert in design system architecture and high-fidelity motion. Currently optimizing workflows for Series C+ enterprise teams." className="w-full bg-slate-50 dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-2xl px-5 py-3 text-sm font-semibold focus:outline-none focus:border-blue-500/50 transition-all resize-none" />
+                              <textarea 
+                                rows={4} 
+                                value={profileData.biography} 
+                                onChange={(e) => setProfileData({...profileData, biography: e.target.value})}
+                                className="w-full bg-slate-50 dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-2xl px-5 py-3 text-sm font-semibold focus:outline-none focus:border-blue-500/50 transition-all resize-none" 
+                              />
                            </div>
                         </div>
                      </div>
@@ -186,11 +261,19 @@ export default function CandidateSettingsPage() {
                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div className="space-y-2">
                            <label className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest ml-1">Primary Location</label>
-                           <input defaultValue="San Francisco, CA" className="w-full bg-slate-50 dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-2xl px-5 py-3 text-sm font-semibold focus:outline-none focus:border-blue-500/50 transition-all" />
+                           <input 
+                            value={profileData.location} 
+                            onChange={(e) => setProfileData({...profileData, location: e.target.value})}
+                            className="w-full bg-slate-50 dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-2xl px-5 py-3 text-sm font-semibold focus:outline-none focus:border-blue-500/50 transition-all" 
+                           />
                         </div>
                         <div className="space-y-2">
                            <label className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest ml-1">Workplace Preference</label>
-                           <select className="w-full bg-slate-50 dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-2xl px-5 py-3 text-sm font-semibold focus:outline-none focus:border-blue-500/50 transition-all appearance-none">
+                           <select 
+                            value={profileData.workPreference}
+                            onChange={(e) => setProfileData({...profileData, workPreference: e.target.value})}
+                            className="w-full bg-slate-50 dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-2xl px-5 py-3 text-sm font-semibold focus:outline-none focus:border-blue-500/50 transition-all appearance-none"
+                           >
                               <option>Remote Only</option>
                               <option>Hybrid Preferred</option>
                               <option>On-site Only</option>
@@ -198,6 +281,24 @@ export default function CandidateSettingsPage() {
                         </div>
                      </div>
                   </GlassCard>
+
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-2">
+                    {saveStatus && (
+                      <p className={`text-xs font-bold uppercase tracking-widest ${saveStatus.includes("successfully") ? "text-emerald-500" : "text-red-500"}`}>
+                        {saveStatus}
+                      </p>
+                    )}
+                    <div className="flex-1" />
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={handleSave}
+                      disabled={isLoading}
+                      className="bg-blue-600 text-white px-8 py-3 rounded-2xl font-bold text-xs uppercase tracking-widest flex items-center gap-2 shadow-lg shadow-blue-600/20 disabled:opacity-50"
+                    >
+                      {isLoading ? "Synchronizing..." : <><Save size={16} /> Save Architecture</>}
+                    </motion.button>
+                  </div>
                 </motion.div>
               )}
 

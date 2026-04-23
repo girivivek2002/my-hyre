@@ -8,7 +8,7 @@ import {
     LayoutDashboard, Users, Briefcase, BarChart3, Settings,
     Search, Bell, ChevronDown, CalendarDays, User, Shield, BellRing,
     Puzzle, UsersRound, Palette, Globe, Lock, Mail, Eye, EyeOff,
-    Smartphone, Key, ToggleLeft, ToggleRight, Check, Upload, Trash2
+    Smartphone, Key, ToggleLeft, ToggleRight, Check, Upload, Trash2, Loader2
 } from "lucide-react";
 
 // ─── Glass Card ───────────────────────────────────────────────────────────────
@@ -67,9 +67,73 @@ export default function SettingsPage() {
     const router = useRouter();
     const { theme, setTheme } = useTheme();
     const [activeTab, setActiveTab] = useState("profile");
+    const [isLoading, setIsLoading] = useState(false);
+    const [saveStatus, setSaveStatus] = useState<string | null>(null);
+
+    const [profile, setProfile] = useState({
+        companyName: "",
+        industry: "",
+        email: "",
+        website: "",
+        phone: "",
+        bio: ""
+    });
+
     const [notifs, setNotifs] = useState({ email: true, push: true, sms: false, weekly: true, candidate: true, interview: true, offer: false });
     const [twoFA, setTwoFA] = useState(true);
     const [sessionTimeout, setSessionTimeout] = useState(true);
+
+    React.useEffect(() => {
+        fetchProfile();
+    }, []);
+
+    const fetchProfile = async () => {
+        try {
+            const token = localStorage.getItem("authToken");
+            if (!token) return;
+
+            const res = await fetch("/api/recruiter/profile", {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (data.profile) {
+                setProfile({
+                    companyName: data.profile.companyName || "",
+                    industry: data.profile.industry || "",
+                    email: data.profile.email || "",
+                    website: data.profile.website || "",
+                    phone: data.profile.phone || "",
+                    bio: data.profile.bio || "Building the next generation of workforce intelligence tools."
+                });
+            }
+        } catch (err) {
+            console.error("Fetch failed:", err);
+        }
+    };
+
+    const handleSave = async () => {
+        setIsLoading(true);
+        setSaveStatus(null);
+        try {
+            const token = localStorage.getItem("authToken");
+            const res = await fetch("/api/recruiter/profile", {
+                method: "PATCH",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(profile),
+            });
+            if (res.ok) {
+                setSaveStatus("Profile updated successfully");
+                setTimeout(() => setSaveStatus(null), 3000);
+            }
+        } catch (err) {
+            setSaveStatus("Failed to update profile");
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const containerVars: Variants = {
         hidden: { opacity: 0 },
@@ -113,7 +177,7 @@ export default function SettingsPage() {
                                     <div className="flex flex-col sm:flex-row gap-6 mb-6">
                                         <div className="shrink-0">
                                             <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-3xl font-extrabold text-white shadow-[0_0_30px_rgba(59,130,246,0.3)] relative group/avatar cursor-pointer overflow-hidden">
-                                                SC
+                                                {profile.companyName ? profile.companyName.slice(0, 2).toUpperCase() : "HY"}
                                                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/avatar:opacity-100 transition-opacity flex items-center justify-center">
                                                     <Upload size={24} />
                                                 </div>
@@ -123,30 +187,63 @@ export default function SettingsPage() {
                                         <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             <div>
                                                 <label className="text-xs text-slate-500 dark:text-neutral-500 font-semibold uppercase tracking-widest mb-1.5 block">Company Name</label>
-                                                <input defaultValue="Sterling & Co." className="w-full bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-3 px-4 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all shadow-inner dark:shadow-none" />
+                                                <input 
+                                                    value={profile.companyName} 
+                                                    onChange={(e) => setProfile({...profile, companyName: e.target.value})}
+                                                    className="w-full bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-3 px-4 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all shadow-inner dark:shadow-none" 
+                                                />
                                             </div>
                                             <div>
                                                 <label className="text-xs text-slate-500 dark:text-neutral-500 font-semibold uppercase tracking-widest mb-1.5 block">Industry</label>
-                                                <input defaultValue="Technology / SaaS" className="w-full bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-3 px-4 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all shadow-inner dark:shadow-none" />
+                                                <input 
+                                                    value={profile.industry} 
+                                                    onChange={(e) => setProfile({...profile, industry: e.target.value})}
+                                                    className="w-full bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-3 px-4 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all shadow-inner dark:shadow-none" 
+                                                />
                                             </div>
                                             <div>
                                                 <label className="text-xs text-slate-500 dark:text-neutral-500 font-semibold uppercase tracking-widest mb-1.5 block">Email</label>
-                                                <input defaultValue="admin@sterlingco.com" className="w-full bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-3 px-4 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all shadow-inner dark:shadow-none" />
+                                                <input 
+                                                    value={profile.email} 
+                                                    readOnly
+                                                    className="w-full bg-slate-50 dark:bg-neutral-900/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-3 px-4 text-sm text-slate-400 dark:text-neutral-500 focus:outline-none cursor-not-allowed shadow-inner dark:shadow-none" 
+                                                />
                                             </div>
                                             <div>
                                                 <label className="text-xs text-slate-500 dark:text-neutral-500 font-semibold uppercase tracking-widest mb-1.5 block">Website</label>
-                                                <input defaultValue="https://sterlingco.com" className="w-full bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-3 px-4 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all shadow-inner dark:shadow-none" />
+                                                <input 
+                                                    value={profile.website} 
+                                                    onChange={(e) => setProfile({...profile, website: e.target.value})}
+                                                    className="w-full bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-3 px-4 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all shadow-inner dark:shadow-none" 
+                                                />
                                             </div>
                                         </div>
                                     </div>
                                     <div>
                                         <label className="text-xs text-slate-500 dark:text-neutral-500 font-semibold uppercase tracking-widest mb-1.5 block">Company Bio</label>
-                                        <textarea defaultValue="Sterling & Co. is a Series C enterprise SaaS company building the next generation of workforce intelligence tools." rows={3} className="w-full bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-3 px-4 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all resize-none shadow-inner dark:shadow-none" />
+                                        <textarea 
+                                            value={profile.bio} 
+                                            onChange={(e) => setProfile({...profile, bio: e.target.value})}
+                                            rows={3} 
+                                            className="w-full bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-3 px-4 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all resize-none shadow-inner dark:shadow-none" 
+                                        />
                                     </div>
-                                    <div className="flex justify-end mt-6">
-                                        <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                                            className="bg-gradient-to-r from-blue-600 to-indigo-500 px-6 py-3 rounded-xl text-sm font-bold text-white shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] transition-shadow flex items-center gap-2">
-                                            <Check size={16} /> Save Changes
+                                    <div className="flex items-center justify-between mt-6">
+                                        <div className="flex-1">
+                                            {saveStatus && (
+                                                <p className={`text-xs font-bold uppercase tracking-widest ${saveStatus.includes("successfully") ? "text-emerald-500" : "text-red-500"}`}>
+                                                    {saveStatus}
+                                                </p>
+                                            )}
+                                        </div>
+                                        <motion.button 
+                                            whileHover={{ scale: 1.02 }} 
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={handleSave}
+                                            disabled={isLoading}
+                                            className="bg-gradient-to-r from-blue-600 to-indigo-500 px-6 py-3 rounded-xl text-sm font-bold text-white shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] transition-shadow flex items-center gap-2 disabled:opacity-50">
+                                            {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Check size={16} />} 
+                                            {isLoading ? "Saving..." : "Save Changes"}
                                         </motion.button>
                                     </div>
                                 </GlassCard>

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import prisma from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 const JWT_SECRET = (process.env.JWT_SECRET || "super-secret-fallback-key").replace(/['"]+/g, '');
 
 async function verifyRecruiter(req: NextRequest) {
@@ -128,7 +130,7 @@ export async function POST(req: NextRequest) {
     // AUTO-SHORTLIST LOGIC:
     // When a job is posted, automatically shortlist candidates whose profile role or skills match
     const jobSkills = Array.isArray(skills) ? skills : (skills ? String(skills).split(",").map((s: string) => s.trim()) : []);
-    const titleKeywords = title.split(/[\s-]+/).filter(k => k.length > 2);
+    const titleKeywords = title.split(/[\s-]+/).filter((k: string) => k.length > 2);
     const normalizedTitle = title.replace(/-/g, ' ');
     const alternateTitle = title.replace(/-/g, '');
     const searchTerms = Array.from(new Set([title, normalizedTitle, alternateTitle, ...jobSkills]));
@@ -140,8 +142,8 @@ export async function POST(req: NextRequest) {
           { biography: { contains: title, mode: 'insensitive' } },
           { skills: { hasSome: searchTerms } },
           // Keyword matching for role and biography
-          ...titleKeywords.map(k => ({ role: { contains: k, mode: 'insensitive' as const } })),
-          ...titleKeywords.map(k => ({ biography: { contains: k, mode: 'insensitive' as const } }))
+          ...titleKeywords.map((k: string) => ({ role: { contains: k, mode: 'insensitive' as const } })),
+          ...titleKeywords.map((k: string) => ({ biography: { contains: k, mode: 'insensitive' as const } }))
         ]
       },
       take: 10

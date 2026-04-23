@@ -10,6 +10,12 @@ datasource db {
   provider = "postgresql"
 }
 
+enum Role {
+  candidate
+  recruiter
+  admin
+}
+
 model Waitlist {
   id        String   @id @default(cuid())
   email     String   @unique
@@ -43,19 +49,21 @@ model Candidate {
 }
 
 model Recruiter {
-  id          String   @id @default(cuid())
-  userId      String?  @unique
-  user        User?    @relation(fields: [userId], references: [id])
-  name        String
-  email       String   @unique
-  companyName String
-  companySize String?
-  industry    String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id           String    @id @default(cuid())
+  userId       String?   @unique
+  user         User?     @relation(fields: [userId], references: [id])
+  name         String
+  email        String    @unique
+  companyName  String
+  companyEmail String?   // For official verification
+  companySize  String?
+  industry     String?
+  isVerified   Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
-  jobs        Job[]
-  messages    Message[]
+  jobs         Job[]
+  messages     Message[]
 }
 
 model Job {
@@ -122,21 +130,23 @@ model Message {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  name      String
-  phone     String?
-  website   String?
-  industry  String?
-  teamSize  String?
-  role      String   @default("candidate") // "candidate" or "recruiter"
+  id               String      @id @default(uuid())
+  email            String      @unique
+  password         String
+  name             String
+  role             Role        @default(candidate)
+  isVerified       Boolean     @default(false)
   
+  // OAuth Identifiers
+  googleId         String?     @unique
+  linkedinId       String?     @unique
+
   candidateProfile Candidate?
   recruiterProfile Recruiter?
   resumes          Resume[]
 
-  createdAt DateTime @default(now())
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @default(now()) @updatedAt
 }
 
 model Resume {

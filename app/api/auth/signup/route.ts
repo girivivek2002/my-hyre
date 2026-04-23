@@ -1,19 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/db";
-import { Prisma } from "@/src/generated/client";
+import { Prisma, Role } from "@/src/generated/client";
 import jwt from "jsonwebtoken";
+import { checkRateLimit, isDisposableEmail } from "@/lib/security";
 
 export const dynamic = "force-dynamic";
 
-const JWT_SECRET = (process.env.JWT_SECRET || "super-secret-fallback-key").replace(/['"]+/g, '');
+const JWT_SECRET = (process.env.JWT_SECRET as string).replace(/['"]+/g, '');
 
 export async function POST(req: NextRequest) {
   try {
+    // 4. ANTI-SPAM: Rate Limiting
+    const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
+    if (!checkRateLimit(ip)) {
+      return NextResponse.json({ error: "Too many requests. Please try again in a minute." }, { status: 429 });
+    }
+
     const body = await req.json();
     const { email, password, name, role, phone, website, industry, teamSize } = body;
 
     if (!email || !password || !name) {
-      return NextResponse.json({ error: "Missing required fields: email, password, and name are mandatory." }, { status: 400 });
+      return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
+    }
+
+    // 4. ANTI-SPAM: Block Disposable Emails
+    if (isDisposableEmail(email)) {
+      return NextResponse.json({ error: "Please use a legitimate email address." }, { status: 400 });
     }
 
     // Check if the user already exists
@@ -22,7 +34,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email already registered." }, { status: 400 });
     }
 
-    const assignedRole = role === "recruiter" ? "recruiter" : "candidate";
+    const assignedRole = role === "recruiter" ? Role.recruiter : Role.candidate;
 
     // Create user and associated profile in a transaction
     const user = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
@@ -32,29 +44,25 @@ export async function POST(req: NextRequest) {
           password, // In a real app, hash the password
           name,
           role: assignedRole,
-          phone,
-          website,
-          industry,
-          teamSize,
         },
       });
 
-      if (assignedRole === "candidate") {
+      if (assignedRole === Role.candidate) {
         await tx.candidate.create({
           data: {
             userId: newUser.id,
             name,
             email,
-            role: "Job Seeker", // Default initial role
+            role: "Job Seeker",
           },
         });
-      } else if (assignedRole === "recruiter") {
+      } else if (assignedRole === Role.recruiter) {
         await tx.recruiter.create({
           data: {
             userId: newUser.id,
-            name, // Recruiter name is same as display name initially
+            name,
             email,
-            companyName: name, // For recruiter signup, 'name' typically represents the company
+            companyName: name, // Initial placeholder
             industry,
             companySize: teamSize,
           },
@@ -62,8 +70,6 @@ export async function POST(req: NextRequest) {
       }
 
       return newUser;
-    }, {
-      timeout: 10000 // Increase timeout for database transactions
     });
 
     const token = jwt.sign(
@@ -79,12 +85,7 @@ export async function POST(req: NextRequest) {
       user: { id: user.id, name: user.name, role: user.role, email: user.email },
     }, { status: 201 });
   } catch (error: any) {
-    console.error("Signup Error Detailed:", error);
-    // Return the actual error message in development/investigative mode to help debugging
-    return NextResponse.json({ 
-      error: "Critical failure during identity synthesis.", 
-      message: error.message,
-      stack: error.stack 
-    }, { status: 500 });
+    console.error("Signup Error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

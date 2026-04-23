@@ -154,8 +154,10 @@ exports.Prisma.RecruiterScalarFieldEnum = {
   name: 'name',
   email: 'email',
   companyName: 'companyName',
+  companyEmail: 'companyEmail',
   companySize: 'companySize',
   industry: 'industry',
+  isVerified: 'isVerified',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -212,12 +214,12 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   password: 'password',
   name: 'name',
-  phone: 'phone',
-  website: 'website',
-  industry: 'industry',
-  teamSize: 'teamSize',
   role: 'role',
-  createdAt: 'createdAt'
+  isVerified: 'isVerified',
+  googleId: 'googleId',
+  linkedinId: 'linkedinId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.ResumeScalarFieldEnum = {
@@ -243,7 +245,11 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
+exports.Role = exports.$Enums.Role = {
+  candidate: 'candidate',
+  recruiter: 'recruiter',
+  admin: 'admin'
+};
 
 exports.Prisma.ModelName = {
   Waitlist: 'Waitlist',

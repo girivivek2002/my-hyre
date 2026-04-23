@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   try {
     const decoded: any = jwt.verify(auth.split(" ")[1], JWT_SECRET);
     const profile = await prisma.candidate.findUnique({
-      where: { userId: decoded.id }
+      where: { email: decoded.email }
     });
     return NextResponse.json({ profile });
   } catch (error) {
@@ -36,8 +36,9 @@ export async function POST(req: NextRequest) {
       : Array.isArray(data.skills) ? data.skills : [];
 
     const candidate = await prisma.candidate.upsert({
-      where: { userId: decoded.id },
+      where: { email: decoded.email },
       update: {
+        userId: decoded.id, // Ensure userId is synced
         name: data.name,
         role: data.desiredRole || data.role,
         experience: String(data.experience),

@@ -60,6 +60,24 @@ export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 export type Resume = $Result.DefaultSelection<Prisma.$ResumePayload>
 
 /**
+ * Enums
+ */
+export namespace $Enums {
+  export const Role: {
+  candidate: 'candidate',
+  recruiter: 'recruiter',
+  admin: 'admin'
+};
+
+export type Role = (typeof Role)[keyof typeof Role]
+
+}
+
+export type Role = $Enums.Role
+
+export const Role: typeof $Enums.Role
+
+/**
  * ##  Prisma Client ʲˢ
  *
  * Type-safe database client for TypeScript & Node.js
@@ -4074,8 +4092,10 @@ export namespace Prisma {
     name: string | null
     email: string | null
     companyName: string | null
+    companyEmail: string | null
     companySize: string | null
     industry: string | null
+    isVerified: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -4086,8 +4106,10 @@ export namespace Prisma {
     name: string | null
     email: string | null
     companyName: string | null
+    companyEmail: string | null
     companySize: string | null
     industry: string | null
+    isVerified: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -4098,8 +4120,10 @@ export namespace Prisma {
     name: number
     email: number
     companyName: number
+    companyEmail: number
     companySize: number
     industry: number
+    isVerified: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -4112,8 +4136,10 @@ export namespace Prisma {
     name?: true
     email?: true
     companyName?: true
+    companyEmail?: true
     companySize?: true
     industry?: true
+    isVerified?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -4124,8 +4150,10 @@ export namespace Prisma {
     name?: true
     email?: true
     companyName?: true
+    companyEmail?: true
     companySize?: true
     industry?: true
+    isVerified?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -4136,8 +4164,10 @@ export namespace Prisma {
     name?: true
     email?: true
     companyName?: true
+    companyEmail?: true
     companySize?: true
     industry?: true
+    isVerified?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -4221,8 +4251,10 @@ export namespace Prisma {
     name: string
     email: string
     companyName: string
+    companyEmail: string | null
     companySize: string | null
     industry: string | null
+    isVerified: boolean
     createdAt: Date
     updatedAt: Date
     _count: RecruiterCountAggregateOutputType | null
@@ -4250,8 +4282,10 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     companyName?: boolean
+    companyEmail?: boolean
     companySize?: boolean
     industry?: boolean
+    isVerified?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | Recruiter$userArgs<ExtArgs>
@@ -4266,8 +4300,10 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     companyName?: boolean
+    companyEmail?: boolean
     companySize?: boolean
     industry?: boolean
+    isVerified?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | Recruiter$userArgs<ExtArgs>
@@ -4279,8 +4315,10 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     companyName?: boolean
+    companyEmail?: boolean
     companySize?: boolean
     industry?: boolean
+    isVerified?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     user?: boolean | Recruiter$userArgs<ExtArgs>
@@ -4292,13 +4330,15 @@ export namespace Prisma {
     name?: boolean
     email?: boolean
     companyName?: boolean
+    companyEmail?: boolean
     companySize?: boolean
     industry?: boolean
+    isVerified?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type RecruiterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "email" | "companyName" | "companySize" | "industry" | "createdAt" | "updatedAt", ExtArgs["result"]["recruiter"]>
+  export type RecruiterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "email" | "companyName" | "companyEmail" | "companySize" | "industry" | "isVerified" | "createdAt" | "updatedAt", ExtArgs["result"]["recruiter"]>
   export type RecruiterInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | Recruiter$userArgs<ExtArgs>
     jobs?: boolean | Recruiter$jobsArgs<ExtArgs>
@@ -4325,8 +4365,10 @@ export namespace Prisma {
       name: string
       email: string
       companyName: string
+      companyEmail: string | null
       companySize: string | null
       industry: string | null
+      isVerified: boolean
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["recruiter"]>
@@ -4760,8 +4802,10 @@ export namespace Prisma {
     readonly name: FieldRef<"Recruiter", 'String'>
     readonly email: FieldRef<"Recruiter", 'String'>
     readonly companyName: FieldRef<"Recruiter", 'String'>
+    readonly companyEmail: FieldRef<"Recruiter", 'String'>
     readonly companySize: FieldRef<"Recruiter", 'String'>
     readonly industry: FieldRef<"Recruiter", 'String'>
+    readonly isVerified: FieldRef<"Recruiter", 'Boolean'>
     readonly createdAt: FieldRef<"Recruiter", 'DateTime'>
     readonly updatedAt: FieldRef<"Recruiter", 'DateTime'>
   }
@@ -9780,12 +9824,12 @@ export namespace Prisma {
     email: string | null
     password: string | null
     name: string | null
-    phone: string | null
-    website: string | null
-    industry: string | null
-    teamSize: string | null
-    role: string | null
+    role: $Enums.Role | null
+    isVerified: boolean | null
+    googleId: string | null
+    linkedinId: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -9793,12 +9837,12 @@ export namespace Prisma {
     email: string | null
     password: string | null
     name: string | null
-    phone: string | null
-    website: string | null
-    industry: string | null
-    teamSize: string | null
-    role: string | null
+    role: $Enums.Role | null
+    isVerified: boolean | null
+    googleId: string | null
+    linkedinId: string | null
     createdAt: Date | null
+    updatedAt: Date | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -9806,12 +9850,12 @@ export namespace Prisma {
     email: number
     password: number
     name: number
-    phone: number
-    website: number
-    industry: number
-    teamSize: number
     role: number
+    isVerified: number
+    googleId: number
+    linkedinId: number
     createdAt: number
+    updatedAt: number
     _all: number
   }
 
@@ -9821,12 +9865,12 @@ export namespace Prisma {
     email?: true
     password?: true
     name?: true
-    phone?: true
-    website?: true
-    industry?: true
-    teamSize?: true
     role?: true
+    isVerified?: true
+    googleId?: true
+    linkedinId?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -9834,12 +9878,12 @@ export namespace Prisma {
     email?: true
     password?: true
     name?: true
-    phone?: true
-    website?: true
-    industry?: true
-    teamSize?: true
     role?: true
+    isVerified?: true
+    googleId?: true
+    linkedinId?: true
     createdAt?: true
+    updatedAt?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -9847,12 +9891,12 @@ export namespace Prisma {
     email?: true
     password?: true
     name?: true
-    phone?: true
-    website?: true
-    industry?: true
-    teamSize?: true
     role?: true
+    isVerified?: true
+    googleId?: true
+    linkedinId?: true
     createdAt?: true
+    updatedAt?: true
     _all?: true
   }
 
@@ -9933,12 +9977,12 @@ export namespace Prisma {
     email: string
     password: string
     name: string
-    phone: string | null
-    website: string | null
-    industry: string | null
-    teamSize: string | null
-    role: string
+    role: $Enums.Role
+    isVerified: boolean
+    googleId: string | null
+    linkedinId: string | null
     createdAt: Date
+    updatedAt: Date
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -9963,12 +10007,12 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     name?: boolean
-    phone?: boolean
-    website?: boolean
-    industry?: boolean
-    teamSize?: boolean
     role?: boolean
+    isVerified?: boolean
+    googleId?: boolean
+    linkedinId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
     candidateProfile?: boolean | User$candidateProfileArgs<ExtArgs>
     recruiterProfile?: boolean | User$recruiterProfileArgs<ExtArgs>
     resumes?: boolean | User$resumesArgs<ExtArgs>
@@ -9980,12 +10024,12 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     name?: boolean
-    phone?: boolean
-    website?: boolean
-    industry?: boolean
-    teamSize?: boolean
     role?: boolean
+    isVerified?: boolean
+    googleId?: boolean
+    linkedinId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9993,12 +10037,12 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     name?: boolean
-    phone?: boolean
-    website?: boolean
-    industry?: boolean
-    teamSize?: boolean
     role?: boolean
+    isVerified?: boolean
+    googleId?: boolean
+    linkedinId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }, ExtArgs["result"]["user"]>
 
   export type UserSelectScalar = {
@@ -10006,15 +10050,15 @@ export namespace Prisma {
     email?: boolean
     password?: boolean
     name?: boolean
-    phone?: boolean
-    website?: boolean
-    industry?: boolean
-    teamSize?: boolean
     role?: boolean
+    isVerified?: boolean
+    googleId?: boolean
+    linkedinId?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "name" | "phone" | "website" | "industry" | "teamSize" | "role" | "createdAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password" | "name" | "role" | "isVerified" | "googleId" | "linkedinId" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     candidateProfile?: boolean | User$candidateProfileArgs<ExtArgs>
     recruiterProfile?: boolean | User$recruiterProfileArgs<ExtArgs>
@@ -10036,12 +10080,12 @@ export namespace Prisma {
       email: string
       password: string
       name: string
-      phone: string | null
-      website: string | null
-      industry: string | null
-      teamSize: string | null
-      role: string
+      role: $Enums.Role
+      isVerified: boolean
+      googleId: string | null
+      linkedinId: string | null
       createdAt: Date
+      updatedAt: Date
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -10472,12 +10516,12 @@ export namespace Prisma {
     readonly email: FieldRef<"User", 'String'>
     readonly password: FieldRef<"User", 'String'>
     readonly name: FieldRef<"User", 'String'>
-    readonly phone: FieldRef<"User", 'String'>
-    readonly website: FieldRef<"User", 'String'>
-    readonly industry: FieldRef<"User", 'String'>
-    readonly teamSize: FieldRef<"User", 'String'>
-    readonly role: FieldRef<"User", 'String'>
+    readonly role: FieldRef<"User", 'Role'>
+    readonly isVerified: FieldRef<"User", 'Boolean'>
+    readonly googleId: FieldRef<"User", 'String'>
+    readonly linkedinId: FieldRef<"User", 'String'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
+    readonly updatedAt: FieldRef<"User", 'DateTime'>
   }
     
 
@@ -12111,8 +12155,10 @@ export namespace Prisma {
     name: 'name',
     email: 'email',
     companyName: 'companyName',
+    companyEmail: 'companyEmail',
     companySize: 'companySize',
     industry: 'industry',
+    isVerified: 'isVerified',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -12184,12 +12230,12 @@ export namespace Prisma {
     email: 'email',
     password: 'password',
     name: 'name',
-    phone: 'phone',
-    website: 'website',
-    industry: 'industry',
-    teamSize: 'teamSize',
     role: 'role',
-    createdAt: 'createdAt'
+    isVerified: 'isVerified',
+    googleId: 'googleId',
+    linkedinId: 'linkedinId',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -12261,6 +12307,27 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
+   * Reference to a field of type 'Role'
+   */
+  export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role'>
+    
+
+
+  /**
+   * Reference to a field of type 'Role[]'
+   */
+  export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>
     
 
 
@@ -12477,8 +12544,10 @@ export namespace Prisma {
     name?: StringFilter<"Recruiter"> | string
     email?: StringFilter<"Recruiter"> | string
     companyName?: StringFilter<"Recruiter"> | string
+    companyEmail?: StringNullableFilter<"Recruiter"> | string | null
     companySize?: StringNullableFilter<"Recruiter"> | string | null
     industry?: StringNullableFilter<"Recruiter"> | string | null
+    isVerified?: BoolFilter<"Recruiter"> | boolean
     createdAt?: DateTimeFilter<"Recruiter"> | Date | string
     updatedAt?: DateTimeFilter<"Recruiter"> | Date | string
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
@@ -12492,8 +12561,10 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     companyName?: SortOrder
+    companyEmail?: SortOrderInput | SortOrder
     companySize?: SortOrderInput | SortOrder
     industry?: SortOrderInput | SortOrder
+    isVerified?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     user?: UserOrderByWithRelationInput
@@ -12510,8 +12581,10 @@ export namespace Prisma {
     NOT?: RecruiterWhereInput | RecruiterWhereInput[]
     name?: StringFilter<"Recruiter"> | string
     companyName?: StringFilter<"Recruiter"> | string
+    companyEmail?: StringNullableFilter<"Recruiter"> | string | null
     companySize?: StringNullableFilter<"Recruiter"> | string | null
     industry?: StringNullableFilter<"Recruiter"> | string | null
+    isVerified?: BoolFilter<"Recruiter"> | boolean
     createdAt?: DateTimeFilter<"Recruiter"> | Date | string
     updatedAt?: DateTimeFilter<"Recruiter"> | Date | string
     user?: XOR<UserNullableScalarRelationFilter, UserWhereInput> | null
@@ -12525,8 +12598,10 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     companyName?: SortOrder
+    companyEmail?: SortOrderInput | SortOrder
     companySize?: SortOrderInput | SortOrder
     industry?: SortOrderInput | SortOrder
+    isVerified?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: RecruiterCountOrderByAggregateInput
@@ -12543,8 +12618,10 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Recruiter"> | string
     email?: StringWithAggregatesFilter<"Recruiter"> | string
     companyName?: StringWithAggregatesFilter<"Recruiter"> | string
+    companyEmail?: StringNullableWithAggregatesFilter<"Recruiter"> | string | null
     companySize?: StringNullableWithAggregatesFilter<"Recruiter"> | string | null
     industry?: StringNullableWithAggregatesFilter<"Recruiter"> | string | null
+    isVerified?: BoolWithAggregatesFilter<"Recruiter"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Recruiter"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Recruiter"> | Date | string
   }
@@ -12865,12 +12942,12 @@ export namespace Prisma {
     email?: StringFilter<"User"> | string
     password?: StringFilter<"User"> | string
     name?: StringFilter<"User"> | string
-    phone?: StringNullableFilter<"User"> | string | null
-    website?: StringNullableFilter<"User"> | string | null
-    industry?: StringNullableFilter<"User"> | string | null
-    teamSize?: StringNullableFilter<"User"> | string | null
-    role?: StringFilter<"User"> | string
+    role?: EnumRoleFilter<"User"> | $Enums.Role
+    isVerified?: BoolFilter<"User"> | boolean
+    googleId?: StringNullableFilter<"User"> | string | null
+    linkedinId?: StringNullableFilter<"User"> | string | null
     createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
     candidateProfile?: XOR<CandidateNullableScalarRelationFilter, CandidateWhereInput> | null
     recruiterProfile?: XOR<RecruiterNullableScalarRelationFilter, RecruiterWhereInput> | null
     resumes?: ResumeListRelationFilter
@@ -12881,12 +12958,12 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     name?: SortOrder
-    phone?: SortOrderInput | SortOrder
-    website?: SortOrderInput | SortOrder
-    industry?: SortOrderInput | SortOrder
-    teamSize?: SortOrderInput | SortOrder
     role?: SortOrder
+    isVerified?: SortOrder
+    googleId?: SortOrderInput | SortOrder
+    linkedinId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     candidateProfile?: CandidateOrderByWithRelationInput
     recruiterProfile?: RecruiterOrderByWithRelationInput
     resumes?: ResumeOrderByRelationAggregateInput
@@ -12895,33 +12972,33 @@ export namespace Prisma {
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     email?: string
+    googleId?: string
+    linkedinId?: string
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     password?: StringFilter<"User"> | string
     name?: StringFilter<"User"> | string
-    phone?: StringNullableFilter<"User"> | string | null
-    website?: StringNullableFilter<"User"> | string | null
-    industry?: StringNullableFilter<"User"> | string | null
-    teamSize?: StringNullableFilter<"User"> | string | null
-    role?: StringFilter<"User"> | string
+    role?: EnumRoleFilter<"User"> | $Enums.Role
+    isVerified?: BoolFilter<"User"> | boolean
     createdAt?: DateTimeFilter<"User"> | Date | string
+    updatedAt?: DateTimeFilter<"User"> | Date | string
     candidateProfile?: XOR<CandidateNullableScalarRelationFilter, CandidateWhereInput> | null
     recruiterProfile?: XOR<RecruiterNullableScalarRelationFilter, RecruiterWhereInput> | null
     resumes?: ResumeListRelationFilter
-  }, "id" | "email">
+  }, "id" | "email" | "googleId" | "linkedinId">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
     email?: SortOrder
     password?: SortOrder
     name?: SortOrder
-    phone?: SortOrderInput | SortOrder
-    website?: SortOrderInput | SortOrder
-    industry?: SortOrderInput | SortOrder
-    teamSize?: SortOrderInput | SortOrder
     role?: SortOrder
+    isVerified?: SortOrder
+    googleId?: SortOrderInput | SortOrder
+    linkedinId?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -12935,12 +13012,12 @@ export namespace Prisma {
     email?: StringWithAggregatesFilter<"User"> | string
     password?: StringWithAggregatesFilter<"User"> | string
     name?: StringWithAggregatesFilter<"User"> | string
-    phone?: StringNullableWithAggregatesFilter<"User"> | string | null
-    website?: StringNullableWithAggregatesFilter<"User"> | string | null
-    industry?: StringNullableWithAggregatesFilter<"User"> | string | null
-    teamSize?: StringNullableWithAggregatesFilter<"User"> | string | null
-    role?: StringWithAggregatesFilter<"User"> | string
+    role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
+    isVerified?: BoolWithAggregatesFilter<"User"> | boolean
+    googleId?: StringNullableWithAggregatesFilter<"User"> | string | null
+    linkedinId?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
 
   export type ResumeWhereInput = {
@@ -13213,8 +13290,10 @@ export namespace Prisma {
     name: string
     email: string
     companyName: string
+    companyEmail?: string | null
     companySize?: string | null
     industry?: string | null
+    isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutRecruiterProfileInput
@@ -13228,8 +13307,10 @@ export namespace Prisma {
     name: string
     email: string
     companyName: string
+    companyEmail?: string | null
     companySize?: string | null
     industry?: string | null
+    isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     jobs?: JobUncheckedCreateNestedManyWithoutRecruiterInput
@@ -13241,8 +13322,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     companyName?: StringFieldUpdateOperationsInput | string
+    companyEmail?: NullableStringFieldUpdateOperationsInput | string | null
     companySize?: NullableStringFieldUpdateOperationsInput | string | null
     industry?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutRecruiterProfileNestedInput
@@ -13256,8 +13339,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     companyName?: StringFieldUpdateOperationsInput | string
+    companyEmail?: NullableStringFieldUpdateOperationsInput | string | null
     companySize?: NullableStringFieldUpdateOperationsInput | string | null
     industry?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobs?: JobUncheckedUpdateManyWithoutRecruiterNestedInput
@@ -13270,8 +13355,10 @@ export namespace Prisma {
     name: string
     email: string
     companyName: string
+    companyEmail?: string | null
     companySize?: string | null
     industry?: string | null
+    isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -13281,8 +13368,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     companyName?: StringFieldUpdateOperationsInput | string
+    companyEmail?: NullableStringFieldUpdateOperationsInput | string | null
     companySize?: NullableStringFieldUpdateOperationsInput | string | null
     industry?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13293,8 +13382,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     companyName?: StringFieldUpdateOperationsInput | string
+    companyEmail?: NullableStringFieldUpdateOperationsInput | string | null
     companySize?: NullableStringFieldUpdateOperationsInput | string | null
     industry?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13635,12 +13726,12 @@ export namespace Prisma {
     email: string
     password: string
     name: string
-    phone?: string | null
-    website?: string | null
-    industry?: string | null
-    teamSize?: string | null
-    role?: string
+    role?: $Enums.Role
+    isVerified?: boolean
+    googleId?: string | null
+    linkedinId?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     candidateProfile?: CandidateCreateNestedOneWithoutUserInput
     recruiterProfile?: RecruiterCreateNestedOneWithoutUserInput
     resumes?: ResumeCreateNestedManyWithoutUserInput
@@ -13651,12 +13742,12 @@ export namespace Prisma {
     email: string
     password: string
     name: string
-    phone?: string | null
-    website?: string | null
-    industry?: string | null
-    teamSize?: string | null
-    role?: string
+    role?: $Enums.Role
+    isVerified?: boolean
+    googleId?: string | null
+    linkedinId?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     candidateProfile?: CandidateUncheckedCreateNestedOneWithoutUserInput
     recruiterProfile?: RecruiterUncheckedCreateNestedOneWithoutUserInput
     resumes?: ResumeUncheckedCreateNestedManyWithoutUserInput
@@ -13667,12 +13758,12 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    industry?: NullableStringFieldUpdateOperationsInput | string | null
-    teamSize?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     candidateProfile?: CandidateUpdateOneWithoutUserNestedInput
     recruiterProfile?: RecruiterUpdateOneWithoutUserNestedInput
     resumes?: ResumeUpdateManyWithoutUserNestedInput
@@ -13683,12 +13774,12 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    industry?: NullableStringFieldUpdateOperationsInput | string | null
-    teamSize?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     candidateProfile?: CandidateUncheckedUpdateOneWithoutUserNestedInput
     recruiterProfile?: RecruiterUncheckedUpdateOneWithoutUserNestedInput
     resumes?: ResumeUncheckedUpdateManyWithoutUserNestedInput
@@ -13699,12 +13790,12 @@ export namespace Prisma {
     email: string
     password: string
     name: string
-    phone?: string | null
-    website?: string | null
-    industry?: string | null
-    teamSize?: string | null
-    role?: string
+    role?: $Enums.Role
+    isVerified?: boolean
+    googleId?: string | null
+    linkedinId?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type UserUpdateManyMutationInput = {
@@ -13712,12 +13803,12 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    industry?: NullableStringFieldUpdateOperationsInput | string | null
-    teamSize?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -13725,12 +13816,12 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    industry?: NullableStringFieldUpdateOperationsInput | string | null
-    teamSize?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ResumeCreateInput = {
@@ -14006,6 +14097,11 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type JobListRelationFilter = {
     every?: JobWhereInput
     some?: JobWhereInput
@@ -14022,8 +14118,10 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     companyName?: SortOrder
+    companyEmail?: SortOrder
     companySize?: SortOrder
     industry?: SortOrder
+    isVerified?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14034,8 +14132,10 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     companyName?: SortOrder
+    companyEmail?: SortOrder
     companySize?: SortOrder
     industry?: SortOrder
+    isVerified?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14046,10 +14146,20 @@ export namespace Prisma {
     name?: SortOrder
     email?: SortOrder
     companyName?: SortOrder
+    companyEmail?: SortOrder
     companySize?: SortOrder
     industry?: SortOrder
+    isVerified?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type RecruiterScalarRelationFilter = {
@@ -14249,6 +14359,13 @@ export namespace Prisma {
     candidateId?: SortOrder
   }
 
+  export type EnumRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  }
+
   export type CandidateNullableScalarRelationFilter = {
     is?: CandidateWhereInput | null
     isNot?: CandidateWhereInput | null
@@ -14274,12 +14391,12 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     name?: SortOrder
-    phone?: SortOrder
-    website?: SortOrder
-    industry?: SortOrder
-    teamSize?: SortOrder
     role?: SortOrder
+    isVerified?: SortOrder
+    googleId?: SortOrder
+    linkedinId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -14287,12 +14404,12 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     name?: SortOrder
-    phone?: SortOrder
-    website?: SortOrder
-    industry?: SortOrder
-    teamSize?: SortOrder
     role?: SortOrder
+    isVerified?: SortOrder
+    googleId?: SortOrder
+    linkedinId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -14300,12 +14417,22 @@ export namespace Prisma {
     email?: SortOrder
     password?: SortOrder
     name?: SortOrder
-    phone?: SortOrder
-    website?: SortOrder
-    industry?: SortOrder
-    teamSize?: SortOrder
     role?: SortOrder
+    isVerified?: SortOrder
+    googleId?: SortOrder
+    linkedinId?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleFilter<$PrismaModel>
+    _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
   export type IntFilter<$PrismaModel = never> = {
@@ -14526,6 +14653,10 @@ export namespace Prisma {
     connectOrCreate?: MessageCreateOrConnectWithoutRecruiterInput | MessageCreateOrConnectWithoutRecruiterInput[]
     createMany?: MessageCreateManyRecruiterInputEnvelope
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type UserUpdateOneWithoutRecruiterProfileNestedInput = {
@@ -14822,6 +14953,10 @@ export namespace Prisma {
     connect?: ResumeWhereUniqueInput | ResumeWhereUniqueInput[]
   }
 
+  export type EnumRoleFieldUpdateOperationsInput = {
+    set?: $Enums.Role
+  }
+
   export type CandidateUpdateOneWithoutUserNestedInput = {
     create?: XOR<CandidateCreateWithoutUserInput, CandidateUncheckedCreateWithoutUserInput>
     connectOrCreate?: CandidateCreateOrConnectWithoutUserInput
@@ -15030,6 +15165,19 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
@@ -15053,6 +15201,23 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumRoleFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleFilter<$PrismaModel> | $Enums.Role
+  }
+
+  export type NestedEnumRoleWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.Role | EnumRoleFieldRefInput<$PrismaModel>
+    in?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    notIn?: $Enums.Role[] | ListEnumRoleFieldRefInput<$PrismaModel>
+    not?: NestedEnumRoleWithAggregatesFilter<$PrismaModel> | $Enums.Role
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumRoleFilter<$PrismaModel>
+    _max?: NestedEnumRoleFilter<$PrismaModel>
   }
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -15087,12 +15252,12 @@ export namespace Prisma {
     email: string
     password: string
     name: string
-    phone?: string | null
-    website?: string | null
-    industry?: string | null
-    teamSize?: string | null
-    role?: string
+    role?: $Enums.Role
+    isVerified?: boolean
+    googleId?: string | null
+    linkedinId?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     recruiterProfile?: RecruiterCreateNestedOneWithoutUserInput
     resumes?: ResumeCreateNestedManyWithoutUserInput
   }
@@ -15102,12 +15267,12 @@ export namespace Prisma {
     email: string
     password: string
     name: string
-    phone?: string | null
-    website?: string | null
-    industry?: string | null
-    teamSize?: string | null
-    role?: string
+    role?: $Enums.Role
+    isVerified?: boolean
+    googleId?: string | null
+    linkedinId?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     recruiterProfile?: RecruiterUncheckedCreateNestedOneWithoutUserInput
     resumes?: ResumeUncheckedCreateNestedManyWithoutUserInput
   }
@@ -15187,12 +15352,12 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    industry?: NullableStringFieldUpdateOperationsInput | string | null
-    teamSize?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recruiterProfile?: RecruiterUpdateOneWithoutUserNestedInput
     resumes?: ResumeUpdateManyWithoutUserNestedInput
   }
@@ -15202,12 +15367,12 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    industry?: NullableStringFieldUpdateOperationsInput | string | null
-    teamSize?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     recruiterProfile?: RecruiterUncheckedUpdateOneWithoutUserNestedInput
     resumes?: ResumeUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -15273,12 +15438,12 @@ export namespace Prisma {
     email: string
     password: string
     name: string
-    phone?: string | null
-    website?: string | null
-    industry?: string | null
-    teamSize?: string | null
-    role?: string
+    role?: $Enums.Role
+    isVerified?: boolean
+    googleId?: string | null
+    linkedinId?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     candidateProfile?: CandidateCreateNestedOneWithoutUserInput
     resumes?: ResumeCreateNestedManyWithoutUserInput
   }
@@ -15288,12 +15453,12 @@ export namespace Prisma {
     email: string
     password: string
     name: string
-    phone?: string | null
-    website?: string | null
-    industry?: string | null
-    teamSize?: string | null
-    role?: string
+    role?: $Enums.Role
+    isVerified?: boolean
+    googleId?: string | null
+    linkedinId?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     candidateProfile?: CandidateUncheckedCreateNestedOneWithoutUserInput
     resumes?: ResumeUncheckedCreateNestedManyWithoutUserInput
   }
@@ -15385,12 +15550,12 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    industry?: NullableStringFieldUpdateOperationsInput | string | null
-    teamSize?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     candidateProfile?: CandidateUpdateOneWithoutUserNestedInput
     resumes?: ResumeUpdateManyWithoutUserNestedInput
   }
@@ -15400,12 +15565,12 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    industry?: NullableStringFieldUpdateOperationsInput | string | null
-    teamSize?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     candidateProfile?: CandidateUncheckedUpdateOneWithoutUserNestedInput
     resumes?: ResumeUncheckedUpdateManyWithoutUserNestedInput
   }
@@ -15465,8 +15630,10 @@ export namespace Prisma {
     name: string
     email: string
     companyName: string
+    companyEmail?: string | null
     companySize?: string | null
     industry?: string | null
+    isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutRecruiterProfileInput
@@ -15479,8 +15646,10 @@ export namespace Prisma {
     name: string
     email: string
     companyName: string
+    companyEmail?: string | null
     companySize?: string | null
     industry?: string | null
+    isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     messages?: MessageUncheckedCreateNestedManyWithoutRecruiterInput
@@ -15535,8 +15704,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     companyName?: StringFieldUpdateOperationsInput | string
+    companyEmail?: NullableStringFieldUpdateOperationsInput | string | null
     companySize?: NullableStringFieldUpdateOperationsInput | string | null
     industry?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutRecruiterProfileNestedInput
@@ -15549,8 +15720,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     companyName?: StringFieldUpdateOperationsInput | string
+    companyEmail?: NullableStringFieldUpdateOperationsInput | string | null
     companySize?: NullableStringFieldUpdateOperationsInput | string | null
     industry?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     messages?: MessageUncheckedUpdateManyWithoutRecruiterNestedInput
@@ -15878,8 +16051,10 @@ export namespace Prisma {
     name: string
     email: string
     companyName: string
+    companyEmail?: string | null
     companySize?: string | null
     industry?: string | null
+    isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     user?: UserCreateNestedOneWithoutRecruiterProfileInput
@@ -15892,8 +16067,10 @@ export namespace Prisma {
     name: string
     email: string
     companyName: string
+    companyEmail?: string | null
     companySize?: string | null
     industry?: string | null
+    isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     jobs?: JobUncheckedCreateNestedManyWithoutRecruiterInput
@@ -15969,8 +16146,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     companyName?: StringFieldUpdateOperationsInput | string
+    companyEmail?: NullableStringFieldUpdateOperationsInput | string | null
     companySize?: NullableStringFieldUpdateOperationsInput | string | null
     industry?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneWithoutRecruiterProfileNestedInput
@@ -15983,8 +16162,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     companyName?: StringFieldUpdateOperationsInput | string
+    companyEmail?: NullableStringFieldUpdateOperationsInput | string | null
     companySize?: NullableStringFieldUpdateOperationsInput | string | null
     industry?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobs?: JobUncheckedUpdateManyWithoutRecruiterNestedInput
@@ -16099,8 +16280,10 @@ export namespace Prisma {
     name: string
     email: string
     companyName: string
+    companyEmail?: string | null
     companySize?: string | null
     industry?: string | null
+    isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     jobs?: JobCreateNestedManyWithoutRecruiterInput
@@ -16112,8 +16295,10 @@ export namespace Prisma {
     name: string
     email: string
     companyName: string
+    companyEmail?: string | null
     companySize?: string | null
     industry?: string | null
+    isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     jobs?: JobUncheckedCreateNestedManyWithoutRecruiterInput
@@ -16222,8 +16407,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     companyName?: StringFieldUpdateOperationsInput | string
+    companyEmail?: NullableStringFieldUpdateOperationsInput | string | null
     companySize?: NullableStringFieldUpdateOperationsInput | string | null
     industry?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobs?: JobUpdateManyWithoutRecruiterNestedInput
@@ -16235,8 +16422,10 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     email?: StringFieldUpdateOperationsInput | string
     companyName?: StringFieldUpdateOperationsInput | string
+    companyEmail?: NullableStringFieldUpdateOperationsInput | string | null
     companySize?: NullableStringFieldUpdateOperationsInput | string | null
     industry?: NullableStringFieldUpdateOperationsInput | string | null
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     jobs?: JobUncheckedUpdateManyWithoutRecruiterNestedInput
@@ -16276,12 +16465,12 @@ export namespace Prisma {
     email: string
     password: string
     name: string
-    phone?: string | null
-    website?: string | null
-    industry?: string | null
-    teamSize?: string | null
-    role?: string
+    role?: $Enums.Role
+    isVerified?: boolean
+    googleId?: string | null
+    linkedinId?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     candidateProfile?: CandidateCreateNestedOneWithoutUserInput
     recruiterProfile?: RecruiterCreateNestedOneWithoutUserInput
   }
@@ -16291,12 +16480,12 @@ export namespace Prisma {
     email: string
     password: string
     name: string
-    phone?: string | null
-    website?: string | null
-    industry?: string | null
-    teamSize?: string | null
-    role?: string
+    role?: $Enums.Role
+    isVerified?: boolean
+    googleId?: string | null
+    linkedinId?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
     candidateProfile?: CandidateUncheckedCreateNestedOneWithoutUserInput
     recruiterProfile?: RecruiterUncheckedCreateNestedOneWithoutUserInput
   }
@@ -16322,12 +16511,12 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    industry?: NullableStringFieldUpdateOperationsInput | string | null
-    teamSize?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     candidateProfile?: CandidateUpdateOneWithoutUserNestedInput
     recruiterProfile?: RecruiterUpdateOneWithoutUserNestedInput
   }
@@ -16337,12 +16526,12 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     password?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    phone?: NullableStringFieldUpdateOperationsInput | string | null
-    website?: NullableStringFieldUpdateOperationsInput | string | null
-    industry?: NullableStringFieldUpdateOperationsInput | string | null
-    teamSize?: NullableStringFieldUpdateOperationsInput | string | null
-    role?: StringFieldUpdateOperationsInput | string
+    role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
+    isVerified?: BoolFieldUpdateOperationsInput | boolean
+    googleId?: NullableStringFieldUpdateOperationsInput | string | null
+    linkedinId?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     candidateProfile?: CandidateUncheckedUpdateOneWithoutUserNestedInput
     recruiterProfile?: RecruiterUncheckedUpdateOneWithoutUserNestedInput
   }

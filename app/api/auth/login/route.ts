@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/db";
 import jwt from "jsonwebtoken";
+import { checkRateLimit } from "@/lib/security";
 
-const JWT_SECRET = (process.env.JWT_SECRET || "super-secret-fallback-key").replace(/['"]+/g, '');
+const JWT_SECRET = (process.env.JWT_SECRET as string).replace(/['"]+/g, '');
 
 export async function POST(req: NextRequest) {
   try {
+    // 4. ANTI-SPAM: Rate Limiting
+    const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
+    if (!checkRateLimit(ip)) {
+      return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 });
+    }
+
     const body = await req.json();
     const { email, password } = body;
 
@@ -13,30 +20,25 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email and password required." }, { status: 400 });
     }
 
-    // Prioritize the central User table for authentication
     const user = await prisma.user.findUnique({
       where: { email },
+      include: { candidateProfile: true, recruiterProfile: true }
     });
 
-    if (!user || user.password !== password) { // In a real app, use bcrypt.compare
-      return NextResponse.json({ error: "Invalid credentials: Email or password mismatch." }, { status: 401 });
+    if (!user || user.password !== password) {
+      return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
     }
-
-    const role = user.role || "candidate";
 
     // Check if profile is complete
     let isProfileComplete = false;
-    if (role === "candidate") {
-      const profile = await prisma.candidate.findUnique({ where: { userId: user.id } });
-      isProfileComplete = !!(profile?.experience && profile?.biography);
-    } else {
-      const profile = await prisma.recruiter.findUnique({ where: { userId: user.id } });
-      isProfileComplete = !!(profile?.industry && profile?.companySize);
+    if (user.role === "candidate") {
+      isProfileComplete = !!(user.candidateProfile);
+    } else if (user.role === "recruiter") {
+      isProfileComplete = !!(user.recruiterProfile);
     }
 
-    // Sign a real JWT so /api/user/me can verify it
     const token = jwt.sign(
-      { id: user.id, role, email: user.email },
+      { id: user.id, role: user.role, email: user.email },
       JWT_SECRET,
       { expiresIn: "7d" }
     );
@@ -45,21 +47,10 @@ export async function POST(req: NextRequest) {
       message: "Login successful",
       token,
       isProfileComplete,
-      user: { id: user.id, name: user.name, role, email: user.email },
+      user: { id: user.id, name: user.name, role: user.role, email: user.email },
     }, { status: 200 });
   } catch (error: any) {
-    console.error("CRITICAL AUTH FAILURE:", error);
-    
-    // Check if it's a Prisma/Database connection error
-    const isDbError = error.message?.includes("Can't reach database") || 
-                      error.code === 'P1001' || 
-                      error.name === 'PrismaClientInitializationError';
-
-    return NextResponse.json({ 
-      error: isDbError ? "Database Connectivity Failure." : "Authentication Node Failure.", 
-      message: error.message,
-      code: error.code,
-      suggestion: isDbError ? "Check your Supabase pooler settings and Vercel environment variables." : "Consult the system logs for trace ID."
-    }, { status: 500 });
+    console.error("Login Error:", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

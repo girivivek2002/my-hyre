@@ -81,7 +81,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       message: "User registered successfully",
       token,
-      isProfileComplete: false,
+      isProfileComplete: true,
       user: { id: user.id, name: user.name, role: user.role, email: user.email },
     }, { status: 201 });
   } catch (error: any) {

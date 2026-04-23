@@ -5,7 +5,12 @@ export async function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;
 
   // 1. Define Public Routes
-  const isPublicRoute = path === "/" || path === "/login" || path.startsWith("/signup");
+  const isPublicRoute = 
+    path === "/" || 
+    path === "/login" || 
+    path.startsWith("/signup") || 
+    path.endsWith("/signup") ||
+    path.includes("/signup");
   
   // 2. Get Session Token
   const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });

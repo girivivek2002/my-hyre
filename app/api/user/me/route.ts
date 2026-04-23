@@ -20,16 +20,9 @@ export async function GET(req: NextRequest) {
     // Fetch the user from the database directly, omitting password
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        role: true,
-        phone: true,
-        website: true,
-        industry: true,
-        teamSize: true,
-        createdAt: true,
+      include: {
+        candidateProfile: true,
+        recruiterProfile: true,
         resumes: {
           take: 1,
           orderBy: { createdAt: "desc" },

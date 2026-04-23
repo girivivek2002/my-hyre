@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import prisma from "@/lib/db";
 import { calculateCandidateMatch } from "@/lib/ai-matcher";
 
+export const dynamic = "force-dynamic";
+
 const JWT_SECRET = (process.env.JWT_SECRET || "super-secret-fallback-key").replace(/['"]+/g, '');
 
 async function verifyRecruiter(req: NextRequest) {

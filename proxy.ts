@@ -1,8 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
-import jwt from "jsonwebtoken";
+import { jwtVerify } from "jose";
 
 const JWT_SECRET = (process.env.JWT_SECRET as string || "").replace(/['"]+/g, '');
+const secretKey = new TextEncoder().encode(JWT_SECRET);
 
 export async function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;
@@ -22,7 +23,8 @@ export async function proxy(req: NextRequest) {
     const customToken = req.cookies.get("authToken")?.value;
     if (customToken) {
       try {
-        token = jwt.verify(customToken, JWT_SECRET);
+        const { payload } = await jwtVerify(customToken, secretKey);
+        token = payload;
         // Map custom token fields to match NextAuth token structure if necessary
         token.isProfileComplete = true; // Manual signups/logins are marked complete
       } catch (err) {

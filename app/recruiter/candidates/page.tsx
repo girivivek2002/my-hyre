@@ -340,9 +340,40 @@ export default function CandidatesPage() {
 
                             <GlassCard>
                                 <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                                    <Sparkles size={18} className="text-blue-400" /> AI Architecture Summary
+                                    <Sparkles size={18} className="text-blue-400" /> Intelligence Match Analysis
                                 </h2>
-                                <p className="text-neutral-300 text-sm leading-relaxed">{selectedCandidate.summary}</p>
+                                <p className="text-neutral-300 text-sm leading-relaxed mb-6">
+                                    {selectedCandidate.matchAnalysis?.summary || selectedCandidate.summary}
+                                </p>
+                                
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div className="space-y-3">
+                                        <p className="text-[10px] uppercase font-bold text-emerald-500 flex items-center gap-1.5 tracking-widest">
+                                            <CheckCircle2 size={12} /> Strategic Strengths
+                                        </p>
+                                        <ul className="space-y-2">
+                                            {(selectedCandidate.matchAnalysis?.strengths || ["Semantic profile alignment"]).map((s: string, i: number) => (
+                                                <li key={i} className="text-xs text-neutral-400 flex items-start gap-2">
+                                                    <span className="w-1 h-1 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
+                                                    {s}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <p className="text-[10px] uppercase font-bold text-amber-500 flex items-center gap-1.5 tracking-widest">
+                                            <Zap size={12} /> Optimization Gaps
+                                        </p>
+                                        <ul className="space-y-2">
+                                            {(selectedCandidate.matchAnalysis?.gaps || ["No critical gaps detected"]).map((g: string, i: number) => (
+                                                <li key={i} className="text-xs text-neutral-400 flex items-start gap-2">
+                                                    <span className="w-1 h-1 rounded-full bg-amber-500 mt-1.5 shrink-0" />
+                                                    {g}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
                             </GlassCard>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

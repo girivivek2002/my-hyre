@@ -92,20 +92,27 @@ export async function GET(req: NextRequest) {
         });
       }
 
-      let matchScore = 85; // Baseline
+      let matchResult: any = { score: 85, summary: "Initial screening...", strengths: [], gaps: [] };
       if (scoringJob) {
-         matchScore = await calculateCandidateMatch(
-           {
-             skills: profile.skills || [],
-             biography: profile.biography,
-             experience: profile.experience
-           },
-           {
-             title: scoringJob.title,
-             skills: scoringJob.skills,
-             description: scoringJob.description
-           }
-         );
+          matchResult = await calculateCandidateMatch(
+            {
+              name: profile.name,
+              role: profile.role,
+              skills: profile.skills || [],
+              biography: profile.biography,
+              experience: profile.experience,
+              location: profile.location,
+              salaryExpectation: profile.salaryExpectation
+            },
+            {
+              title: scoringJob.title,
+              skills: scoringJob.skills,
+              description: scoringJob.description,
+              location: scoringJob.location,
+              type: scoringJob.type,
+              salary: scoringJob.salary
+            }
+          );
       }
 
       return {
@@ -116,7 +123,12 @@ export async function GET(req: NextRequest) {
         role: profile.role || "Job Seeker",
         location: profile.location || "Remote",
         experience: profile.experience || "Entry Level",
-        match: matchScore,
+        match: matchResult.score,
+        matchAnalysis: {
+            summary: matchResult.summary,
+            strengths: matchResult.strengths,
+            gaps: matchResult.gaps
+        },
         skills: profile.skills || ["Communication", "Research"],
         summary: profile.biography || "No intelligence summary provided.",
         resume: c.resumes?.[0]?.name || null,

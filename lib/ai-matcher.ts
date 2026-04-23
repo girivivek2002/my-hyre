@@ -1,29 +1,61 @@
+export interface MatchResult {
+  score: number;
+  summary: string;
+  strengths: string[];
+  gaps: string[];
+}
+
 export async function calculateCandidateMatch(
-  candidate: { skills: string[] | undefined | null, biography: string | null, experience: string | null },
-  job: { title: string, skills: string[] | undefined | null, description: string | null }
-): Promise<number> {
+  candidate: any,
+  job: any
+): Promise<MatchResult> {
   const apiKey = process.env.OPENAI_API_KEY;
 
   if (!apiKey) {
-    // Graceful fallback to keyword overlap if no API key is present
-    return fallbackMatchScore(candidate.skills, job.skills);
+    return {
+      score: fallbackMatchScore(candidate.skills, job.skills),
+      summary: "Manual keyword analysis performed due to missing AI credentials.",
+      strengths: ["Keyword overlap detected"],
+      gaps: ["Advanced AI analysis unavailable"]
+    };
   }
 
   try {
     const prompt = `
-      You are an expert technical recruiter AI.
-      Given the candidate's profile and the job description, calculate a "Fit Score" from 0 to 100.
-      Respond with ONLY the integer representing the score. Do not provide any explanation or extra text.
+      You are an AI-powered Candidate Matching Engine. Analyze the candidate against the job description.
+      
+      MATCHING LOGIC WEIGHTS:
+      1. Skills Match (40%)
+      2. Experience Match (20%)
+      3. Location & Work Type Match (10%)
+      4. Salary Alignment (10%)
+      5. Profile Strength (10%)
+      6. Resume Semantic Relevance (10%)
 
-      Candidate Profile:
-      - Experience: ${candidate.experience || "Not specified"}
-      - Skills: ${(candidate.skills || []).join(", ")}
-      - Biography: ${candidate.biography || "Not specified"}
-
-      Job Requirements:
+      JOB DESCRIPTION:
       - Title: ${job.title}
       - Required Skills: ${(job.skills || []).join(", ")}
-      - Description: ${job.description || "Not specified"}
+      - Description: ${job.description}
+      - Location: ${job.location || "Not specified"}
+      - Work Type: ${job.type || "Not specified"}
+      - Salary: ${job.salary || "Not specified"}
+
+      CANDIDATE PROFILE:
+      - Name: ${candidate.name}
+      - Role: ${candidate.role}
+      - Skills: ${(candidate.skills || []).join(", ")}
+      - Experience: ${candidate.experience}
+      - Bio: ${candidate.biography}
+      - Location: ${candidate.location || "Not specified"}
+      - Salary Expectation: ${candidate.salaryExpectation || "Not specified"}
+
+      OUTPUT FORMAT (STRICT JSON):
+      {
+        "score": number (0-100),
+        "summary": "string",
+        "strengths": ["string"],
+        "gaps": ["string"]
+      }
     `;
 
     const res = await fetch("https://api.openai.com/v1/chat/completions", {
@@ -33,51 +65,44 @@ export async function calculateCandidateMatch(
         "Authorization": `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini", // Using mini variant for rapid evaluation
+        model: "gpt-4o-mini",
         messages: [{ role: "user", content: prompt }],
+        response_format: { type: "json_object" },
         temperature: 0.1,
-        max_tokens: 5,
       }),
     });
 
-    if (!res.ok) {
-      throw new Error(`OpenAI API error: ${res.statusText}`);
-    }
+    if (!res.ok) throw new Error("AI API Error");
 
     const data = await res.json();
-    const scoreText = data.choices[0].message.content.trim();
+    const result = JSON.parse(data.choices[0].message.content);
     
-    // Parse the score, fallback to overlap if AI returns unexpected format
-    const score = parseInt(scoreText.replace(/\D/g, ''), 10);
-    if (!isNaN(score) && score >= 0 && score <= 100) {
-      return score;
-    }
-    
-    return fallbackMatchScore(candidate.skills, job.skills);
+    return {
+      score: result.score || 0,
+      summary: result.summary || "No summary provided.",
+      strengths: result.strengths || [],
+      gaps: result.gaps || []
+    };
 
   } catch (error) {
     console.error("AI Matching Error:", error);
-    return fallbackMatchScore(candidate.skills, job.skills);
+    return {
+      score: fallbackMatchScore(candidate.skills, job.skills),
+      summary: "Intelligence engine encountered a processing error. Falling back to keyword matching.",
+      strengths: ["Historical data consistency"],
+      gaps: ["Full semantic analysis failed"]
+    };
   }
 }
 
-// Fallback logic if OpenAI fails or key is missing
 function fallbackMatchScore(candidateSkills: string[] | undefined | null, jobSkills: string[] | undefined | null): number {
-  if (!jobSkills || jobSkills.length === 0) return 70; // Baseline match
-  if (!candidateSkills || candidateSkills.length === 0) return 45; // No skills = minimum score
-  
+  if (!jobSkills || jobSkills.length === 0) return 70;
+  if (!candidateSkills || candidateSkills.length === 0) return 45;
   const cSkillsLower = candidateSkills.map(s => s.toLowerCase().trim());
   const jSkillsLower = jobSkills.map(s => s.toLowerCase().trim());
-
   let matches = 0;
   for (const skill of jSkillsLower) {
-    if (cSkillsLower.some(c => c.includes(skill) || skill.includes(c))) {
-      matches++;
-    }
+    if (cSkillsLower.some(c => c.includes(skill) || skill.includes(c))) matches++;
   }
-
-  const overlapScore = Math.round((matches / jobSkills.length) * 100);
-  
-  // Baseline bump so it doesn't look totally broken if they just typed the wrong aliases
-  return Math.min(Math.max(overlapScore + 20, 45), 100);
+  return Math.min(Math.max(Math.round((matches / jobSkills.length) * 100) + 20, 45), 100);
 }

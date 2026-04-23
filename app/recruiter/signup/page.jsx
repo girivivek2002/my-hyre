@@ -68,7 +68,7 @@ export default function CompanySignup() {
             localStorage.setItem("userRole", data.user.role);
             localStorage.setItem("userName", data.user.name);
 
-            router.push("/recruiter/dashboard");
+            router.push("/recruiter/profile");
         } catch (err) {
             console.error(err);
             setErrorObj("Network error: Could not reach the authentication server.");

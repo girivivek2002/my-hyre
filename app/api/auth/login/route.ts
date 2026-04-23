@@ -24,6 +24,16 @@ export async function POST(req: NextRequest) {
 
     const role = user.role || "candidate";
 
+    // Check if profile is complete
+    let isProfileComplete = false;
+    if (role === "candidate") {
+      const profile = await prisma.candidate.findUnique({ where: { userId: user.id } });
+      isProfileComplete = !!(profile?.experience && profile?.biography);
+    } else {
+      const profile = await prisma.recruiter.findUnique({ where: { userId: user.id } });
+      isProfileComplete = !!(profile?.industry && profile?.companySize);
+    }
+
     // Sign a real JWT so /api/user/me can verify it
     const token = jwt.sign(
       { id: user.id, role, email: user.email },
@@ -34,6 +44,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({
       message: "Login successful",
       token,
+      isProfileComplete,
       user: { id: user.id, name: user.name, role, email: user.email },
     }, { status: 200 });
   } catch (error: any) {

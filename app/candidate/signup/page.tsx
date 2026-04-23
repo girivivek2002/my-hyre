@@ -66,7 +66,7 @@ export default function CandidateSignup() {
       localStorage.setItem("userRole", data.user.role);
       localStorage.setItem("userName", data.user.name);
       
-      router.push("/candidate/dashboard");
+      router.push("/candidate/profile");
     } catch (err) {
       setErrorObj("Network error: Could not reach the authentication server.");
       setIsLoading(false);

@@ -82,10 +82,18 @@ export default function LoginPage() {
       localStorage.setItem("userRole", data.user.role);
       localStorage.setItem("userName", data.user.name);
 
-      if (data.user.role === "candidate") {
-        router.push("/candidate/dashboard");
+      if (!data.isProfileComplete) {
+        if (data.user.role === "candidate") {
+          router.push("/candidate/profile");
+        } else {
+          router.push("/recruiter/profile");
+        }
       } else {
-        router.push("/recruiter/dashboard");
+        if (data.user.role === "candidate") {
+          router.push("/candidate/dashboard");
+        } else {
+          router.push("/recruiter/dashboard");
+        }
       }
     } catch (err: any) {
       console.error("Login submission error:", err);

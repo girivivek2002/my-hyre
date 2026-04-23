@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import prisma from "@/lib/db";
 import { calculateCandidateMatch } from "@/lib/ai-matcher";
 
+export const dynamic = "force-dynamic";
+
 const JWT_SECRET = process.env.JWT_SECRET || "super-secret-fallback-key";
 
 async function getCandidateIdFromUser(userId: string) {
@@ -43,8 +45,8 @@ export async function GET(req: NextRequest) {
 
     // Formatting for the extraordinary frontend with dynamic AI matching
     const formattedJobs = await Promise.all(
-      shortlists.map(async (s) => {
-        const matchScore = await calculateCandidateMatch(
+      shortlists.map(async (s: any) => {
+        const matchResult = await calculateCandidateMatch(
           {
             skills: candidate.skills,
             biography: candidate.biography,
@@ -64,7 +66,7 @@ export async function GET(req: NextRequest) {
           role: s.job.title,
           location: s.job.location,
           salary: s.job.salary,
-          match: matchScore,
+          match: matchResult.score,
           type: s.job.type,
           experience: s.job.experience,
           tags: s.job.skills,

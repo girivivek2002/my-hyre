@@ -51,7 +51,7 @@ export async function GET(req: NextRequest) {
           }
         }
       });
-      candidates = shortlists.map(s => ({
+      candidates = shortlists.map((s: any) => ({
         ...s.candidate.user,
         candidateProfile: s.candidate,
         shortlistStatus: s.status
@@ -79,7 +79,7 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    const formatted = await Promise.all(candidates.map(async (c) => {
+    const formatted = await Promise.all(candidates.map(async (c: any) => {
       // Self-healing: Create profile if missing
       let profile = c.candidateProfile;
       if (!profile) {

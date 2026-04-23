@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import prisma from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 const JWT_SECRET = process.env.JWT_SECRET || "super-secret-fallback-key";
 
 async function verifyRecruiter(req: NextRequest) {
@@ -48,14 +50,14 @@ export async function GET(req: NextRequest) {
         where: { recruiterId: recruiter.id },
         select: { id: true },
       });
-      const jobIds = recruiterJobs.map((j) => j.id);
+      const jobIds = recruiterJobs.map((j: any) => j.id);
 
       if (jobIds.length > 0) {
         const shortlists = await prisma.shortlist.findMany({
           where: { jobId: { in: jobIds } },
           select: { id: true },
         });
-        const shortlistIds = shortlists.map((s) => s.id);
+        const shortlistIds = shortlists.map((s: any) => s.id);
 
         if (shortlistIds.length > 0) {
           interviewCount = await prisma.interview.count({

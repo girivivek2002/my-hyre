@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Recruiter not found" }, { status: 404 });
     }
 
-    const jobIds = recruiter.jobs.map(j => j.id);
+    const jobIds = recruiter.jobs.map((j: any) => j.id);
 
     // Count jobs, candidates, and interviews in parallel
     const [totalApplications, totalSelected, totalInterviewed, talentPool, geographyRaw] = await Promise.all([
@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
     });
 
     const geography = Object.entries(locationCounts)
-      .map(([region, count]) => ({
+      .map(([region, count]: [string, any]) => ({
         region,
         count,
         pct: totalApplications > 0 ? Math.round((count / totalApplications) * 100) : 0
@@ -147,7 +147,7 @@ export async function GET(req: NextRequest) {
       take: 5
     });
 
-    const topRoles = jobsWithCounts.map(j => ({
+    const topRoles = jobsWithCounts.map((j: any) => ({
       role: j.title,
       apps: j._count.shortlists,
       hires: j.shortlists.length,

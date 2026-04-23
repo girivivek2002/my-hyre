@@ -59,7 +59,7 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: "desc" },
     });
 
-    const formatted = jobs.map((j) => ({
+    const formatted = jobs.map((j: any) => ({
       id: j.id,
       title: j.title,
       company: j.company,
@@ -120,7 +120,7 @@ export async function POST(req: NextRequest) {
         type: type || "Full-time",
         experience: experience || "Any",
         description: description || `Join ${recruiter.companyName} as a ${title}.`,
-        skills: Array.isArray(skills) ? skills : (skills ? String(skills).split(",").map(s => s.trim()) : []),
+        skills: Array.isArray(skills) ? skills : (skills ? String(skills).split(",").map((s: string) => s.trim()) : []),
         recruiterId: recruiter.id,
       },
     });
@@ -138,7 +138,7 @@ export async function POST(req: NextRequest) {
     });
 
     if (matchingCandidates.length > 0) {
-      await Promise.all(matchingCandidates.map(candidate => 
+      await Promise.all(matchingCandidates.map((candidate: any) => 
         prisma.shortlist.upsert({
           where: {
             candidateId_jobId: {

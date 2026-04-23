@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import prisma from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 const JWT_SECRET = process.env.JWT_SECRET || "super-secret-fallback-key";
 
 async function getCandidateIdFromUser(userId: string) {
@@ -38,7 +40,7 @@ export async function GET(req: NextRequest) {
       orderBy: { date: "asc" }
     });
 
-    const formattedInterviews = interviews.map(i => ({
+    const formattedInterviews = interviews.map((i: any) => ({
       id: i.id,
       company: i.shortlist.job.company,
       role: i.shortlist.job.title,

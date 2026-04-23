@@ -86,35 +86,35 @@ export async function GET(req: NextRequest) {
         profile = await prisma.candidate.create({
           data: {
             userId: c.id,
-            name: c.name || "Unknown Node",
-            email: c.email || `${c.id}@citizen.node`,
-            role: "Citizen Node",
-            biography: "Identity synthesized via automated recovery."
+            name: c.name || "Anonymous User",
+            email: c.email || `${c.id}@mrhyre.com`,
+            role: "",
+            biography: "Professional profile currently being synchronized."
           }
         });
       }
 
       let matchResult: any = { score: 85, summary: "Initial screening...", strengths: [], gaps: [] };
       if (scoringJob) {
-          matchResult = await calculateCandidateMatch(
-            {
-              name: profile.name,
-              role: profile.role,
-              skills: profile.skills || [],
-              biography: profile.biography,
-              experience: profile.experience,
-              location: profile.location,
-              salaryExpectation: profile.salaryExpectation
-            },
-            {
-              title: scoringJob.title,
-              skills: scoringJob.skills,
-              description: scoringJob.description,
-              location: scoringJob.location,
-              type: scoringJob.type,
-              salary: scoringJob.salary
-            }
-          );
+        matchResult = await calculateCandidateMatch(
+          {
+            name: profile.name,
+            role: profile.role,
+            skills: profile.skills || [],
+            biography: profile.biography,
+            experience: profile.experience,
+            location: profile.location,
+            salaryExpectation: profile.salaryExpectation
+          },
+          {
+            title: scoringJob.title,
+            skills: scoringJob.skills,
+            description: scoringJob.description,
+            location: scoringJob.location,
+            type: scoringJob.type,
+            salary: scoringJob.salary
+          }
+        );
       }
 
       return {
@@ -127,9 +127,9 @@ export async function GET(req: NextRequest) {
         experience: profile.experience || "Entry Level",
         match: matchResult.score,
         matchAnalysis: {
-            summary: matchResult.summary,
-            strengths: matchResult.strengths,
-            gaps: matchResult.gaps
+          summary: matchResult.summary,
+          strengths: matchResult.strengths,
+          gaps: matchResult.gaps
         },
         skills: profile.skills || ["Communication", "Research"],
         summary: profile.biography || "No intelligence summary provided.",
@@ -156,25 +156,25 @@ export async function POST(req: NextRequest) {
     // We need the Candidate table ID.
     const candidate = await prisma.candidate.findUnique({ where: { userId: candidateId } });
     if (!candidate) {
-        // More self-healing: if the recruiter tries to shortlist a user without a profile, create it now.
-        const user = await prisma.user.findUnique({ where: { id: candidateId } });
-        if (!user) return NextResponse.json({ error: "User node not found" }, { status: 404 });
-        
-        const newCandidate = await prisma.candidate.create({
-            data: {
-                userId: user.id,
-                name: user.name,
-                email: user.email,
-                role: "Job Seeker"
-            }
-        });
-        
-        const shortlist = await prisma.shortlist.upsert({
-            where: { candidateId_jobId: { candidateId: newCandidate.id, jobId } },
-            update: { status: status || "SHORTLISTED" },
-            create: { candidateId: newCandidate.id, jobId, status: status || "SHORTLISTED" }
-        });
-        return NextResponse.json({ message: "Candidate synchronized and shortlisted", shortlist });
+      // More self-healing: if the recruiter tries to shortlist a user without a profile, create it now.
+      const user = await prisma.user.findUnique({ where: { id: candidateId } });
+      if (!user) return NextResponse.json({ error: "User node not found" }, { status: 404 });
+
+      const newCandidate = await prisma.candidate.create({
+        data: {
+          userId: user.id,
+          name: user.name,
+          email: user.email,
+          role: "Job Seeker"
+        }
+      });
+
+      const shortlist = await prisma.shortlist.upsert({
+        where: { candidateId_jobId: { candidateId: newCandidate.id, jobId } },
+        update: { status: status || "SHORTLISTED" },
+        create: { candidateId: newCandidate.id, jobId, status: status || "SHORTLISTED" }
+      });
+      return NextResponse.json({ message: "Candidate synchronized and shortlisted", shortlist });
     }
 
     const shortlist = await prisma.shortlist.upsert({

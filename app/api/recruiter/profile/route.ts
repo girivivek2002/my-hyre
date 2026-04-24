@@ -4,16 +4,34 @@ import prisma from "@/lib/db";
 
 const JWT_SECRET = process.env.JWT_SECRET || "super-secret-fallback-key";
 
+import { getToken } from "next-auth/jwt";
+
 async function verifyRecruiter(req: NextRequest) {
-  const auth = req.headers.get("authorization");
-  if (!auth?.startsWith("Bearer ")) return null;
-  try {
-    const decoded: any = jwt.verify(auth.split(" ")[1], JWT_SECRET);
-    if (decoded.role !== "recruiter") return null;
-    return decoded;
-  } catch {
-    return null;
+  // 1. Try NextAuth
+  const nextAuthToken = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  if (nextAuthToken && nextAuthToken.role === "recruiter") {
+    return { id: nextAuthToken.id, role: nextAuthToken.role, email: nextAuthToken.email, name: nextAuthToken.name };
   }
+
+  // 2. Try Custom JWT via Header
+  const auth = req.headers.get("authorization");
+  if (auth?.startsWith("Bearer ") && auth.split(" ")[1] !== "null") {
+    try {
+      const decoded: any = jwt.verify(auth.split(" ")[1], JWT_SECRET);
+      if (decoded.role === "recruiter") return decoded;
+    } catch {}
+  }
+
+  // 3. Try Custom JWT via Cookie
+  const customCookie = req.cookies.get("authToken")?.value;
+  if (customCookie) {
+    try {
+      const decoded: any = jwt.verify(customCookie, JWT_SECRET);
+      if (decoded.role === "recruiter") return decoded;
+    } catch {}
+  }
+
+  return null;
 }
 
 // GET: Fetch recruiter company profile

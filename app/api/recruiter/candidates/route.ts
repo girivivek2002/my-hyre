@@ -1,23 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
 import prisma from "@/lib/db";
 import { calculateCandidateMatch } from "@/lib/ai-matcher";
-
-export const dynamic = "force-dynamic";
-
-const JWT_SECRET = (process.env.JWT_SECRET || "super-secret-fallback-key").replace(/['"]+/g, '');
-
-async function verifyRecruiter(req: NextRequest) {
-  const auth = req.headers.get("authorization");
-  if (!auth?.startsWith("Bearer ")) return null;
-  try {
-    const decoded: any = jwt.verify(auth.split(" ")[1], JWT_SECRET);
-    if (decoded.role !== "recruiter") return null;
-    return decoded;
-  } catch {
-    return null;
-  }
-}
+import { verifyRecruiter } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
   const authUser = await verifyRecruiter(req);
@@ -35,7 +19,8 @@ export async function GET(req: NextRequest) {
     }
 
     let candidates = [];
-    if (jobId) {
+    if (jobId && jobId !== "talent-pool") {
+      console.log(`[GET /api/recruiter/candidates] Fetching for jobId: ${jobId}, recruiterId: ${recruiter.id}`);
       // Strictly filter by jobId: Only show candidates already in this pipeline
       const shortlists = await prisma.shortlist.findMany({
         where: { jobId: jobId, job: { recruiterId: recruiter.id } },
@@ -51,10 +36,15 @@ export async function GET(req: NextRequest) {
           }
         }
       });
+      
+      console.log(`[GET /api/recruiter/candidates] Found ${shortlists.length} shortlists`);
+
       candidates = shortlists.map((s: any) => ({
-        ...s.candidate.user,
+        ...s.candidate.user, // May be null
+        id: s.candidate.user?.id || s.candidate.id, // Fallback to candidate id if user missing
         candidateProfile: s.candidate,
-        shortlistStatus: s.status
+        shortlistStatus: s.status,
+        resumes: s.candidate.user?.resumes || []
       }));
     } else {
       // Global Talent Pool: Show everyone
@@ -119,9 +109,9 @@ export async function GET(req: NextRequest) {
 
       return {
         id: c.id,
-        name: c.name || "Unknown",
-        email: c.email || "no-email@mrhyre.com",
-        initials: (c.name || "UN").slice(0, 2).toUpperCase(),
+        name: profile.name || c.name || "Unknown Node",
+        email: profile.email || c.email || "no-email@mrhyre.com",
+        initials: (profile.name || c.name || "UN").slice(0, 2).toUpperCase(),
         role: profile.role || "Job Seeker",
         location: profile.location || "Remote",
         experience: profile.experience || "Entry Level",

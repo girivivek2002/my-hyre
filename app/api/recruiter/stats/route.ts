@@ -1,31 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
 import prisma from "@/lib/db";
-
-export const dynamic = "force-dynamic";
-
-const JWT_SECRET = process.env.JWT_SECRET || "super-secret-fallback-key";
-
-async function verifyRecruiter(req: NextRequest) {
-  const auth = req.headers.get("authorization");
-  if (!auth?.startsWith("Bearer ")) return null;
-  try {
-    const decoded: any = jwt.verify(auth.split(" ")[1], JWT_SECRET);
-    if (decoded.role !== "recruiter") return null;
-    return decoded;
-  } catch {
-    return null;
-  }
-}
+import { verifyRecruiter } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
   const user = await verifyRecruiter(req);
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
-    const recruiter = await prisma.recruiter.findUnique({
-      where: { userId: user.id },
-    });
+    const recruiter = user.profile;
 
     if (!recruiter) {
       return NextResponse.json({

@@ -5,27 +5,63 @@ import prisma from "@/lib/db";
 export const dynamic = "force-dynamic";
 
 const JWT_SECRET = (process.env.JWT_SECRET || "super-secret-fallback-key").replace(/['"]+/g, '');
+const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET;
 
 import { canRecruiterPost } from "@/lib/security";
+import { getToken } from "next-auth/jwt";
 
 async function verifyRecruiter(req: NextRequest) {
-  const auth = req.headers.get("authorization");
-  if (!auth?.startsWith("Bearer ")) return null;
-  try {
-    const token = auth.split(" ")[1];
-    const decoded: any = jwt.verify(token, JWT_SECRET);
-    if (decoded.role !== "recruiter") return null;
+  let userId: string | null = null;
+  let userEmail: string | null = null;
+  let userName: string | null = null;
+
+  // 1. Try NextAuth
+  const nextAuthToken = await getToken({ req, secret: NEXTAUTH_SECRET });
+  if (nextAuthToken && nextAuthToken.role === "recruiter") {
+    userId = (nextAuthToken.userId as string) || null;
+    userEmail = nextAuthToken.email || null;
+    userName = nextAuthToken.name || null;
     
-    const recruiter = await prisma.recruiter.findUnique({
-      where: { userId: decoded.id },
-      include: { user: true }
-    });
-    
-    if (!recruiter || !recruiter.user) return null;
-    return { ...decoded, isVerified: recruiter.isVerified || recruiter.user.isVerified, profile: recruiter };
-  } catch (err: any) {
-    return null;
+    if (!userId && userEmail) {
+      const dbUser = await prisma.user.findUnique({ where: { email: userEmail } });
+      if (dbUser) userId = dbUser.id;
+    }
   }
+
+  // 2. Try Custom JWT (Header or Cookie)
+  if (!userId) {
+    const auth = req.headers.get("authorization");
+    const token = auth?.startsWith("Bearer ") ? auth.split(" ")[1] : req.cookies.get("authToken")?.value;
+    
+    if (token && token !== "null") {
+      try {
+        const decoded: any = jwt.verify(token, JWT_SECRET);
+        if (decoded.role === "recruiter") {
+          userId = decoded.id;
+          userEmail = decoded.email;
+          userName = decoded.name;
+        }
+      } catch (err) {}
+    }
+  }
+
+  if (!userId) return null;
+
+  // Fetch full recruiter profile for consistency
+  const recruiter = await prisma.recruiter.findUnique({
+    where: { userId },
+    include: { user: true }
+  });
+
+  if (!recruiter || !recruiter.user) return null;
+
+  return { 
+    id: userId, 
+    email: userEmail, 
+    name: userName,
+    isVerified: recruiter.isVerified || recruiter.user.isVerified, 
+    profile: recruiter 
+  };
 }
 
 // GET: List all jobs for the authenticated recruiter

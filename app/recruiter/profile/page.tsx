@@ -1,5 +1,5 @@
 "use client";
-import React, { ReactNode, MouseEvent, useState, useEffect } from "react";
+import React, { ReactNode, MouseEvent, useState, useEffect, useRef } from "react";
 import { motion, useMotionTemplate, useMotionValue, Variants } from "framer-motion";
 import { useRouter } from "next/navigation";
 import {
@@ -47,6 +47,11 @@ export default function CompanyProfile() {
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [isFirstTimeSetup, setIsFirstTimeSetup] = useState(false);
+
+    const [logoImage, setLogoImage] = useState<string | null>(null);
+    const [coverImage, setCoverImage] = useState<string | null>(null);
+    const logoInputRef = useRef<HTMLInputElement>(null);
+    const coverInputRef = useRef<HTMLInputElement>(null);
 
     const [profile, setProfile] = useState({
         name: "",
@@ -117,6 +122,20 @@ export default function CompanyProfile() {
         setProfile(prev => ({ ...prev, [name]: value }));
     };
 
+    const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const url = URL.createObjectURL(e.target.files[0]);
+            setLogoImage(url);
+        }
+    };
+
+    const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const url = URL.createObjectURL(e.target.files[0]);
+            setCoverImage(url);
+        }
+    };
+
     const containerVars: Variants = {
         hidden: { opacity: 0 },
         visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.1 } }
@@ -146,23 +165,27 @@ export default function CompanyProfile() {
 
             {/* Banner & Profile Header */}
             <motion.div variants={itemVars} className="relative mb-20">
+                {/* Hidden File Inputs */}
+                <input type="file" accept="image/*" ref={logoInputRef} onChange={handleLogoChange} className="hidden" />
+                <input type="file" accept="image/*" ref={coverInputRef} onChange={handleCoverChange} className="hidden" />
+
                 {/* Cover Image */}
                 <div className="h-64 sm:h-80 w-full rounded-[40px] bg-gradient-to-br from-slate-900 to-slate-800 dark:from-neutral-900 dark:to-neutral-950 border border-slate-200 dark:border-neutral-800 overflow-hidden relative group">
-                    <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop')] bg-cover bg-center opacity-40 group-hover:scale-105 transition-transform duration-1000" />
+                    <div className="absolute inset-0 bg-cover bg-center opacity-40 group-hover:scale-105 transition-transform duration-1000" style={{ backgroundImage: `url('${coverImage || "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop"}')` }} />
                     <div className="absolute inset-0 bg-black/20" />
-                    <button className="absolute bottom-6 right-6 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-xl text-xs font-bold text-white border border-white/20 transition-all flex items-center gap-2">
+                    <button onClick={() => coverInputRef.current?.click()} className="absolute bottom-6 right-6 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-xl text-xs font-bold text-white border border-white/20 transition-all flex items-center gap-2 cursor-pointer z-10">
                         <Camera size={14} /> Update Cover
                     </button>
                 </div>
 
                 {/* Logo Overflow */}
-                <div className="absolute -bottom-16 left-12 flex flex-col sm:flex-row sm:items-end gap-6 sm:gap-8">
+                <div className="absolute -bottom-16 left-12 flex flex-col sm:flex-row sm:items-end gap-6 sm:gap-8 z-10">
                     <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-[40px] bg-white dark:bg-neutral-950 p-2 border-4 border-slate-50 dark:border-[#050505] shadow-2xl relative group">
-                        <div className="w-full h-full rounded-[32px] bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-4xl font-extrabold text-white shadow-inner relative overflow-hidden">
-                            {companyInitials}
-                            <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer">
+                        <div className="w-full h-full rounded-[32px] bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-4xl font-extrabold text-white shadow-inner relative overflow-hidden bg-cover bg-center" style={logoImage ? { backgroundImage: `url(${logoImage})` } : {}}>
+                            {!logoImage && companyInitials}
+                            <div onClick={() => logoInputRef.current?.click()} className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer z-10">
                                 <Camera size={24} />
-                                <span className="text-[10px] font-bold mt-2 uppercase tracking-widest">Update Logo</span>
+                                <span className="text-[10px] font-bold mt-2 uppercase tracking-widest text-white">Update Logo</span>
                             </div>
                         </div>
                     </div>

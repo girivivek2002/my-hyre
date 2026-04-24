@@ -166,15 +166,6 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
                 <Image src="/logo.png" alt="Mr. Hyre" width={18} height={18} className="rounded-sm" />
                 <span className="text-[10px] font-black tracking-tighter uppercase text-blue-600 dark:text-blue-400">Mr. Hyre</span>
               </div>
-
-              {/* Dynamic Recruiter Company Logo (Changes when recruiter selects their logo) */}
-              {userLogo && (
-                <div className="flex items-center gap-2 pl-4 border-l border-slate-200 dark:border-neutral-800">
-                  <div className="w-8 h-8 rounded-lg overflow-hidden border border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
-                    <img src={userLogo} alt="Company" className="w-full h-full object-cover" />
-                  </div>
-                </div>
-              )}
             </div>
 
             <div className="w-px h-8 bg-slate-200 dark:bg-neutral-800"></div>
@@ -184,8 +175,12 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
                 className="flex items-center gap-3 cursor-pointer group"
                 onClick={() => { setShowProfileMenu(!showProfileMenu); setShowNotifications(false); }}
               >
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-lg uppercase">
-                  {userName.slice(0,2)}
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-lg uppercase overflow-hidden border border-slate-200 dark:border-neutral-800">
+                  {userLogo ? (
+                    <img src={userLogo} alt="Logo" className="w-full h-full object-cover" />
+                  ) : (
+                    userName.slice(0,2)
+                  )}
                 </div>
                 <div className="hidden md:block">
                   <p className="text-sm font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{userName}</p>

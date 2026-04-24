@@ -17,6 +17,23 @@ const handler = NextAuth({
     LinkedInProvider({
       clientId: process.env.LINKEDIN_CLIENT_ID as string,
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET as string,
+      client: { client_assertion_type: "urn:ietf:params:oauth:client-assertion-type:jwt-bearer" },
+      issuer: "https://www.linkedin.com",
+      jwks_endpoint: "https://www.linkedin.com/oauth/openid/jwks",
+      wellKnown: "https://www.linkedin.com/.well-known/openid-configuration",
+      authorization: {
+        params: {
+          scope: "openid profile email",
+        },
+      },
+      profile(profile) {
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
+        };
+      },
     })
   ],
   secret: process.env.NEXTAUTH_SECRET,

@@ -46,6 +46,7 @@ export default function CompanyProfile() {
     const [isEditing, setIsEditing] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const [isFirstTimeSetup, setIsFirstTimeSetup] = useState(false);
 
     const [profile, setProfile] = useState({
         name: "",
@@ -74,6 +75,12 @@ export default function CompanyProfile() {
             if (res.ok) {
                 const data = await res.json();
                 setProfile(prev => ({ ...prev, ...data.profile }));
+                
+                // Enforce edit mode if no company data exists (First time setup)
+                if (!data.profile.companyName && !data.profile.industry) {
+                    setIsFirstTimeSetup(true);
+                    setIsEditing(true);
+                }
             }
         } catch (error) {
             console.error("Error fetching profile", error);
@@ -194,9 +201,11 @@ export default function CompanyProfile() {
                 <div className="absolute -bottom-6 right-6 sm:-bottom-12">
                     {isEditing ? (
                         <div className="flex items-center gap-2">
-                            <button onClick={() => setIsEditing(false)} className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 bg-slate-100 hover:bg-slate-200 transition-colors flex items-center gap-2">
-                                <X size={14} /> Cancel
-                            </button>
+                            {!isFirstTimeSetup && (
+                                <button onClick={() => setIsEditing(false)} className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 bg-slate-100 hover:bg-slate-200 transition-colors flex items-center gap-2">
+                                    <X size={14} /> Cancel
+                                </button>
+                            )}
                             <button onClick={handleSave} disabled={isSaving} className="px-6 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 transition-colors flex items-center gap-2">
                                 {isSaving ? <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Save size={14} />}
                                 Save Profile

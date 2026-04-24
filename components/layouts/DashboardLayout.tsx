@@ -159,23 +159,12 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
 
             <div className="w-px h-8 bg-slate-200 dark:bg-neutral-800"></div>
 
-            {/* Branding & Recruiter Node */}
-            <div className="flex items-center gap-4">
-              {/* Prime Platform Logo (Always visible) */}
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-blue-500/5 dark:bg-blue-500/10 rounded-xl border border-blue-500/10">
-                <Image src="/logo.png" alt="Mr. Hyre" width={18} height={18} className="rounded-sm" />
-                <span className="text-[10px] font-black tracking-tighter uppercase text-blue-600 dark:text-blue-400">Mr. Hyre</span>
-              </div>
-            </div>
-
-            <div className="w-px h-8 bg-slate-200 dark:bg-neutral-800"></div>
-
             <div className="relative">
               <div 
                 className="flex items-center gap-3 cursor-pointer group"
                 onClick={() => { setShowProfileMenu(!showProfileMenu); setShowNotifications(false); }}
               >
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-lg uppercase overflow-hidden border border-slate-200 dark:border-neutral-800">
+                <div className={`w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-xs shadow-lg uppercase overflow-hidden border border-slate-200 dark:border-neutral-800 ${!userLogo ? 'bg-gradient-to-br from-blue-600 to-indigo-600' : 'bg-white dark:bg-neutral-900'}`}>
                   {userLogo ? (
                     <img src={userLogo} alt="Logo" className="w-full h-full object-cover" />
                   ) : (

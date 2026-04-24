@@ -29,29 +29,41 @@ export function isDisposableEmail(email: string) {
   return DISPOSABLE_DOMAINS.includes(domain);
 }
 
-// Recruiter Verification Logic
+// Recruiter Verification Logic (Production Grade)
 export function canRecruiterPost(user: any, recruiterProfile: any) {
-  // 1. Always allow if either the user or the recruiter profile is manually verified
-  if (user.isVerified || recruiterProfile?.isVerified) return true;
+  /**
+   * REAL SOLUTION:
+   * 1. Check if the user has an 'admin' role (Platform Owners/Staff)
+   * 2. Check if the 'isVerified' flag is true in either User or Recruiter model (Manual/Verified accounts)
+   * 3. Check if the company email belongs to a corporate domain (Auto-verification)
+   */
+
+  // 1. Admin Bypass
+  if (user.role === 'admin') return true;
+
+  // 2. Database Verification Check (Manual Approval or System Verified)
+  if (user.isVerified === true || recruiterProfile?.isVerified === true) {
+    return true;
+  }
   
-  // 2. Automatically verify if using a corporate/company email domain
+  // 3. Corporate Email Domain Auto-Verification
   const email = recruiterProfile?.companyEmail || recruiterProfile?.email || user.email;
   if (!email) return false;
   
   const emailDomain = email.split("@")[1]?.toLowerCase();
-  const publicDomains = ["gmail.com", "yahoo.com", "outlook.com", "hotmail.com", "icloud.com", "me.com"];
+  const publicDomains = [
+    "gmail.com", "yahoo.com", "outlook.com", "hotmail.com", 
+    "icloud.com", "me.com", "live.com", "rediffmail.com", "yandex.com"
+  ];
   
   if (emailDomain && !publicDomains.includes(emailDomain)) {
-    return true; // Corporate email domain auto-verified
+    // If it's a custom domain, we assume it's a corporate email and allow posting
+    return true;
   }
 
-  // 3. Special bypass for platform administrators or specific testing accounts
-  const adminEmails = ["ayush@mr-hyre.com", "admin@mr-hyre.com"];
-  if (adminEmails.includes(email.toLowerCase())) return true;
-
-  // 4. Default to false for public email domains (requires manual verification)
-  // For now, during early testing, let's return true to avoid blocking the user
-  return true; 
+  // 4. Default: Require Manual Verification for public email accounts
+  // This is the secure default for a production-grade system.
+  return false; 
 }
 
 // CAPTCHA Verification (Stub for Google reCAPTCHA)

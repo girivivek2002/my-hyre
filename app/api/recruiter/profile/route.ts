@@ -10,7 +10,7 @@ async function verifyRecruiter(req: NextRequest) {
   // 1. Try NextAuth
   const nextAuthToken = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   if (nextAuthToken && nextAuthToken.role === "recruiter") {
-    return { id: nextAuthToken.id, role: nextAuthToken.role, email: nextAuthToken.email, name: nextAuthToken.name };
+    return { id: nextAuthToken.userId || nextAuthToken.sub, role: nextAuthToken.role, email: nextAuthToken.email, name: nextAuthToken.name };
   }
 
   // 2. Try Custom JWT via Header

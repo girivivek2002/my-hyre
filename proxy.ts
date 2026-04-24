@@ -42,7 +42,8 @@ export async function proxy(req: NextRequest) {
   if (token) {
     // A. Force Onboarding if profile is incomplete
     const isCompletingProfile = path === "/complete-profile";
-    const isProfileComplete = (token as any).isProfileComplete;
+    const hasProfileCompletedCookie = req.cookies.get("profileCompleted")?.value === "true";
+    const isProfileComplete = (token as any).isProfileComplete || hasProfileCompletedCookie;
 
     if (!isProfileComplete && !isCompletingProfile && !isPublicRoute && !path.startsWith("/api")) {
       const targetProfile = token.role === "recruiter" ? "/recruiter/profile" : "/candidate/profile";

@@ -106,7 +106,9 @@ export async function PATCH(req: NextRequest) {
       }
     });
 
-    return NextResponse.json({ message: "Profile updated successfully", profile: recruiter });
+    const response = NextResponse.json({ message: "Profile updated successfully", profile: recruiter });
+    response.cookies.set("profileCompleted", "true", { path: "/", httpOnly: true });
+    return response;
   } catch (error: any) {
     console.error("Recruiter Profile PATCH Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

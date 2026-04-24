@@ -96,6 +96,7 @@ export default function CompanyProfile() {
             });
             if (res.ok) {
                 setIsEditing(false);
+                router.push("/recruiter/dashboard");
             }
         } catch (error) {
             console.error("Error saving profile", error);

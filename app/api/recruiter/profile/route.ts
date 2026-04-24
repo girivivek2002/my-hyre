@@ -10,7 +10,15 @@ async function verifyRecruiter(req: NextRequest) {
   // 1. Try NextAuth
   const nextAuthToken = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
   if (nextAuthToken && nextAuthToken.role === "recruiter") {
-    return { id: nextAuthToken.userId || nextAuthToken.sub, role: nextAuthToken.role, email: nextAuthToken.email, name: nextAuthToken.name };
+    let userId = nextAuthToken.userId;
+    if (!userId && nextAuthToken.email) {
+      // Fallback for old sessions that lack the custom userId property
+      const dbUser = await prisma.user.findUnique({ where: { email: nextAuthToken.email } });
+      if (dbUser) userId = dbUser.id;
+    }
+    if (!userId) return null;
+
+    return { id: userId, role: nextAuthToken.role, email: nextAuthToken.email, name: nextAuthToken.name };
   }
 
   // 2. Try Custom JWT via Header

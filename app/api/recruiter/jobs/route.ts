@@ -59,6 +59,7 @@ async function verifyRecruiter(req: NextRequest) {
     id: userId, 
     email: userEmail, 
     name: userName,
+    role: "recruiter" as string, // We already verified it's a recruiter
     isVerified: recruiter.isVerified || recruiter.user.isVerified, 
     profile: recruiter 
   };

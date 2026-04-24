@@ -58,6 +58,11 @@ model Recruiter {
   companyEmail String?   // For official verification
   companySize  String?
   industry     String?
+  bio          String?
+  website      String?
+  location     String?
+  marketStatus String?
+  phone        String?
   isVerified   Boolean   @default(false)
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt

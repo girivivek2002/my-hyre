@@ -28,16 +28,17 @@ export async function GET(req: NextRequest) {
         id: true,
         name: true,
         email: true,
-        phone: true,
-        website: true,
-        industry: true,
-        teamSize: true,
         recruiterProfile: {
           select: {
             id: true,
             companyName: true,
             companySize: true,
             industry: true,
+            bio: true,
+            website: true,
+            location: true,
+            marketStatus: true,
+            phone: true,
           },
         },
       },
@@ -52,11 +53,14 @@ export async function GET(req: NextRequest) {
         id: userRecord.id,
         name: userRecord.name,
         email: userRecord.email,
-        phone: userRecord.phone,
-        website: userRecord.website,
-        industry: userRecord.recruiterProfile?.industry || userRecord.industry,
-        companyName: userRecord.recruiterProfile?.companyName || userRecord.name,
-        companySize: userRecord.recruiterProfile?.companySize || userRecord.teamSize,
+        companyName: userRecord.recruiterProfile?.companyName || "",
+        companySize: userRecord.recruiterProfile?.companySize || "",
+        industry: userRecord.recruiterProfile?.industry || "",
+        bio: userRecord.recruiterProfile?.bio || "",
+        website: userRecord.recruiterProfile?.website || "",
+        location: userRecord.recruiterProfile?.location || "",
+        marketStatus: userRecord.recruiterProfile?.marketStatus || "",
+        phone: userRecord.recruiterProfile?.phone || "",
       },
     });
   } catch (error: any) {
@@ -72,34 +76,37 @@ export async function PATCH(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { companyName, industry, website, phone } = body;
+    const { companyName, companySize, industry, bio, website, location, marketStatus, phone } = body;
 
-    // Update the User record
-    await prisma.user.update({
-      where: { id: user.id },
-      data: {
-        ...(website !== undefined && { website }),
-        ...(phone !== undefined && { phone }),
-        ...(industry !== undefined && { industry }),
-      },
-    });
-
-    // Update the Recruiter profile if it exists
-    const recruiter = await prisma.recruiter.findUnique({
+    // Update or create the Recruiter profile
+    const recruiter = await prisma.recruiter.upsert({
       where: { userId: user.id },
+      update: {
+        ...(companyName !== undefined && { companyName }),
+        ...(companySize !== undefined && { companySize }),
+        ...(industry !== undefined && { industry }),
+        ...(bio !== undefined && { bio }),
+        ...(website !== undefined && { website }),
+        ...(location !== undefined && { location }),
+        ...(marketStatus !== undefined && { marketStatus }),
+        ...(phone !== undefined && { phone }),
+      },
+      create: {
+        userId: user.id,
+        name: user.name || "Recruiter",
+        email: user.email || "",
+        companyName: companyName || "",
+        companySize: companySize || "",
+        industry: industry || "",
+        bio: bio || "",
+        website: website || "",
+        location: location || "",
+        marketStatus: marketStatus || "",
+        phone: phone || "",
+      }
     });
 
-    if (recruiter) {
-      await prisma.recruiter.update({
-        where: { id: recruiter.id },
-        data: {
-          ...(companyName !== undefined && { companyName }),
-          ...(industry !== undefined && { industry }),
-        },
-      });
-    }
-
-    return NextResponse.json({ message: "Profile updated successfully" });
+    return NextResponse.json({ message: "Profile updated successfully", profile: recruiter });
   } catch (error: any) {
     console.error("Recruiter Profile PATCH Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

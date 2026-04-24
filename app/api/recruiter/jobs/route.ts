@@ -108,7 +108,13 @@ export async function POST(req: NextRequest) {
   if (!canRecruiterPost(user, user.profile)) {
     return NextResponse.json({ 
       error: "Verification Required", 
-      message: "Your recruiter account must be verified before you can post jobs. Please ensure you use a company email or contact support for manual approval." 
+      message: `Account verification needed. Status: User(${user.isVerified ? 'Verified' : 'Unverified'}), Recruiter(${user.profile.isVerified ? 'Verified' : 'Unverified'}). Please use a company email or contact support.`,
+      debug: {
+        userVerified: user.isVerified,
+        profileVerified: user.profile.isVerified,
+        email: user.email,
+        role: user.role
+      }
     }, { status: 403 });
   }
 

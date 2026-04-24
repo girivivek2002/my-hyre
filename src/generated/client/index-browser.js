@@ -157,6 +157,13 @@ exports.Prisma.RecruiterScalarFieldEnum = {
   companyEmail: 'companyEmail',
   companySize: 'companySize',
   industry: 'industry',
+  bio: 'bio',
+  website: 'website',
+  location: 'location',
+  marketStatus: 'marketStatus',
+  phone: 'phone',
+  logoUrl: 'logoUrl',
+  coverUrl: 'coverUrl',
   isVerified: 'isVerified',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

@@ -63,7 +63,9 @@ export default function CompanyProfile() {
         website: "",
         location: "",
         marketStatus: "",
-        phone: ""
+        phone: "",
+        logoUrl: "",
+        coverUrl: ""
     });
 
     useEffect(() => {
@@ -81,6 +83,10 @@ export default function CompanyProfile() {
                 const data = await res.json();
                 setProfile(prev => ({ ...prev, ...data.profile }));
                 
+                if (data.profile.logoUrl) {
+                    localStorage.setItem("userLogo", data.profile.logoUrl);
+                }
+
                 // Enforce edit mode if no company data exists (First time setup)
                 if (!data.profile.companyName && !data.profile.industry) {
                     setIsFirstTimeSetup(true);
@@ -107,6 +113,9 @@ export default function CompanyProfile() {
                 body: JSON.stringify(profile)
             });
             if (res.ok) {
+                if (profile.logoUrl) {
+                    localStorage.setItem("userLogo", profile.logoUrl);
+                }
                 setIsEditing(false);
                 router.push("/recruiter/dashboard");
             }
@@ -124,15 +133,27 @@ export default function CompanyProfile() {
 
     const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            const url = URL.createObjectURL(e.target.files[0]);
-            setLogoImage(url);
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64 = reader.result as string;
+                setLogoImage(base64);
+                setProfile(prev => ({ ...prev, logoUrl: base64 }));
+            };
+            reader.readAsDataURL(file);
         }
     };
 
     const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
-            const url = URL.createObjectURL(e.target.files[0]);
-            setCoverImage(url);
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64 = reader.result as string;
+                setCoverImage(base64);
+                setProfile(prev => ({ ...prev, coverUrl: base64 }));
+            };
+            reader.readAsDataURL(file);
         }
     };
 
@@ -171,7 +192,7 @@ export default function CompanyProfile() {
 
                 {/* Cover Image */}
                 <div className="h-64 sm:h-80 w-full rounded-[40px] bg-gradient-to-br from-slate-900 to-slate-800 dark:from-neutral-900 dark:to-neutral-950 border border-slate-200 dark:border-neutral-800 overflow-hidden relative group">
-                    <div className="absolute inset-0 bg-cover bg-center opacity-40 group-hover:scale-105 transition-transform duration-1000" style={{ backgroundImage: `url('${coverImage || "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop"}')` }} />
+                    <div className="absolute inset-0 bg-cover bg-center opacity-40 group-hover:scale-105 transition-transform duration-1000" style={{ backgroundImage: `url('${coverImage || profile.coverUrl || "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop"}')` }} />
                     <div className="absolute inset-0 bg-black/20" />
                     <button onClick={() => coverInputRef.current?.click()} className="absolute bottom-6 right-6 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-xl text-xs font-bold text-white border border-white/20 transition-all flex items-center gap-2 cursor-pointer z-10">
                         <Camera size={14} /> Update Cover
@@ -181,8 +202,8 @@ export default function CompanyProfile() {
                 {/* Logo Overflow */}
                 <div className="absolute -bottom-16 left-12 flex flex-col sm:flex-row sm:items-end gap-6 sm:gap-8 z-10">
                     <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-[40px] bg-white dark:bg-neutral-950 p-2 border-4 border-slate-50 dark:border-[#050505] shadow-2xl relative group">
-                        <div className="w-full h-full rounded-[32px] bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-4xl font-extrabold text-white shadow-inner relative overflow-hidden bg-cover bg-center" style={logoImage ? { backgroundImage: `url(${logoImage})` } : {}}>
-                            {!logoImage && companyInitials}
+                        <div className="w-full h-full rounded-[32px] bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-4xl font-extrabold text-white shadow-inner relative overflow-hidden bg-cover bg-center" style={(logoImage || profile.logoUrl) ? { backgroundImage: `url(${logoImage || profile.logoUrl})` } : {}}>
+                            {!(logoImage || profile.logoUrl) && companyInitials}
                             <div onClick={() => logoInputRef.current?.click()} className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer z-10">
                                 <Camera size={24} />
                                 <span className="text-[10px] font-bold mt-2 uppercase tracking-widest text-white">Update Logo</span>

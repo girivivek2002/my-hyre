@@ -65,6 +65,8 @@ export async function GET(req: NextRequest) {
             location: true,
             marketStatus: true,
             phone: true,
+            logoUrl: true,
+            coverUrl: true,
           },
         },
       },
@@ -87,6 +89,8 @@ export async function GET(req: NextRequest) {
         location: userRecord.recruiterProfile?.location || "",
         marketStatus: userRecord.recruiterProfile?.marketStatus || "",
         phone: userRecord.recruiterProfile?.phone || "",
+        logoUrl: userRecord.recruiterProfile?.logoUrl || "",
+        coverUrl: userRecord.recruiterProfile?.coverUrl || "",
       },
     });
   } catch (error: any) {
@@ -102,7 +106,7 @@ export async function PATCH(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { companyName, companySize, industry, bio, website, location, marketStatus, phone } = body;
+    const { companyName, companySize, industry, bio, website, location, marketStatus, phone, logoUrl, coverUrl } = body;
 
     // Update or create the Recruiter profile
     const recruiter = await prisma.recruiter.upsert({
@@ -116,6 +120,8 @@ export async function PATCH(req: NextRequest) {
         ...(location !== undefined && { location }),
         ...(marketStatus !== undefined && { marketStatus }),
         ...(phone !== undefined && { phone }),
+        ...(logoUrl !== undefined && { logoUrl }),
+        ...(coverUrl !== undefined && { coverUrl }),
       },
       create: {
         userId: user.id,
@@ -129,6 +135,8 @@ export async function PATCH(req: NextRequest) {
         location: location || "",
         marketStatus: marketStatus || "",
         phone: phone || "",
+        logoUrl: logoUrl || "",
+        coverUrl: coverUrl || "",
       }
     });
 

@@ -4095,6 +4095,13 @@ export namespace Prisma {
     companyEmail: string | null
     companySize: string | null
     industry: string | null
+    bio: string | null
+    website: string | null
+    location: string | null
+    marketStatus: string | null
+    phone: string | null
+    logoUrl: string | null
+    coverUrl: string | null
     isVerified: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -4109,6 +4116,13 @@ export namespace Prisma {
     companyEmail: string | null
     companySize: string | null
     industry: string | null
+    bio: string | null
+    website: string | null
+    location: string | null
+    marketStatus: string | null
+    phone: string | null
+    logoUrl: string | null
+    coverUrl: string | null
     isVerified: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -4123,6 +4137,13 @@ export namespace Prisma {
     companyEmail: number
     companySize: number
     industry: number
+    bio: number
+    website: number
+    location: number
+    marketStatus: number
+    phone: number
+    logoUrl: number
+    coverUrl: number
     isVerified: number
     createdAt: number
     updatedAt: number
@@ -4139,6 +4160,13 @@ export namespace Prisma {
     companyEmail?: true
     companySize?: true
     industry?: true
+    bio?: true
+    website?: true
+    location?: true
+    marketStatus?: true
+    phone?: true
+    logoUrl?: true
+    coverUrl?: true
     isVerified?: true
     createdAt?: true
     updatedAt?: true
@@ -4153,6 +4181,13 @@ export namespace Prisma {
     companyEmail?: true
     companySize?: true
     industry?: true
+    bio?: true
+    website?: true
+    location?: true
+    marketStatus?: true
+    phone?: true
+    logoUrl?: true
+    coverUrl?: true
     isVerified?: true
     createdAt?: true
     updatedAt?: true
@@ -4167,6 +4202,13 @@ export namespace Prisma {
     companyEmail?: true
     companySize?: true
     industry?: true
+    bio?: true
+    website?: true
+    location?: true
+    marketStatus?: true
+    phone?: true
+    logoUrl?: true
+    coverUrl?: true
     isVerified?: true
     createdAt?: true
     updatedAt?: true
@@ -4254,6 +4296,13 @@ export namespace Prisma {
     companyEmail: string | null
     companySize: string | null
     industry: string | null
+    bio: string | null
+    website: string | null
+    location: string | null
+    marketStatus: string | null
+    phone: string | null
+    logoUrl: string | null
+    coverUrl: string | null
     isVerified: boolean
     createdAt: Date
     updatedAt: Date
@@ -4285,6 +4334,13 @@ export namespace Prisma {
     companyEmail?: boolean
     companySize?: boolean
     industry?: boolean
+    bio?: boolean
+    website?: boolean
+    location?: boolean
+    marketStatus?: boolean
+    phone?: boolean
+    logoUrl?: boolean
+    coverUrl?: boolean
     isVerified?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -4303,6 +4359,13 @@ export namespace Prisma {
     companyEmail?: boolean
     companySize?: boolean
     industry?: boolean
+    bio?: boolean
+    website?: boolean
+    location?: boolean
+    marketStatus?: boolean
+    phone?: boolean
+    logoUrl?: boolean
+    coverUrl?: boolean
     isVerified?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -4318,6 +4381,13 @@ export namespace Prisma {
     companyEmail?: boolean
     companySize?: boolean
     industry?: boolean
+    bio?: boolean
+    website?: boolean
+    location?: boolean
+    marketStatus?: boolean
+    phone?: boolean
+    logoUrl?: boolean
+    coverUrl?: boolean
     isVerified?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -4333,12 +4403,19 @@ export namespace Prisma {
     companyEmail?: boolean
     companySize?: boolean
     industry?: boolean
+    bio?: boolean
+    website?: boolean
+    location?: boolean
+    marketStatus?: boolean
+    phone?: boolean
+    logoUrl?: boolean
+    coverUrl?: boolean
     isVerified?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type RecruiterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "email" | "companyName" | "companyEmail" | "companySize" | "industry" | "isVerified" | "createdAt" | "updatedAt", ExtArgs["result"]["recruiter"]>
+  export type RecruiterOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "email" | "companyName" | "companyEmail" | "companySize" | "industry" | "bio" | "website" | "location" | "marketStatus" | "phone" | "logoUrl" | "coverUrl" | "isVerified" | "createdAt" | "updatedAt", ExtArgs["result"]["recruiter"]>
   export type RecruiterInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | Recruiter$userArgs<ExtArgs>
     jobs?: boolean | Recruiter$jobsArgs<ExtArgs>
@@ -4368,6 +4445,13 @@ export namespace Prisma {
       companyEmail: string | null
       companySize: string | null
       industry: string | null
+      bio: string | null
+      website: string | null
+      location: string | null
+      marketStatus: string | null
+      phone: string | null
+      logoUrl: string | null
+      coverUrl: string | null
       isVerified: boolean
       createdAt: Date
       updatedAt: Date
@@ -4805,6 +4889,13 @@ export namespace Prisma {
     readonly companyEmail: FieldRef<"Recruiter", 'String'>
     readonly companySize: FieldRef<"Recruiter", 'String'>
     readonly industry: FieldRef<"Recruiter", 'String'>
+    readonly bio: FieldRef<"Recruiter", 'String'>
+    readonly website: FieldRef<"Recruiter", 'String'>
+    readonly location: FieldRef<"Recruiter", 'String'>
+    readonly marketStatus: FieldRef<"Recruiter", 'String'>
+    readonly phone: FieldRef<"Recruiter", 'String'>
+    readonly logoUrl: FieldRef<"Recruiter", 'String'>
+    readonly coverUrl: FieldRef<"Recruiter", 'String'>
     readonly isVerified: FieldRef<"Recruiter", 'Boolean'>
     readonly createdAt: FieldRef<"Recruiter", 'DateTime'>
     readonly updatedAt: FieldRef<"Recruiter", 'DateTime'>
@@ -12158,6 +12249,13 @@ export namespace Prisma {
     companyEmail: 'companyEmail',
     companySize: 'companySize',
     industry: 'industry',
+    bio: 'bio',
+    website: 'website',
+    location: 'location',
+    marketStatus: 'marketStatus',
+    phone: 'phone',
+    logoUrl: 'logoUrl',
+    coverUrl: 'coverUrl',
     isVerified: 'isVerified',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -12547,6 +12645,13 @@ export namespace Prisma {
     companyEmail?: StringNullableFilter<"Recruiter"> | string | null
     companySize?: StringNullableFilter<"Recruiter"> | string | null
     industry?: StringNullableFilter<"Recruiter"> | string | null
+    bio?: StringNullableFilter<"Recruiter"> | string | null
+    website?: StringNullableFilter<"Recruiter"> | string | null
+    location?: StringNullableFilter<"Recruiter"> | string | null
+    marketStatus?: StringNullableFilter<"Recruiter"> | string | null
+    phone?: StringNullableFilter<"Recruiter"> | string | null
+    logoUrl?: StringNullableFilter<"Recruiter"> | string | null
+    coverUrl?: StringNullableFilter<"Recruiter"> | string | null
     isVerified?: BoolFilter<"Recruiter"> | boolean
     createdAt?: DateTimeFilter<"Recruiter"> | Date | string
     updatedAt?: DateTimeFilter<"Recruiter"> | Date | string
@@ -12564,6 +12669,13 @@ export namespace Prisma {
     companyEmail?: SortOrderInput | SortOrder
     companySize?: SortOrderInput | SortOrder
     industry?: SortOrderInput | SortOrder
+    bio?: SortOrderInput | SortOrder
+    website?: SortOrderInput | SortOrder
+    location?: SortOrderInput | SortOrder
+    marketStatus?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
+    logoUrl?: SortOrderInput | SortOrder
+    coverUrl?: SortOrderInput | SortOrder
     isVerified?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -12584,6 +12696,13 @@ export namespace Prisma {
     companyEmail?: StringNullableFilter<"Recruiter"> | string | null
     companySize?: StringNullableFilter<"Recruiter"> | string | null
     industry?: StringNullableFilter<"Recruiter"> | string | null
+    bio?: StringNullableFilter<"Recruiter"> | string | null
+    website?: StringNullableFilter<"Recruiter"> | string | null
+    location?: StringNullableFilter<"Recruiter"> | string | null
+    marketStatus?: StringNullableFilter<"Recruiter"> | string | null
+    phone?: StringNullableFilter<"Recruiter"> | string | null
+    logoUrl?: StringNullableFilter<"Recruiter"> | string | null
+    coverUrl?: StringNullableFilter<"Recruiter"> | string | null
     isVerified?: BoolFilter<"Recruiter"> | boolean
     createdAt?: DateTimeFilter<"Recruiter"> | Date | string
     updatedAt?: DateTimeFilter<"Recruiter"> | Date | string
@@ -12601,6 +12720,13 @@ export namespace Prisma {
     companyEmail?: SortOrderInput | SortOrder
     companySize?: SortOrderInput | SortOrder
     industry?: SortOrderInput | SortOrder
+    bio?: SortOrderInput | SortOrder
+    website?: SortOrderInput | SortOrder
+    location?: SortOrderInput | SortOrder
+    marketStatus?: SortOrderInput | SortOrder
+    phone?: SortOrderInput | SortOrder
+    logoUrl?: SortOrderInput | SortOrder
+    coverUrl?: SortOrderInput | SortOrder
     isVerified?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -12621,6 +12747,13 @@ export namespace Prisma {
     companyEmail?: StringNullableWithAggregatesFilter<"Recruiter"> | string | null
     companySize?: StringNullableWithAggregatesFilter<"Recruiter"> | string | null
     industry?: StringNullableWithAggregatesFilter<"Recruiter"> | string | null
+    bio?: StringNullableWithAggregatesFilter<"Recruiter"> | string | null
+    website?: StringNullableWithAggregatesFilter<"Recruiter"> | string | null
+    location?: StringNullableWithAggregatesFilter<"Recruiter"> | string | null
+    marketStatus?: StringNullableWithAggregatesFilter<"Recruiter"> | string | null
+    phone?: StringNullableWithAggregatesFilter<"Recruiter"> | string | null
+    logoUrl?: StringNullableWithAggregatesFilter<"Recruiter"> | string | null
+    coverUrl?: StringNullableWithAggregatesFilter<"Recruiter"> | string | null
     isVerified?: BoolWithAggregatesFilter<"Recruiter"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Recruiter"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Recruiter"> | Date | string
@@ -13293,6 +13426,13 @@ export namespace Prisma {
     companyEmail?: string | null
     companySize?: string | null
     industry?: string | null
+    bio?: string | null
+    website?: string | null
+    location?: string | null
+    marketStatus?: string | null
+    phone?: string | null
+    logoUrl?: string | null
+    coverUrl?: string | null
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -13310,6 +13450,13 @@ export namespace Prisma {
     companyEmail?: string | null
     companySize?: string | null
     industry?: string | null
+    bio?: string | null
+    website?: string | null
+    location?: string | null
+    marketStatus?: string | null
+    phone?: string | null
+    logoUrl?: string | null
+    coverUrl?: string | null
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -13325,6 +13472,13 @@ export namespace Prisma {
     companyEmail?: NullableStringFieldUpdateOperationsInput | string | null
     companySize?: NullableStringFieldUpdateOperationsInput | string | null
     industry?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    marketStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    coverUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13342,6 +13496,13 @@ export namespace Prisma {
     companyEmail?: NullableStringFieldUpdateOperationsInput | string | null
     companySize?: NullableStringFieldUpdateOperationsInput | string | null
     industry?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    marketStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    coverUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13358,6 +13519,13 @@ export namespace Prisma {
     companyEmail?: string | null
     companySize?: string | null
     industry?: string | null
+    bio?: string | null
+    website?: string | null
+    location?: string | null
+    marketStatus?: string | null
+    phone?: string | null
+    logoUrl?: string | null
+    coverUrl?: string | null
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -13371,6 +13539,13 @@ export namespace Prisma {
     companyEmail?: NullableStringFieldUpdateOperationsInput | string | null
     companySize?: NullableStringFieldUpdateOperationsInput | string | null
     industry?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    marketStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    coverUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -13385,6 +13560,13 @@ export namespace Prisma {
     companyEmail?: NullableStringFieldUpdateOperationsInput | string | null
     companySize?: NullableStringFieldUpdateOperationsInput | string | null
     industry?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    marketStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    coverUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -14121,6 +14303,13 @@ export namespace Prisma {
     companyEmail?: SortOrder
     companySize?: SortOrder
     industry?: SortOrder
+    bio?: SortOrder
+    website?: SortOrder
+    location?: SortOrder
+    marketStatus?: SortOrder
+    phone?: SortOrder
+    logoUrl?: SortOrder
+    coverUrl?: SortOrder
     isVerified?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -14135,6 +14324,13 @@ export namespace Prisma {
     companyEmail?: SortOrder
     companySize?: SortOrder
     industry?: SortOrder
+    bio?: SortOrder
+    website?: SortOrder
+    location?: SortOrder
+    marketStatus?: SortOrder
+    phone?: SortOrder
+    logoUrl?: SortOrder
+    coverUrl?: SortOrder
     isVerified?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -14149,6 +14345,13 @@ export namespace Prisma {
     companyEmail?: SortOrder
     companySize?: SortOrder
     industry?: SortOrder
+    bio?: SortOrder
+    website?: SortOrder
+    location?: SortOrder
+    marketStatus?: SortOrder
+    phone?: SortOrder
+    logoUrl?: SortOrder
+    coverUrl?: SortOrder
     isVerified?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -15633,6 +15836,13 @@ export namespace Prisma {
     companyEmail?: string | null
     companySize?: string | null
     industry?: string | null
+    bio?: string | null
+    website?: string | null
+    location?: string | null
+    marketStatus?: string | null
+    phone?: string | null
+    logoUrl?: string | null
+    coverUrl?: string | null
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15649,6 +15859,13 @@ export namespace Prisma {
     companyEmail?: string | null
     companySize?: string | null
     industry?: string | null
+    bio?: string | null
+    website?: string | null
+    location?: string | null
+    marketStatus?: string | null
+    phone?: string | null
+    logoUrl?: string | null
+    coverUrl?: string | null
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -15707,6 +15924,13 @@ export namespace Prisma {
     companyEmail?: NullableStringFieldUpdateOperationsInput | string | null
     companySize?: NullableStringFieldUpdateOperationsInput | string | null
     industry?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    marketStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    coverUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -15723,6 +15947,13 @@ export namespace Prisma {
     companyEmail?: NullableStringFieldUpdateOperationsInput | string | null
     companySize?: NullableStringFieldUpdateOperationsInput | string | null
     industry?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    marketStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    coverUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16054,6 +16285,13 @@ export namespace Prisma {
     companyEmail?: string | null
     companySize?: string | null
     industry?: string | null
+    bio?: string | null
+    website?: string | null
+    location?: string | null
+    marketStatus?: string | null
+    phone?: string | null
+    logoUrl?: string | null
+    coverUrl?: string | null
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16070,6 +16308,13 @@ export namespace Prisma {
     companyEmail?: string | null
     companySize?: string | null
     industry?: string | null
+    bio?: string | null
+    website?: string | null
+    location?: string | null
+    marketStatus?: string | null
+    phone?: string | null
+    logoUrl?: string | null
+    coverUrl?: string | null
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16149,6 +16394,13 @@ export namespace Prisma {
     companyEmail?: NullableStringFieldUpdateOperationsInput | string | null
     companySize?: NullableStringFieldUpdateOperationsInput | string | null
     industry?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    marketStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    coverUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16165,6 +16417,13 @@ export namespace Prisma {
     companyEmail?: NullableStringFieldUpdateOperationsInput | string | null
     companySize?: NullableStringFieldUpdateOperationsInput | string | null
     industry?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    marketStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    coverUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16283,6 +16542,13 @@ export namespace Prisma {
     companyEmail?: string | null
     companySize?: string | null
     industry?: string | null
+    bio?: string | null
+    website?: string | null
+    location?: string | null
+    marketStatus?: string | null
+    phone?: string | null
+    logoUrl?: string | null
+    coverUrl?: string | null
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16298,6 +16564,13 @@ export namespace Prisma {
     companyEmail?: string | null
     companySize?: string | null
     industry?: string | null
+    bio?: string | null
+    website?: string | null
+    location?: string | null
+    marketStatus?: string | null
+    phone?: string | null
+    logoUrl?: string | null
+    coverUrl?: string | null
     isVerified?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16410,6 +16683,13 @@ export namespace Prisma {
     companyEmail?: NullableStringFieldUpdateOperationsInput | string | null
     companySize?: NullableStringFieldUpdateOperationsInput | string | null
     industry?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    marketStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    coverUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16425,6 +16705,13 @@ export namespace Prisma {
     companyEmail?: NullableStringFieldUpdateOperationsInput | string | null
     companySize?: NullableStringFieldUpdateOperationsInput | string | null
     industry?: NullableStringFieldUpdateOperationsInput | string | null
+    bio?: NullableStringFieldUpdateOperationsInput | string | null
+    website?: NullableStringFieldUpdateOperationsInput | string | null
+    location?: NullableStringFieldUpdateOperationsInput | string | null
+    marketStatus?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    logoUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    coverUrl?: NullableStringFieldUpdateOperationsInput | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

@@ -15,6 +15,7 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
   const [showNotifications, setShowNotifications] = useState(false);
   
   const [userName, setUserName] = useState("Initializing...");
+  const [userLogo, setUserLogo] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   
   const router = useRouter();
@@ -23,12 +24,15 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
   useEffect(() => {
     setMounted(true);
     const name = localStorage.getItem("userName");
+    const logo = localStorage.getItem("userLogo");
     if (name) setUserName(name);
+    if (logo) setUserLogo(logo);
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("userName");
+    localStorage.removeItem("userLogo");
     localStorage.removeItem("userRole");
     router.push("/login");
   };
@@ -160,8 +164,12 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
                 className="flex items-center gap-3 cursor-pointer group"
                 onClick={() => { setShowProfileMenu(!showProfileMenu); setShowNotifications(false); }}
               >
-                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-lg uppercase">
-                  {userName.slice(0,2)}
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-lg uppercase overflow-hidden border border-slate-200 dark:border-neutral-800">
+                  {userLogo ? (
+                    <img src={userLogo} alt="Logo" className="w-full h-full object-cover" />
+                  ) : (
+                    userName.slice(0,2)
+                  )}
                 </div>
                 <div className="hidden md:block">
                   <p className="text-sm font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{userName}</p>

@@ -34,7 +34,8 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
     localStorage.removeItem("userName");
     localStorage.removeItem("userLogo");
     localStorage.removeItem("userRole");
-    router.push("/login");
+    // Force a full page reload to clear all in-memory state and caches
+    window.location.href = "/login";
   };
 
   const recruiterLinks = [

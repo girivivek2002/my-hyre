@@ -64,8 +64,8 @@ export default function RecruiterDashboard() {
         if (token) headers["Authorization"] = `Bearer ${token}`;
 
         const [userRes, statsRes] = await Promise.all([
-          fetch("/api/user/me", { headers }),
-          fetch("/api/recruiter/stats", { headers })
+          fetch(`/api/user/me?t=${Date.now()}`, { headers, cache: 'no-store' }),
+          fetch(`/api/recruiter/stats?t=${Date.now()}`, { headers, cache: 'no-store' })
         ]);
 
         if (userRes.ok) {

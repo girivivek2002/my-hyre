@@ -87,7 +87,10 @@ export default function CompanyProfile() {
             const headers: any = { "Cache-Control": "no-cache" };
             if (token) headers["Authorization"] = `Bearer ${token}`;
 
-            const res = await fetch("/api/recruiter/profile", { headers });
+            const res = await fetch(`/api/recruiter/profile?t=${Date.now()}`, { 
+                headers,
+                cache: 'no-store'
+            });
             if (res.ok) {
                 const data = await res.json();
                 setProfile(prev => ({ ...prev, ...data.profile }));
@@ -110,6 +113,15 @@ export default function CompanyProfile() {
         } finally {
             setIsLoading(false);
         }
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userName");
+        localStorage.removeItem("userLogo");
+        localStorage.removeItem("userRole");
+        // Force a full page reload to clear all in-memory state and caches
+        window.location.href = "/login";
     };
 
     const handleSave = async () => {

@@ -81,20 +81,6 @@ export async function verifyCandidate(req: NextRequest) {
     include: { user: true }
   });
 
-  // Self-healing: if candidate table entry is missing but user exists with role candidate
-  if (!candidate && session.email) {
-    const newCandidate = await prisma.candidate.create({
-      data: {
-        userId: session.id,
-        name: session.name || "Anonymous",
-        email: session.email,
-        role: "Job Seeker"
-      },
-      include: { user: true }
-    });
-    return { ...session, profile: newCandidate };
-  }
-
   if (!candidate) return null;
 
   return { ...session, profile: candidate };

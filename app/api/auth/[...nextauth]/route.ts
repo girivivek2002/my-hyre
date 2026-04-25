@@ -88,20 +88,30 @@ const handler = NextAuth({
         });
         
         if (dbUser) {
+          // Role Synchronization for OAuth
+          let effectiveRole = dbUser.role;
+          if (dbUser.role === "candidate" && !dbUser.candidateProfile && dbUser.recruiterProfile) {
+            effectiveRole = "recruiter";
+            await prisma.user.update({ where: { id: dbUser.id }, data: { role: "recruiter" } });
+          } else if (dbUser.role === "recruiter" && !dbUser.recruiterProfile && dbUser.candidateProfile) {
+            effectiveRole = "candidate";
+            await prisma.user.update({ where: { id: dbUser.id }, data: { role: "candidate" } });
+          }
+
           token.customJwt = jwt.sign(
-            { id: dbUser.id, role: dbUser.role, email: dbUser.email },
+            { id: dbUser.id, role: effectiveRole, email: dbUser.email },
             JWT_SECRET,
             { expiresIn: "7d" }
           );
-          token.role = dbUser.role;
+          token.role = effectiveRole;
           token.userId = dbUser.id;
           token.isVerified = dbUser.isVerified;
 
-          // Check completeness (Logic for redirection)
+          // Check completeness
           let isComplete = false;
-          if (dbUser.role === "candidate") {
+          if (effectiveRole === "candidate") {
             isComplete = !!(dbUser.candidateProfile);
-          } else if (dbUser.role === "recruiter") {
+          } else if (effectiveRole === "recruiter") {
             isComplete = !!(dbUser.recruiterProfile);
           }
           token.isProfileComplete = isComplete;

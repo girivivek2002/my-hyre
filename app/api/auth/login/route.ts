@@ -29,18 +29,28 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
     }
 
+    // Role Synchronization: If role is candidate but only recruiter profile exists (or vice versa), fix it.
+    let effectiveRole = user.role;
+    if (user.role === "candidate" && !user.candidateProfile && user.recruiterProfile) {
+      effectiveRole = "recruiter";
+      await prisma.user.update({ where: { id: user.id }, data: { role: "recruiter" } });
+    } else if (user.role === "recruiter" && !user.recruiterProfile && user.candidateProfile) {
+      effectiveRole = "candidate";
+      await prisma.user.update({ where: { id: user.id }, data: { role: "candidate" } });
+    }
+
     // Check if profile is complete
     let isProfileComplete = false;
-    if (user.role === "candidate") {
+    if (effectiveRole === "candidate") {
       isProfileComplete = !!(user.candidateProfile);
-    } else if (user.role === "recruiter") {
+    } else if (effectiveRole === "recruiter") {
       isProfileComplete = !!(user.recruiterProfile);
     }
 
     const token = jwt.sign(
       { 
         id: user.id, 
-        role: user.role, 
+        role: effectiveRole, 
         email: user.email,
         name: user.name,
         isProfileComplete 

@@ -27,7 +27,7 @@ export default function Navbar() {
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className={`max-w-5xl mx-auto rounded-full transition-all duration-500 flex items-center justify-between ${
+        className={`max-w-7xl w-full mx-auto rounded-full transition-all duration-500 flex items-center justify-between ${
           scrolled
             ? "bg-white/70 backdrop-blur-2xl shadow-[0_2px_20px_rgba(0,0,0,0.06)] border border-slate-200/60 py-2.5 px-6"
             : "bg-white/40 backdrop-blur-xl border border-slate-200/40 py-3 px-8"
@@ -35,8 +35,8 @@ export default function Navbar() {
       >
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
-            <div className="w-3.5 h-3.5 bg-white rounded-sm" />
+          <div className="w-8 h-8 relative group-hover:scale-105 transition-transform">
+            <img src="/logo.png" alt="Mr. Hyre Logo" className="w-full h-full object-contain" />
           </div>
           <span className="text-slate-900 font-bold tracking-tight text-lg">Mr. Hyre</span>
         </Link>

@@ -107,7 +107,7 @@ function FeatureCard({ feature, index }: { feature: (typeof features)[number]; i
 export default function Features() {
   return (
     <section id="features" className="relative py-24 lg:py-32 px-6 bg-[#FAFBFD] overflow-hidden">
-      <div className="max-w-6xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10">
         <div className="flex flex-col lg:flex-row items-end justify-between mb-16 gap-10">
           <div className="max-w-xl">
             <motion.p

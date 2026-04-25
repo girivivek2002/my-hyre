@@ -109,7 +109,7 @@ function PricingCard({ plan, index }: { plan: (typeof plans)[number]; index: num
 export default function Pricing() {
   return (
     <section id="pricing" className="relative py-24 lg:py-32 px-6 bg-[#FAFBFD] overflow-hidden">
-      <div className="max-w-5xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10">
         <div className="text-center mb-16">
           <motion.h2
             initial={{ opacity: 0 }}

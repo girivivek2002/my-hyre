@@ -70,7 +70,7 @@ export default function Hero() {
       />
 
       {/* Main Content */}
-      <motion.div style={{ opacity: opacityFade }} className="relative z-10 w-full max-w-[1400px] px-6 pb-32 md:pb-52">
+      <motion.div style={{ opacity: opacityFade }} className="relative z-10 w-full max-w-7xl px-6 pb-32 md:pb-52">
         <div className="flex flex-col items-center text-center">
 
           {/* Tags */}
@@ -143,7 +143,7 @@ export default function Hero() {
       </motion.div>
 
       {/* Stat Cards overlapping into next section */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-5xl px-6 translate-y-1/2 z-20 hidden lg:flex gap-5">
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-7xl px-6 translate-y-1/2 z-20 hidden lg:flex gap-5">
         {[
           { value: 98, suffix: "%", label: "Neural Accuracy", sublabel: "Matching precision across global pools", accent: "text-indigo-600", dotColor: "bg-indigo-500" },
           { value: 2, suffix: ".4s", label: "Instant Parsing", sublabel: "Real-time high-fidelity vector mapping", accent: "text-emerald-600", dotColor: "bg-emerald-500" },

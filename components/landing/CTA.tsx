@@ -18,7 +18,7 @@ export default function CTA() {
 
   return (
     <section className="relative py-24 lg:py-32 px-6 bg-[#FAFBFD] overflow-hidden">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <motion.div
           onMouseMove={handleMouseMove}
           className="relative rounded-[40px] bg-white border border-slate-100 p-10 md:p-16 lg:p-20 overflow-hidden flex flex-col items-center text-center shadow-[0_20px_60px_rgba(0,0,0,0.04)] group"

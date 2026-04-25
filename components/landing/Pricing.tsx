@@ -1,121 +1,145 @@
 "use client";
 import { motion } from "framer-motion";
-import { Check, X } from "lucide-react";
+import { CheckCircle2, Sparkles } from "lucide-react";
 
-const pricingPlans = [
+const plans = [
   {
-    name: "STARTER",
-    price: "$0",
-    period: "Forever",
-    desc: "For small teams starting their AI hiring journey.",
-    features: ["1 Active Job Post", "Basic AI Candidate Matching", "Email Support", "Standard Pipeline"],
-    notIncluded: ["Custom Branding", "API Access", "Dedicated Success Manager"],
-    buttonStyle: "border-portfolio-navy text-portfolio-navy hover:bg-portfolio-navy hover:text-white"
+    name: "Free",
+    price: "₹0",
+    desc: "For small projects and solo talent",
+    features: ["1 active job post", "Basic AI Matching", "Basic Analytics"],
+    button: "Start Free",
+    highlight: false,
   },
   {
-    name: "PRO",
-    price: "$299",
-    period: "per month",
-    desc: "For growing companies scaling their recruitment.",
-    features: ["10 Active Job Posts", "Advanced Neural Matching", "Priority 24/7 Support", "Automated Scheduling", "Custom Branding"],
-    notIncluded: ["API Access", "Dedicated Success Manager"],
-    isPopular: true,
-    buttonStyle: "bg-portfolio-accent text-white border-portfolio-accent hover:bg-portfolio-accent/90"
+    name: "Basic",
+    price: "₹1,999",
+    desc: "For rapidly growing teams",
+    features: ["5 active job posts", "Advanced AI Matching", "Candidate Export"],
+    button: "Select Plan",
+    highlight: false,
   },
   {
-    name: "ENTERPRISE",
+    name: "Pro",
+    price: "₹4,999",
+    desc: "For enterprise hiring pros",
+    features: ["Unlimited job posts", "Neural ranking logic", "Custom Workflows", "Full Analytics SDK"],
+    button: "Get Started",
+    highlight: true,
+  },
+  {
+    name: "Enterprise",
     price: "Custom",
-    period: "annually",
-    desc: "For large organizations with complex structural needs.",
-    features: ["Unlimited Job Posts", "Full AI Suite Access", "Dedicated Success Manager", "Custom API Integrations", "Advanced Analytics", "White-label Platform"],
-    notIncluded: [],
-    buttonStyle: "bg-portfolio-navy text-white border-portfolio-navy hover:bg-portfolio-navy/90"
-  }
+    desc: "For massive corporations",
+    features: ["Unlimited seats", "Direct API Access", "Dedicated Account Manager"],
+    button: "Contact Sales",
+    highlight: false,
+  },
 ];
 
-function PricingCard({ plan, index }: { plan: typeof pricingPlans[0], index: number }) {
+function PricingCard({ plan, index }: { plan: any, index: number }) {
+  const isHighlighted = plan.highlight;
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.6, delay: index * 0.15 }}
-      className={`relative flex flex-col p-10 lg:p-14 bg-portfolio-light border-r border-b lg:border-b-0 border-slate-200 transition-colors hover:bg-white`}
+      variants={{
+        hidden: { opacity: 0, y: 50 },
+        visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 20, delay: index * 0.1 } },
+      }}
+      whileHover={{ y: -10, scale: 1.02 }}
+      className={`group relative flex w-full flex-col p-8 sm:p-10 rounded-[32px] transition-all duration-500 overflow-hidden shadow-premium ${
+        isHighlighted
+          ? "bg-white/10 dark:bg-indigo-500/10 backdrop-blur-3xl border border-white/20 dark:border-indigo-400/30"
+          : "bg-white/5 dark:bg-[#111118]/60 backdrop-blur-2xl border border-slate-200/50 dark:border-white/[0.06] hover:bg-white/10 dark:hover:bg-[#111118]/80 hover:border-indigo-500/30"
+      }`}
     >
-      {plan.isPopular && (
-        <div className="absolute top-0 right-10 bg-portfolio-accent text-white text-[10px] font-bold tracking-[0.2em] px-4 py-2 uppercase transform -translate-y-1/2">
-          Recommended
+      <div className="absolute inset-0 rounded-[32px] bg-gradient-to-br from-white/20 to-transparent dark:from-white/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+      {isHighlighted && (
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 to-violet-500" />
+      )}
+
+      {isHighlighted && (
+        <div className="absolute -top-1 right-8 z-20">
+          <div className="relative bg-gradient-to-r from-indigo-500 to-violet-500 text-white text-[10px] sm:text-xs font-bold px-4 py-1.5 rounded-b-xl shadow-lg border border-t-0 border-indigo-400/50 tracking-widest overflow-hidden">
+            BEST VALUE
+          </div>
         </div>
       )}
 
-      <div className="mb-10">
-        <h3 className="font-sans text-[11px] font-bold tracking-[0.3em] text-portfolio-blue mb-6">{plan.name}</h3>
-        <div className="flex items-baseline gap-2 mb-4">
-          <span className="font-serif text-5xl md:text-6xl text-portfolio-navy">{plan.price}</span>
-          {plan.period && <span className="text-xs font-bold tracking-widest text-portfolio-navy/50 uppercase">{plan.period}</span>}
+      <div className="relative z-10 flex flex-col h-full">
+        <h3 className={`text-2xl font-bold mb-2 transition-colors text-white`}>{plan.name}</h3>
+        <p className="text-slate-400 text-sm mb-8">{plan.desc}</p>
+        
+        <div className={`text-5xl font-extrabold mb-10 tracking-tighter text-white`}>
+          {plan.price}
+          <span className="text-slate-500 text-base font-medium tracking-normal"> /mo</span>
         </div>
-        <p className="text-sm font-medium text-portfolio-navy/60 leading-relaxed">{plan.desc}</p>
-      </div>
 
-      <div className="flex-1">
-        <ul className="space-y-5 mb-10">
-          {plan.features.map((feature, i) => (
-            <li key={i} className="flex items-start gap-4">
-              <Check size={16} strokeWidth={2} className="text-portfolio-red shrink-0 mt-0.5" />
-              <span className="text-sm font-medium text-portfolio-navy">{feature}</span>
-            </li>
-          ))}
-          {plan.notIncluded.map((feature, i) => (
-            <li key={i} className="flex items-start gap-4 opacity-50">
-              <X size={16} strokeWidth={2} className="text-portfolio-navy shrink-0 mt-0.5" />
-              <span className="text-sm font-medium text-portfolio-navy line-through">{feature}</span>
+        <ul className="space-y-4 mb-10 flex-grow">
+          {plan.features.map((f: string, i: number) => (
+            <li key={i} className={`flex items-start gap-3 text-slate-300 transition-colors text-sm sm:text-base`}>
+              <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${isHighlighted ? 'bg-indigo-500/20 text-indigo-400' : 'bg-white/10 text-slate-400'}`}>
+                 <CheckCircle2 size={12} strokeWidth={3} />
+              </div>
+              {f}
             </li>
           ))}
         </ul>
-      </div>
 
-      <button className={`w-full py-4 border text-[11px] font-bold tracking-[0.2em] uppercase transition-all duration-300 ${plan.buttonStyle}`}>
-        Select Plan
-      </button>
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className={`w-full py-4 rounded-xl font-bold relative overflow-hidden transition-all duration-300 ${
+            isHighlighted
+              ? "bg-white text-slate-900 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+              : "bg-white/5 border border-white/[0.08] text-white hover:bg-white/10"
+          }`}
+        >
+          {plan.button}
+        </motion.button>
+      </div>
     </motion.div>
   );
 }
 
 export default function Pricing() {
   return (
-    <section className="relative w-full overflow-hidden bg-portfolio-light border-b border-slate-200">
-      
-      {/* Blueprint Grid Background */}
-      <div className="absolute inset-0 pointer-events-none" 
-           style={{ backgroundImage: 'linear-gradient(to right, #E0E6ED 1px, transparent 1px), linear-gradient(to bottom, #E0E6ED 1px, transparent 1px)', backgroundSize: '100px 100px' }}
-      />
+    <section className="relative py-24 lg:py-32 px-6 md:px-12 lg:px-24 w-full overflow-hidden bg-[#0A0A0F]">
+      <div className="absolute w-[600px] h-[600px] bg-indigo-500/5 blur-[150px] rounded-full left-1/2 -translate-x-1/2 top-0 pointer-events-none -z-10" />
 
-      <div className="w-full max-w-[1920px] mx-auto relative z-10">
-        
-        {/* Header Area */}
-        <div className="w-full flex flex-col items-center text-center py-24 md:py-32 px-6 border-b border-slate-200 bg-portfolio-light/80 backdrop-blur-sm">
-           <div className="inline-flex items-center gap-4 text-portfolio-red text-[10px] font-bold tracking-[0.3em] uppercase mb-8">
-              <span className="w-8 h-[1px] bg-portfolio-red" />
-              TRANSPARENT PRICING
-              <span className="w-8 h-[1px] bg-portfolio-red" />
-           </div>
-           
-           <h2 className="font-serif text-5xl md:text-6xl text-portfolio-navy leading-[1.1] mb-6">
-             Invest in <span className="italic text-portfolio-accent">Talent</span>
-           </h2>
-           <p className="text-portfolio-navy/60 text-base max-w-xl">
-             Simple, predictable pricing structured for high-growth technical organizations.
-           </p>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="text-center mb-20 relative z-10"
+      >
+        <div className="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 px-4 py-2 rounded-full text-xs font-bold mb-8 tracking-[0.2em] uppercase">
+          <Sparkles size={14} />
+          Pricing Structure
         </div>
+        <h2 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 tracking-[-0.04em] text-white">
+          TRANSPARENT <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-violet-500">SCALE</span>
+        </h2>
+        <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto">
+          Scale effortlessly. Pay only for the power you need to transform your entire recruitment pipeline.
+        </p>
+      </motion.div>
 
-        {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 w-full">
-          {pricingPlans.map((plan, index) => (
-            <PricingCard key={index} plan={plan} index={index} />
-          ))}
-        </div>
-
-      </div>
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-50px" }}
+        variants={{
+          visible: { transition: { staggerChildren: 0.15 } },
+        }}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 relative z-10 max-w-7xl mx-auto"
+      >
+        {plans.map((plan, index) => (
+          <PricingCard key={index} plan={plan} index={index} />
+        ))}
+      </motion.div>
     </section>
   );
 }

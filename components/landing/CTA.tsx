@@ -1,102 +1,111 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import { useState } from "react";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
+import { joinWaitlist } from "@/lib/actions";
 
 export default function CTA() {
-  const [email, setEmail] = useState("");
-  const [isPending, setIsPending] = useState(false);
-  const [status, setStatus] = useState<{ type: "success" | "error" | null; message: string }>({ type: null, message: "" });
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) return;
-
-    setIsPending(true);
-    setStatus({ type: null, message: "" });
-
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setStatus({ type: "success", message: "Priority access granted. Welcome to the future." });
-      setEmail("");
-    } catch (error) {
-      setStatus({ type: "error", message: "Transmission failed. Please try again." });
-    } finally {
-      setIsPending(false);
+  const containerVars: Variants = {
+    hidden: { opacity: 0, y: 40 },
+    visible: { 
+      opacity: 1, y: 0,
+      transition: { duration: 0.8, ease: "easeOut", staggerChildren: 0.15, when: "beforeChildren" } 
     }
   };
 
-  return (
-    <section className="relative w-full overflow-hidden bg-portfolio-navy py-32 md:py-48">
-      
-      {/* Blueprint Grid Background - Dark Mode */}
-      <div className="absolute inset-0 pointer-events-none" 
-           style={{ backgroundImage: 'linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px)', backgroundSize: '100px 100px' }}
-      />
+  const itemVars: Variants = {
+    hidden: { opacity: 0, y: 20, filter: "blur(4px)" },
+    visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { type: "spring", stiffness: 250, damping: 22 } }
+  };
 
-      <div className="w-full max-w-4xl mx-auto px-6 relative z-10 flex flex-col items-center text-center">
-        
-        <div className="inline-flex items-center gap-4 text-portfolio-gold text-[10px] font-bold tracking-[0.3em] uppercase mb-12">
-           <span className="w-8 h-[1px] bg-portfolio-gold" />
-           JOIN THE WAITLIST
-           <span className="w-8 h-[1px] bg-portfolio-gold" />
-        </div>
+  const [status, setStatus] = useState<{ type: 'success' | 'error' | null, message: string }>({ type: null, message: "" });
+  const [isPending, setIsPending] = useState(false);
+
+  async function handleSubmit(formData: FormData) {
+    setIsPending(true);
+    setStatus({ type: null, message: "" });
+    const result = await joinWaitlist(formData);
+    setIsPending(false);
+    if (result.error) {
+      setStatus({ type: 'error', message: result.error });
+    } else {
+      setStatus({ type: 'success', message: result.success || result.message || "Welcome aboard!" });
+    }
+  }
+
+  return (
+    <section className="relative py-20 md:py-32 px-6 md:px-12 lg:px-24 w-full overflow-hidden bg-[#0A0A0F]">
+      <motion.div
+        variants={containerVars}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        className="relative bg-gradient-to-br from-[#111118] via-[#0A0A0F] to-[#111118] border border-white/[0.04] rounded-[32px] p-16 md:p-24 lg:p-32 text-center max-w-7xl mx-auto shadow-premium-dark"
+      >
+        {/* Animated multi-color orbs */}
+        <div className="absolute w-[400px] h-[400px] bg-indigo-500/15 blur-[120px] rounded-full left-[30%] top-[20%] pointer-events-none animate-orb-drift" />
+        <div className="absolute w-[350px] h-[350px] bg-violet-500/12 blur-[100px] rounded-full right-[25%] bottom-[15%] pointer-events-none animate-orb-drift-reverse" />
+        <div className="absolute w-[200px] h-[200px] bg-fuchsia-500/8 blur-[80px] rounded-full left-[15%] bottom-[25%] pointer-events-none animate-orb-drift" />
+
+        {/* Sparkle decoration */}
+        <motion.div
+          animate={{ rotate: [0, 360] }}
+          transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+          className="absolute top-10 right-10 opacity-10 pointer-events-none"
+        >
+          <Sparkles size={120} />
+        </motion.div>
 
         <motion.h2 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="font-serif text-5xl md:text-7xl lg:text-8xl text-white leading-[0.9] mb-12"
+          variants={itemVars}
+          className="relative text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 sm:mb-8 tracking-[-0.04em] text-white"
         >
-          START HIRING<br/>
-          <span className="italic text-portfolio-accent">SMARTER</span>
+          START HIRING <br className="hidden md:block" />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-violet-500">SMARTER</span>
         </motion.h2>
 
         <motion.p 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.2 }}
-          className="text-white/60 text-lg md:text-xl font-medium max-w-2xl mx-auto mb-16"
+          variants={itemVars}
+          className="relative text-slate-400 text-base sm:text-lg lg:text-xl mb-10 max-w-2xl mx-auto leading-relaxed"
         >
-          Join thousands of technical recruiters executing high-fidelity placements with zero friction.
+          Join over 5,000+ companies who are building the future with
+          Mr. Hyre&apos;s intelligent workspace. Drop the busywork and let AI do the matching.
         </motion.p>
 
-        <motion.form 
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          onSubmit={handleSubmit} 
-          className="w-full max-w-xl mx-auto flex flex-col gap-4"
-        >
-          <div className="flex flex-col sm:flex-row gap-4 w-full">
-            <input
-              type="email"
-              placeholder="Enter your work email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+        <motion.div variants={itemVars} className="relative max-w-xl mx-auto">
+          <form action={handleSubmit} className="flex flex-col sm:flex-row gap-3 p-2 bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-2xl shadow-2xl relative">
+            <input 
+              type="email" 
+              name="email"
+              placeholder="Enter your work email" 
               required
               disabled={isPending}
-              className="flex-1 bg-transparent border-b border-white/20 px-4 py-4 text-white placeholder:text-white/30 outline-none focus:border-portfolio-accent transition-all font-medium disabled:opacity-50 text-center sm:text-left"
+              className="flex-1 bg-transparent px-6 py-4 text-white placeholder:text-slate-500 outline-none focus:ring-0 transition-all font-medium disabled:opacity-50"
             />
-            <button
+              <button
               disabled={isPending}
-              className="px-8 py-4 bg-white text-portfolio-navy text-[11px] font-bold tracking-[0.2em] uppercase hover:bg-portfolio-accent hover:text-white transition-all flex items-center justify-center gap-4 whitespace-nowrap disabled:opacity-70"
+              className="px-8 py-4 bg-white text-slate-900 rounded-full font-bold hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105 transition-all flex items-center justify-center gap-2 whitespace-nowrap disabled:opacity-70"
             >
-              {isPending ? "JOINING..." : "GET ACCESS"}
-              {!isPending && <ArrowRight size={16} />}
+              {isPending ? "Joining..." : "Get Early Access"}
+              {!isPending && <ArrowRight size={20} />}
             </button>
-          </div>
+          </form>
 
           {status.type && (
-            <div className={`mt-4 text-sm font-bold tracking-wider ${status.type === "success" ? "text-portfolio-accent" : "text-portfolio-red"}`}>
+            <motion.p 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className={`mt-4 font-medium ${status.type === 'success' ? 'text-emerald-400' : 'text-rose-400'}`}
+            >
               {status.message}
-            </div>
+            </motion.p>
           )}
-        </motion.form>
 
-      </div>
+          <p className="mt-4 text-slate-500 text-sm font-medium">
+            Join 500+ recruiters already on the list. No spam, ever.
+          </p>
+        </motion.div>
+      </motion.div>
     </section>
   );
 }

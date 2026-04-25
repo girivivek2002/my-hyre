@@ -1,77 +1,111 @@
 "use client";
-import { motion } from "framer-motion";
-import Link from "next/link";
+import { motion, Variants } from "framer-motion";
+import Image from "next/image";
 import { Globe, AtSign, Share2 } from "lucide-react";
 
+const socialIcons = [
+  { icon: <Globe size={20} />, hoverColor: "hover:text-indigo-500 hover:bg-indigo-500/10 hover:border-indigo-500/20" },
+  { icon: <AtSign size={20} />, hoverColor: "hover:text-violet-500 hover:bg-violet-500/10 hover:border-violet-500/20" },
+  { icon: <Share2 size={20} />, hoverColor: "hover:text-cyan-500 hover:bg-cyan-500/10 hover:border-cyan-500/20" },
+];
+
 export default function Footer() {
-  const footerLinks = [
-    { title: "COMPANY", links: ["About Us", "Careers", "Journal", "Contact"] },
-    { title: "PRODUCT", links: ["For Recruiters", "For Candidates", "Pricing", "Architecture"] },
-    { title: "LEGAL", links: ["Privacy Policy", "Terms of Service", "Security", "Cookies"] },
-  ];
+  const containerVars: Variants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.12, delayChildren: 0.1 } }
+  };
+
+  const itemVars: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 250, damping: 24 } }
+  };
 
   return (
-    <footer className="w-full bg-portfolio-navy border-t border-white/10 pt-24 pb-12 overflow-hidden relative">
-      
-      <div className="max-w-[1920px] mx-auto px-6 md:px-12 lg:px-24">
-        
-        {/* Top Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-24">
-          
-          {/* Brand Col */}
-          <div className="lg:col-span-5 flex flex-col items-start">
-            <Link href="/" className="flex flex-col items-start group relative mb-8">
-              <div className="relative w-8 h-8 flex items-center justify-center mb-1">
-                <svg width="32" height="32" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-white group-hover:text-portfolio-accent transition-colors duration-500">
-                  <path d="M20 5C11.7157 5 5 11.7157 5 20C5 28.2843 11.7157 35 20 35C28.2843 35 35 28.2843 35 20C35 11.7157 28.2843 5 20 5ZM20 0C31.0457 0 40 8.95431 40 20C40 31.0457 31.0457 40 20 40C8.95431 40 0 31.0457 0 20C0 8.95431 8.95431 0 20 0Z" fill="currentColor"/>
-                  <path d="M25 15C25 12.2386 22.7614 10 20 10C17.2386 10 15 12.2386 15 15C15 17.7614 17.2386 20 20 20C22.7614 20 25 22.2386 25 25C25 27.7614 22.7614 30 20 30C17.2386 30 15 27.7614 15 25" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </div>
-              <span className="font-serif text-sm tracking-wide text-white group-hover:text-portfolio-accent transition-colors duration-500">MR. HYRE</span>
-            </Link>
-            <p className="text-white/50 text-sm max-w-sm leading-relaxed font-medium">
-              The structural hiring platform for modern engineering teams. High fidelity matching, zero friction.
-            </p>
-          </div>
+    <footer className="bg-[#0A0A0F] border-t border-white/[0.04] px-6 md:px-12 lg:px-24 pt-16 lg:pt-24 pb-8 overflow-hidden relative w-full z-10 transition-colors duration-300">
+      <div className="max-w-[1920px] mx-auto">
 
-          {/* Links Cols */}
-          <div className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-12">
-            {footerLinks.map((col, idx) => (
-              <div key={idx} className="flex flex-col">
-                <h4 className="text-[10px] font-bold tracking-[0.3em] text-white/40 uppercase mb-8">{col.title}</h4>
-                <div className="flex flex-col gap-4">
-                  {col.links.map((link, lidx) => (
-                    <Link key={lidx} href="#" className="text-sm font-medium text-white/70 hover:text-portfolio-accent transition-colors">
-                      {link}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+      {/* Gradient top line */}
+      <motion.div
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.5, ease: "circOut" }}
+        className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent origin-center"
+      />
 
+      {/* Content */}
+      <motion.div
+        variants={containerVars}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-50px" }}
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-20 mb-16 lg:mb-20"
+      >
+        {/* Logo + Description */}
+        <motion.div variants={itemVars}>
+          <div className="flex items-center gap-4 mb-6">
+            <Image src="/logo.png" alt="Mr Hyre Logo" width={40} height={40} className="rounded-xl" />
+            <div className="text-2xl font-bold tracking-tight text-gradient-primary">Mr. Hyre</div>
+          </div>
+          <p className="text-slate-400 text-sm md:text-base leading-relaxed max-w-sm lg:pr-8">
+            The Intelligent Workspace for modern recruitment.
+            Building bridges between top talent and innovative companies safely and securely.
+          </p>
+        </motion.div>
+
+        <FooterColumn itemVars={itemVars} title="COMPANY" links={["About Us", "Careers", "Blog", "Contact"]} />
+        <FooterColumn itemVars={itemVars} title="PRODUCT" links={["For Recruiters", "For Candidates", "Pricing", "Roadmap"]} />
+        <FooterColumn itemVars={itemVars} title="SUPPORT" links={["Help Center", "Privacy Policy", "Terms of Service", "Security"]} />
+      </motion.div>
+
+      {/* Bottom Bar */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.4, duration: 0.8 }}
+        className="border-t border-slate-100 dark:border-white/[0.04] pt-8 flex flex-col-reverse md:flex-row justify-between items-center gap-6"
+      >
+        <div className="text-slate-400 dark:text-slate-500 text-xs sm:text-sm text-center md:text-left transition-colors hover:text-slate-600 dark:hover:text-slate-400">
+          © {new Date().getFullYear()} Mr. Hyre. The Intelligent Workspace. All rights reserved.
         </div>
 
-        {/* Bottom Bar */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-8 pt-8 border-t border-white/10">
-           <div className="text-[11px] font-bold tracking-widest text-white/40 uppercase">
-             © {new Date().getFullYear()} MR. HYRE. ALL RIGHTS RESERVED.
-           </div>
-           
-           <div className="flex items-center gap-6">
-             <Link href="#" className="text-white/40 hover:text-white transition-colors">
-               <Globe size={18} />
-             </Link>
-             <Link href="#" className="text-white/40 hover:text-white transition-colors">
-               <AtSign size={18} />
-             </Link>
-             <Link href="#" className="text-white/40 hover:text-white transition-colors">
-               <Share2 size={18} />
-             </Link>
-           </div>
+        <div className="flex gap-4">
+          {socialIcons.map((item, i) => (
+            <motion.div
+              key={i}
+              whileHover={{ scale: 1.15, y: -3 }}
+              transition={{ type: "spring", stiffness: 400, damping: 15 }}
+              className={`cursor-pointer text-slate-400 transition-all p-2.5 bg-white/[0.04] rounded-full border border-white/[0.06] ${item.hoverColor}`}
+            >
+              {item.icon}
+            </motion.div>
+          ))}
         </div>
-
+      </motion.div>
       </div>
     </footer>
+  );
+}
+
+function FooterColumn({ title, links, itemVars }: { title: string; links: string[], itemVars: any }) {
+  return (
+    <motion.div variants={itemVars}>
+      <h4 className="text-white font-semibold text-xs sm:text-sm mb-6 tracking-widest uppercase">
+        {title}
+      </h4>
+      <div className="space-y-4 text-slate-400 text-sm md:text-base">
+        {links.map((link: string, i: number) => (
+          <motion.div
+            key={i}
+            whileHover={{ x: 5 }}
+            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+            className="cursor-pointer hover:text-indigo-400 transition-colors w-max"
+          >
+            {link}
+          </motion.div>
+        ))}
+      </div>
+    </motion.div>
   );
 }

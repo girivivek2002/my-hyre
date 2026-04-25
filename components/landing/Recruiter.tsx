@@ -41,7 +41,7 @@ export default function Recruiter() {
   };
 
   return (
-    <section className="py-24 lg:py-40 px-6 md:px-12 lg:px-24 relative overflow-hidden max-w-[1920px] mx-auto bg-[#0A0A0F] transition-colors duration-300">
+    <section className="py-24 lg:py-40 px-6 md:px-12 lg:px-24 relative overflow-hidden max-w-[1920px] mx-auto bg-slate-50 dark:bg-black transition-colors duration-300">
 
       {/* Left Background Glow */}
       <motion.div 
@@ -64,7 +64,8 @@ export default function Recruiter() {
           <motion.div
             onMouseMove={handleTiltMove}
             onMouseLeave={handleTiltLeave}
-            className="group relative bg-[#111118] border border-neutral-800 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden transition-all hover:shadow-[0_20px_60px_rgba(59,130,246,0.2)]"
+            style={{ rotateX, rotateY }}
+            className="group relative bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden transition-all hover:shadow-[0_20px_60px_rgba(59,130,246,0.2)]"
           >
             {/* Glossy Overlay */}
             <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"></div>
@@ -91,8 +92,8 @@ export default function Recruiter() {
           </motion.div>
 
           {/* Heading */}
-          <motion.h2 variants={itemVars} className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-8 leading-[1.1] tracking-tight text-white">
-            Scale Your Team with <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Precision</span>
+          <motion.h2 variants={itemVars} className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-8 leading-[1.1] tracking-tight text-slate-900 dark:text-white">
+            Scale Your Team with <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">Precision</span>
           </motion.h2>
 
           {/* Bullet Points */}
@@ -103,8 +104,8 @@ export default function Recruiter() {
                 <Target size={24} />
               </div>
               <div>
-                <h4 className="text-white font-bold text-lg sm:text-xl mb-1">AI Matching</h4>
-                <p className="text-neutral-400 text-sm sm:text-base leading-relaxed group-hover:text-neutral-300 transition-colors">
+                <h4 className="text-slate-900 dark:text-white font-bold text-lg sm:text-xl mb-1">AI Matching</h4>
+                <p className="text-slate-500 dark:text-neutral-400 text-sm sm:text-base leading-relaxed group-hover:text-slate-700 dark:group-hover:text-neutral-300 transition-colors">
                   Neural network-driven ranking of candidates based precisely on your unique team culture requirements.
                 </p>
               </div>
@@ -115,8 +116,8 @@ export default function Recruiter() {
                 <Search size={24} />
               </div>
               <div>
-                <h4 className="text-white font-bold text-lg sm:text-xl mb-1">Candidate Search</h4>
-                <p className="text-neutral-400 text-sm sm:text-base leading-relaxed group-hover:text-neutral-300 transition-colors">
+                <h4 className="text-slate-900 dark:text-white font-bold text-lg sm:text-xl mb-1">Candidate Search</h4>
+                <p className="text-slate-500 dark:text-neutral-400 text-sm sm:text-base leading-relaxed group-hover:text-slate-700 dark:group-hover:text-neutral-300 transition-colors">
                   Semantic deep-search logic that scales instantly across massive hidden talent pools worldwide.
                 </p>
               </div>
@@ -127,8 +128,8 @@ export default function Recruiter() {
                 <CalendarClock size={24} />
               </div>
               <div>
-                <h4 className="text-white font-bold text-lg sm:text-xl mb-1">Interview Scheduling</h4>
-                <p className="text-neutral-400 text-sm sm:text-base leading-relaxed group-hover:text-neutral-300 transition-colors">
+                <h4 className="text-slate-900 dark:text-white font-bold text-lg sm:text-xl mb-1">Interview Scheduling</h4>
+                <p className="text-slate-500 dark:text-neutral-400 text-sm sm:text-base leading-relaxed group-hover:text-slate-700 dark:group-hover:text-neutral-300 transition-colors">
                   Automated seamless calendar sync for high-speed hiring that drops the back-and-forth overhead natively.
                 </p>
               </div>
@@ -141,7 +142,7 @@ export default function Recruiter() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="bg-white text-black px-10 py-4 rounded-xl text-lg font-bold shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] transition-all"
+              className="bg-slate-900 dark:bg-white text-white dark:text-black px-10 py-4 rounded-xl text-lg font-bold shadow-[0_0_20px_rgba(37,99,235,0.2)] dark:shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(37,99,235,0.4)] dark:hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] transition-all"
             >
               Post a Job
             </motion.button>

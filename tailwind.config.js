@@ -7,7 +7,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        sans: ['var(--font-inter)', 'Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
+        serif: ['var(--font-playfair)', 'Playfair Display', 'Georgia', 'serif'],
       },
       colors: {
         surface: {
@@ -15,6 +16,14 @@ module.exports = {
           card: 'rgb(var(--surface-card) / <alpha-value>)',
           elevated: 'rgb(var(--surface-elevated) / <alpha-value>)',
         },
+        portfolio: {
+          navy: '#0A1A2F',
+          light: '#F8F8F8',
+          accent: '#FF8A00',
+          gold: '#E6A05D',
+          red: '#E53935',
+          blue: '#2B4CD3',
+        }
       },
       animation: {
         'scroll': 'scroll 25s linear infinite',

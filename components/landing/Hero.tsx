@@ -1,139 +1,116 @@
 "use client";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
-import { ArrowRight, Sparkles, Crosshair } from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
+import { ArrowDownRight } from "lucide-react";
 
 export default function Hero() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.2]);
+  const { scrollYProgress } = useScroll();
+  const yBg = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const opacityText = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   return (
-    <section ref={containerRef} className="relative w-full h-[100vh] sm:h-[95vh] px-4 pt-28 pb-4 sm:p-6 overflow-hidden bg-slate-50 dark:bg-[#0A0A0F]">
-      <motion.div 
-        className="relative w-full h-full rounded-[32px] sm:rounded-[48px] overflow-hidden bg-[#111118]"
-        initial={{ scale: 0.95, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-      >
-        {/* Background Image with Parallax */}
-        <motion.div style={{ y, opacity }} className="absolute inset-0 z-0">
-          <Image 
-            src="/hero-bg.png" 
-            alt="AI Core" 
-            fill 
-            className="object-cover scale-110" 
-            priority
+    <section className="relative w-full h-[100vh] sm:h-[95vh] overflow-hidden bg-portfolio-navy flex flex-col justify-center">
+      
+      {/* Background Radial Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-portfolio-blue/10 rounded-full blur-[150px] pointer-events-none" />
+
+      {/* Side Rails */}
+      {/* Left Rail */}
+      <div className="hidden lg:flex absolute left-12 top-0 bottom-0 flex-col justify-center items-center pointer-events-none z-20">
+        <div className="h-1/3 w-[1px] bg-white/10" />
+        <div className="py-8 flex flex-col items-center gap-4 text-white">
+          <span className="text-xs font-bold tracking-[0.2em] -rotate-90 origin-center whitespace-nowrap mb-6 text-white/50">INTRODUCTION</span>
+          <span className="text-xs font-bold tracking-widest text-portfolio-gold">01</span>
+        </div>
+        <div className="h-1/3 w-[1px] bg-white/10" />
+      </div>
+
+      {/* Right Rail */}
+      <div className="hidden lg:flex absolute right-12 top-0 bottom-0 flex-col justify-center items-center pointer-events-none z-20">
+        <div className="h-1/3 w-[1px] bg-white/10" />
+        <div className="py-8 flex flex-col items-center gap-6">
+           <div className="w-1.5 h-1.5 rounded-full bg-white/20" />
+           <div className="w-1.5 h-1.5 rounded-full bg-white/20" />
+           <motion.div 
+             animate={{ rotate: 360 }} 
+             transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+             className="w-10 h-10 rounded-full border border-white/20 border-t-portfolio-accent flex items-center justify-center"
+           >
+             <div className="w-1.5 h-1.5 rounded-full bg-portfolio-accent" />
+           </motion.div>
+           <div className="w-1.5 h-1.5 rounded-full bg-white/20" />
+           <div className="w-1.5 h-1.5 rounded-full bg-white/20" />
+        </div>
+        <div className="h-1/3 w-[1px] bg-white/10" />
+      </div>
+
+      {/* Main Content */}
+      <div className="w-full max-w-[1920px] mx-auto px-6 md:px-24 flex flex-col items-center justify-center relative z-10">
+        
+        {/* Central 3D Element Placeholder / Gradient Orb */}
+        <motion.div 
+          style={{ y: yBg }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 -z-10"
+        >
+          {/* Abstract 3D Torus Illusion */}
+          <motion.div 
+            animate={{ rotate: 360 }}
+            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+            className="w-[300px] h-[300px] md:w-[500px] md:h-[500px] rounded-full border-[40px] border-transparent"
+            style={{
+              background: "linear-gradient(#0A1A2F, #0A1A2F) padding-box, linear-gradient(135deg, #FF8A00, #FF007A, #8000FF) border-box"
+            }}
+          >
+             <div className="absolute inset-0 rounded-full shadow-[inset_0_0_80px_rgba(255,0,122,0.5)]" />
+          </motion.div>
+          {/* Inner glowing sphere */}
+          <motion.div 
+             animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.8, 0.5] }}
+             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-portfolio-accent/30 rounded-full blur-[40px]"
           />
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
         </motion.div>
 
-        {/* Hotspot Dots */}
-        <div className="absolute top-[30%] left-[25%] z-20 hidden md:block">
-           <div className="relative group cursor-pointer">
-              <div className="w-3 h-3 bg-white rounded-full animate-ping absolute inset-0 opacity-75" />
-              <div className="relative w-3 h-3 bg-white rounded-full shadow-[0_0_15px_rgba(255,255,255,1)]" />
-              <div className="absolute top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] uppercase font-bold tracking-widest px-3 py-1.5 rounded-full whitespace-nowrap">
-                Neural Sync
-              </div>
-           </div>
-        </div>
+        {/* Typography Overlap */}
+        <motion.div style={{ opacity: opacityText }} className="text-center mt-20 md:mt-32 w-full flex flex-col items-center">
+          <motion.h1 
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            className="font-serif text-[60px] sm:text-[100px] md:text-[130px] lg:text-[180px] font-medium text-white leading-[0.85] tracking-tight mix-blend-difference"
+          >
+            MR<span className="italic font-light">.</span><br/>HYRE
+          </motion.h1>
+          
+          <motion.div 
+             initial={{ opacity: 0, y: 20 }}
+             animate={{ opacity: 1, y: 0 }}
+             transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
+             className="mt-12 flex flex-col md:flex-row items-center gap-8 md:gap-24 uppercase tracking-[0.3em] text-[10px] md:text-xs font-bold text-white/70"
+          >
+             <div className="flex items-center gap-4">
+                <span className="w-8 h-[1px] bg-portfolio-red" />
+                NEURAL MATCHING
+             </div>
+             <div className="flex items-center gap-4">
+                INTELLIGENT PIPELINES
+                <span className="w-8 h-[1px] bg-portfolio-red" />
+             </div>
+          </motion.div>
+        </motion.div>
 
-        <div className="absolute top-[60%] right-[30%] z-20 hidden md:block">
-           <div className="relative group cursor-pointer">
-              <div className="w-3 h-3 bg-indigo-400 rounded-full animate-ping absolute inset-0 opacity-75 duration-1000" />
-              <div className="relative w-3 h-3 bg-indigo-400 rounded-full shadow-[0_0_15px_rgba(129,140,248,1)]" />
-              <div className="absolute top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-indigo-500/20 backdrop-blur-md border border-indigo-400/30 text-white text-[10px] uppercase font-bold tracking-widest px-3 py-1.5 rounded-full whitespace-nowrap">
-                Match Parity
-              </div>
-           </div>
-        </div>
+      </div>
 
-        {/* Content */}
-        <div className="relative z-10 w-full h-full max-w-[1920px] mx-auto flex flex-col justify-end p-8 md:p-16 lg:p-24">
-          <div className="flex flex-col lg:flex-row justify-between items-end gap-10">
-            
-            <div className="max-w-4xl text-left">
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.8 }}
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] mb-6"
-              >
-                <Sparkles size={14} className="text-indigo-400" />
-                Intelligent Hiring Evolution
-              </motion.div>
-
-              <motion.h1 
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
-                className="text-5xl sm:text-7xl lg:text-[100px] leading-[0.95] font-extrabold tracking-[-0.04em] text-white mb-8"
-              >
-                THE FUTURE OF <br className="hidden md:block" /> 
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-white to-violet-300">INTELLIGENT HIRING</span>
-              </motion.h1>
-
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7, duration: 0.8 }}
-                className="flex flex-col sm:flex-row gap-4"
-              >
-                <Link href="/login?role=recruiter">
-                  <button className="px-8 py-4 bg-white text-[#0A0A0F] rounded-full font-bold text-sm tracking-wide hover:scale-105 transition-transform flex items-center gap-3">
-                    Start Hiring <ArrowRight size={16} />
-                  </button>
-                </Link>
-                <Link href="/login?role=candidate">
-                  <button className="px-8 py-4 bg-white/10 backdrop-blur-lg border border-white/20 text-white rounded-full font-bold text-sm tracking-wide hover:bg-white/20 transition-all">
-                    Find Opportunities
-                  </button>
-                </Link>
-              </motion.div>
-            </div>
-
-            {/* Overlapping Glass Cards */}
-            <motion.div 
-               initial={{ opacity: 0, x: 40 }}
-               animate={{ opacity: 1, x: 0 }}
-               transition={{ delay: 0.8, duration: 1, type: "spring", stiffness: 100 }}
-               className="flex flex-col gap-4 self-end w-full lg:w-auto"
-            >
-              <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-5 rounded-3xl w-full lg:w-72 flex flex-col shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
-                 <div className="flex justify-between items-center mb-4">
-                    <span className="text-[10px] text-white/70 font-bold uppercase tracking-widest">Time to Hire</span>
-                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
-                       <Crosshair size={14} />
-                    </div>
-                 </div>
-                 <p className="text-4xl font-extrabold text-white">-45%</p>
-                 <p className="text-xs text-white/50 mt-1">Accelerated by AI matching algorithms.</p>
-              </div>
-
-              <div className="bg-indigo-500/20 backdrop-blur-xl border border-indigo-400/30 p-5 rounded-3xl w-full lg:w-72 flex flex-col shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
-                 <div className="flex justify-between items-center mb-4">
-                    <span className="text-[10px] text-indigo-200 font-bold uppercase tracking-widest">Global Parity</span>
-                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white">
-                       <Sparkles size={14} />
-                    </div>
-                 </div>
-                 <p className="text-4xl font-extrabold text-white">98.4%</p>
-                 <p className="text-xs text-indigo-200/70 mt-1">Success rate in candidate placements.</p>
-              </div>
-            </motion.div>
-
-          </div>
-        </div>
+      {/* Scroll Down Indicator */}
+      <motion.div 
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}
+        className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 text-white/50"
+      >
+        <span className="text-[10px] tracking-[0.2em] font-bold">SCROLL TO DISCOVER</span>
+        <motion.div animate={{ y: [0, 10, 0] }} transition={{ duration: 2, repeat: Infinity }} className="p-2 border border-white/20 rounded-full">
+           <ArrowDownRight size={16} />
+        </motion.div>
       </motion.div>
+
     </section>
   );
 }

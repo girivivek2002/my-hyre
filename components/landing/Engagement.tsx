@@ -1,96 +1,89 @@
 "use client";
-import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { Users, Building2, Briefcase } from "lucide-react";
+import { useRef } from "react";
 
 export default function Engagement() {
-  const items = [
-    { 
-      title: "Define Ideal Node", 
-      desc: "Input your target persona using semantic NLP. We translate intent into pure parity matching.",
-      type: "recruiter"
-    },
-    { 
-      title: "Deep Synchronization", 
-      desc: "Our neural algorithms scan unstructured global data to index passive and active talent simultaneously.",
-      type: "recruiter"
-    },
-    { 
-      title: "Smart Shortlisting", 
-      desc: "Instantly deploy curated, scored lists of verified candidates directly into your workflow.",
-      type: "recruiter"
-    },
-    { 
-      title: "Automated Profiling", 
-      desc: "Connect your history and let the AI instantly map your skills to the perfect hiring nodes.",
-      type: "candidate"
-    },
-    { 
-      title: "Direct Ingress", 
-      desc: "Bypass traditional noise and get routed directly to active high-end hiring managers.",
-      type: "candidate"
-    },
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start end", "end start"] });
+  const yImage = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+
+  const stats = [
+    { label: "CANDIDATES", value: "2M+", icon: Users },
+    { label: "COMPANIES", value: "500+", icon: Building2 },
+    { label: "HIRES", value: "50k+", icon: Briefcase },
   ];
 
   return (
-    <section className="relative py-24 lg:py-32 px-6 md:px-12 lg:px-24 w-full overflow-hidden bg-[#0A0A0F]">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-[400px] bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none -z-10" />
+    <section ref={containerRef} className="relative w-full overflow-hidden bg-portfolio-light border-b border-slate-200">
+      
+      {/* Blueprint Grid Background */}
+      <div className="absolute inset-0 pointer-events-none" 
+           style={{ backgroundImage: 'linear-gradient(to right, #E0E6ED 1px, transparent 1px), linear-gradient(to bottom, #E0E6ED 1px, transparent 1px)', backgroundSize: '100px 100px' }}
+      />
 
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 lg:gap-24">
+      <div className="w-full max-w-[1920px] mx-auto relative z-10 flex flex-col lg:flex-row">
         
-        {/* Sticky Header Column */}
-        <div className="w-full lg:w-1/3 flex flex-col justify-start">
-           <div className="sticky top-40">
-              <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 text-slate-400 px-4 py-2 rounded-full text-xs font-bold mb-6 tracking-widest uppercase backdrop-blur-md">
-                Dual Operations
-              </div>
-              <h2 className="text-4xl lg:text-6xl font-extrabold text-white tracking-[-0.04em] leading-[1.05] mb-6">
-                Unified <br/>
-                <span className="text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-violet-500">
-                   Experience
-                </span>
-              </h2>
-              <p className="text-slate-400 text-lg leading-relaxed mb-8">
-                A frictionless architecture designed simultaneously for elite talent and enterprise recruiters. One engine, two flawless experiences.
-              </p>
+        {/* Left Stats/Text Panel */}
+        <div className="w-full lg:w-1/2 border-r border-slate-200 p-12 md:p-24 flex flex-col justify-center bg-portfolio-light/80 backdrop-blur-sm">
+           
+           <div className="inline-flex items-center gap-4 text-portfolio-blue text-[10px] font-bold tracking-[0.3em] uppercase mb-12">
+              <span className="w-8 h-[1px] bg-portfolio-blue" />
+              GLOBAL SCALE
            </div>
+           
+           <motion.h2 
+             initial={{ opacity: 0, y: 30 }}
+             whileInView={{ opacity: 1, y: 0 }}
+             viewport={{ once: true, margin: "-100px" }}
+             transition={{ duration: 0.8, ease: "easeOut" }}
+             className="font-serif text-4xl md:text-5xl lg:text-6xl text-portfolio-navy leading-[1.1] mb-16 max-w-xl"
+           >
+             Connecting the World's Best Talent with Industry Leaders
+           </motion.h2>
+
+           <div className="grid grid-cols-1 sm:grid-cols-3 gap-12 sm:gap-6 border-t border-slate-200 pt-16">
+             {stats.map((stat, i) => {
+               const Icon = stat.icon;
+               return (
+                 <motion.div 
+                   key={i}
+                   initial={{ opacity: 0, y: 20 }}
+                   whileInView={{ opacity: 1, y: 0 }}
+                   viewport={{ once: true }}
+                   transition={{ delay: i * 0.1 + 0.4 }}
+                   className="flex flex-col gap-4"
+                 >
+                   <Icon size={24} strokeWidth={1} className="text-portfolio-red" />
+                   <div className="font-serif text-4xl text-portfolio-navy">{stat.value}</div>
+                   <div className="text-[10px] font-bold tracking-[0.2em] text-portfolio-navy/50">{stat.label}</div>
+                 </motion.div>
+               );
+             })}
+           </div>
+
         </div>
 
-        {/* Scrolling Cards Column */}
-        <div className="w-full lg:w-2/3 flex flex-col gap-6">
-           {items.map((item, index) => (
-             <motion.div
-               key={index}
-               initial={{ opacity: 0, y: 30 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true, margin: "-100px" }}
-               transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
-               className="group relative bg-white/5 dark:bg-[#111118]/60 backdrop-blur-2xl border border-slate-200/50 dark:border-white/[0.04] p-8 lg:p-10 rounded-[32px] hover:bg-white/10 dark:hover:bg-[#111118]/80 hover:border-indigo-500/30 transition-all duration-500 shadow-premium"
-             >
-                <div className="flex flex-col sm:flex-row justify-between items-start gap-6">
-                   <div className="flex-1">
-                      <div className="flex items-center gap-4 mb-4">
-                         <div className="text-2xl font-black text-indigo-500/30 group-hover:text-indigo-500 transition-colors duration-500">
-                           0{index + 1}
-                         </div>
-                         <h3 className="text-2xl font-bold text-white">{item.title}</h3>
-                      </div>
-                      <p className="text-slate-400 text-base leading-relaxed pl-10">
-                         {item.desc}
-                      </p>
-                   </div>
-                   <div className="w-12 h-12 shrink-0 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-400 group-hover:bg-indigo-500 group-hover:text-white transition-all duration-500 mt-2 sm:mt-0">
-                      <ArrowUpRight size={20} />
-                   </div>
-                </div>
-                
-                {/* Accent Tag */}
-                <div className="absolute bottom-6 right-8">
-                   <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full ${item.type === 'recruiter' ? 'bg-indigo-500/10 text-indigo-500' : 'bg-violet-500/10 text-violet-500'}`}>
-                      {item.type}
-                   </span>
-                </div>
-             </motion.div>
-           ))}
+        {/* Right Image/Visual Panel */}
+        <div className="w-full lg:w-1/2 relative h-[500px] lg:h-auto overflow-hidden bg-slate-100">
+           {/* Technical grid overlay on image */}
+           <div className="absolute inset-0 z-10 mix-blend-overlay opacity-30" 
+                style={{ backgroundImage: 'linear-gradient(to right, #000 1px, transparent 1px), linear-gradient(to bottom, #000 1px, transparent 1px)', backgroundSize: '40px 40px' }}
+           />
+           
+           {/* Center Crosshair Overlay */}
+           <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
+              <div className="w-12 h-[1px] bg-white mix-blend-difference" />
+              <div className="absolute w-[1px] h-12 bg-white mix-blend-difference" />
+           </div>
+
+           <motion.div style={{ y: yImage }} className="absolute -inset-10 z-0">
+             <img 
+               src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80" 
+               alt="Modern Office Structure"
+               className="w-full h-full object-cover grayscale opacity-80"
+             />
+           </motion.div>
         </div>
 
       </div>

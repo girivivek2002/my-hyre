@@ -81,7 +81,7 @@ export default function Trusted() {
   const duplicatedStartups = [...startups, ...startups, ...startups, ...startups];
 
   return (
-    <section className="py-20 sm:py-28 overflow-hidden bg-white dark:bg-black relative transition-colors duration-300">
+    <section className="py-20 sm:py-28 overflow-hidden bg-[#0A0A0F] relative transition-colors duration-300">
       {/* Top subtle border */}
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-slate-200 dark:via-neutral-800 to-transparent" />
       
@@ -95,11 +95,11 @@ export default function Trusted() {
         <div className="absolute w-[300px] h-10 bg-blue-500/20 blur-[40px] -z-10 rounded-full"></div>
         
         <div className="relative inline-block pb-3 px-8">
-          <p className="text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-slate-900 to-slate-400 dark:from-neutral-600 dark:via-white dark:to-neutral-600 text-sm sm:text-base font-bold tracking-[0.2em] sm:tracking-[0.4em] uppercase transition-colors">
+          <p className="text-transparent bg-clip-text bg-gradient-to-r from-neutral-600 via-white to-neutral-600 text-sm sm:text-base font-bold tracking-[0.2em] sm:tracking-[0.4em] uppercase transition-colors">
             Trusted By Innovative Teams Worldwide
           </p>
           {/* Glowing underline */}
-          <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-slate-400 dark:via-neutral-500/50 to-transparent"></div>
+          <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-neutral-500/50 to-transparent"></div>
         </div>
       </motion.div>
 

@@ -21,8 +21,8 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative w-full px-4 pb-4 sm:pb-6 overflow-hidden bg-slate-50 dark:bg-[#0A0A0F]">
-      <div className="relative w-full rounded-[32px] sm:rounded-[48px] overflow-hidden bg-[#111118] px-6 md:px-12 lg:px-24 pt-16 lg:pt-24 pb-8 max-w-[1920px] mx-auto z-10 transition-colors duration-300">
+    <footer className="bg-[#0A0A0F] border-t border-white/[0.04] px-6 md:px-12 lg:px-24 pt-16 lg:pt-24 pb-8 overflow-hidden relative w-full z-10 transition-colors duration-300">
+      <div className="max-w-[1920px] mx-auto">
 
       {/* Gradient top line */}
       <motion.div

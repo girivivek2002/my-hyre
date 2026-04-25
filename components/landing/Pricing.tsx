@@ -105,8 +105,7 @@ function PricingCard({ plan, index }: { plan: any, index: number }) {
 
 export default function Pricing() {
   return (
-    <section className="relative w-full px-4 pb-4 sm:pb-6 overflow-hidden bg-slate-50 dark:bg-[#0A0A0F]">
-      <div className="relative w-full rounded-[32px] sm:rounded-[48px] overflow-hidden bg-[#111118] py-24 lg:py-32 px-6 md:px-12 lg:px-24 mx-auto max-w-[1920px]">
+    <section className="relative py-24 lg:py-32 px-6 md:px-12 lg:px-24 w-full overflow-hidden bg-[#0A0A0F]">
       <div className="absolute w-[600px] h-[600px] bg-indigo-500/5 blur-[150px] rounded-full left-1/2 -translate-x-1/2 top-0 pointer-events-none -z-10" />
 
       <motion.div
@@ -141,7 +140,6 @@ export default function Pricing() {
           <PricingCard key={index} plan={plan} index={index} />
         ))}
       </motion.div>
-      </div>
     </section>
   );
 }

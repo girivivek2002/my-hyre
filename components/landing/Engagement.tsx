@@ -32,8 +32,7 @@ export default function Engagement() {
   ];
 
   return (
-    <section className="relative w-full px-4 pb-4 sm:pb-6 overflow-hidden bg-slate-50 dark:bg-[#0A0A0F]">
-      <div className="relative w-full rounded-[32px] sm:rounded-[48px] overflow-hidden bg-[#111118] py-24 lg:py-32 px-6 md:px-12 lg:px-24 mx-auto max-w-[1920px]">
+    <section className="relative py-24 lg:py-32 px-6 md:px-12 lg:px-24 w-full overflow-hidden bg-[#0A0A0F]">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-[400px] bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none -z-10" />
 
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 lg:gap-24">
@@ -94,7 +93,6 @@ export default function Engagement() {
            ))}
         </div>
 
-      </div>
       </div>
     </section>
   );

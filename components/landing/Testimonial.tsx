@@ -45,8 +45,7 @@ export default function Testimonials() {
   };
 
   return (
-    <section className="relative w-full px-4 pb-4 sm:pb-6 overflow-hidden bg-slate-50 dark:bg-[#0A0A0F]">
-      <div className="relative w-full rounded-[32px] sm:rounded-[48px] overflow-hidden bg-[#111118] py-24 lg:py-40 mx-auto max-w-[1920px]">
+    <section className="relative py-24 lg:py-40 w-full overflow-hidden bg-[#0A0A0F]">
       <div className="absolute w-[800px] h-[800px] bg-indigo-500/5 blur-[150px] rounded-full right-0 top-1/2 -translate-y-1/2 pointer-events-none -z-10" />
 
       <motion.div 
@@ -84,7 +83,6 @@ export default function Testimonials() {
             ))}
           </motion.div>
         </div>
-      </div>
       </div>
     </section>
   );

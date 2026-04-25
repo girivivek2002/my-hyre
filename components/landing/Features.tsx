@@ -75,9 +75,7 @@ export default function Features() {
   const containerRef = useRef(null);
 
   return (
-    <section ref={containerRef} className="relative w-full px-4 pb-4 sm:pb-6 overflow-hidden bg-slate-50 dark:bg-[#0A0A0F]">
-      <div className="relative w-full rounded-[32px] sm:rounded-[48px] overflow-hidden bg-[#111118] py-32 lg:py-48 px-6 md:px-12 lg:px-24">
-
+    <section ref={containerRef} className="relative w-full py-24 lg:py-40 px-6 md:px-12 lg:px-24 overflow-hidden bg-[#0A0A0F]">
       {/* Decorative background blur */}
       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-500/10 blur-[150px] rounded-full pointer-events-none -z-10" />
 
@@ -124,7 +122,6 @@ export default function Features() {
             <FeatureCard key={index} feature={feature} index={index} />
           ))}
         </motion.div>
-      </div>
       </div>
     </section>
   );

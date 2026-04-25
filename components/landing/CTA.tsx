@@ -34,13 +34,13 @@ export default function CTA() {
   }
 
   return (
-    <section className="relative w-full px-4 pb-4 sm:pb-6 overflow-hidden bg-slate-50 dark:bg-[#0A0A0F]">
+    <section className="relative py-20 md:py-32 px-6 md:px-12 lg:px-24 w-full overflow-hidden bg-[#0A0A0F]">
       <motion.div
         variants={containerVars}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
-        className="relative w-full rounded-[32px] sm:rounded-[48px] overflow-hidden bg-gradient-to-br from-[#111118] via-[#111118] to-[#151522] border border-white/[0.04] p-16 md:p-24 lg:p-32 text-center max-w-[1920px] mx-auto shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
+        className="relative bg-gradient-to-br from-[#111118] via-[#0A0A0F] to-[#111118] border border-white/[0.04] rounded-[32px] p-16 md:p-24 lg:p-32 text-center max-w-7xl mx-auto shadow-premium-dark"
       >
         {/* Animated multi-color orbs */}
         <div className="absolute w-[400px] h-[400px] bg-indigo-500/15 blur-[120px] rounded-full left-[30%] top-[20%] pointer-events-none animate-orb-drift" />

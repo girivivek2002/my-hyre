@@ -32,8 +32,8 @@ export default function Engagement() {
   ];
 
   return (
-    <section className="py-24 lg:py-32 px-6 md:px-12 lg:px-24 relative bg-slate-50 dark:bg-[#0A0A0F] overflow-hidden max-w-[1920px] mx-auto transition-colors duration-300">
-      
+    <section className="relative w-full px-4 pb-4 sm:pb-6 overflow-hidden bg-slate-50 dark:bg-[#0A0A0F]">
+      <div className="relative w-full rounded-[32px] sm:rounded-[48px] overflow-hidden bg-[#111118] py-24 lg:py-32 px-6 md:px-12 lg:px-24 mx-auto max-w-[1920px]">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-[400px] bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none -z-10" />
 
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 lg:gap-24">
@@ -44,13 +44,13 @@ export default function Engagement() {
               <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 text-slate-400 px-4 py-2 rounded-full text-xs font-bold mb-6 tracking-widest uppercase backdrop-blur-md">
                 Dual Operations
               </div>
-              <h2 className="text-4xl lg:text-6xl font-extrabold text-slate-900 dark:text-white tracking-[-0.04em] leading-[1.05] mb-6">
+              <h2 className="text-4xl lg:text-6xl font-extrabold text-white tracking-[-0.04em] leading-[1.05] mb-6">
                 Unified <br/>
                 <span className="text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-violet-500">
                    Experience
                 </span>
               </h2>
-              <p className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed mb-8">
+              <p className="text-slate-400 text-lg leading-relaxed mb-8">
                 A frictionless architecture designed simultaneously for elite talent and enterprise recruiters. One engine, two flawless experiences.
               </p>
            </div>
@@ -73,9 +73,9 @@ export default function Engagement() {
                          <div className="text-2xl font-black text-indigo-500/30 group-hover:text-indigo-500 transition-colors duration-500">
                            0{index + 1}
                          </div>
-                         <h3 className="text-2xl font-bold text-slate-900 dark:text-white">{item.title}</h3>
+                         <h3 className="text-2xl font-bold text-white">{item.title}</h3>
                       </div>
-                      <p className="text-slate-600 dark:text-slate-400 text-base leading-relaxed pl-10">
+                      <p className="text-slate-400 text-base leading-relaxed pl-10">
                          {item.desc}
                       </p>
                    </div>
@@ -94,6 +94,7 @@ export default function Engagement() {
            ))}
         </div>
 
+      </div>
       </div>
     </section>
   );

@@ -68,18 +68,18 @@ function PricingCard({ plan, index }: { plan: any, index: number }) {
       )}
 
       <div className="relative z-10 flex flex-col h-full">
-        <h3 className={`text-2xl font-bold mb-2 transition-colors text-slate-900 dark:text-white`}>{plan.name}</h3>
-        <p className="text-slate-600 dark:text-slate-400 text-sm mb-8">{plan.desc}</p>
+        <h3 className={`text-2xl font-bold mb-2 transition-colors text-white`}>{plan.name}</h3>
+        <p className="text-slate-400 text-sm mb-8">{plan.desc}</p>
         
-        <div className={`text-5xl font-extrabold mb-10 tracking-tighter text-slate-900 dark:text-white`}>
+        <div className={`text-5xl font-extrabold mb-10 tracking-tighter text-white`}>
           {plan.price}
-          <span className="text-slate-400 dark:text-slate-500 text-base font-medium tracking-normal"> /mo</span>
+          <span className="text-slate-500 text-base font-medium tracking-normal"> /mo</span>
         </div>
 
         <ul className="space-y-4 mb-10 flex-grow">
           {plan.features.map((f: string, i: number) => (
-            <li key={i} className={`flex items-start gap-3 text-slate-600 dark:text-slate-300 transition-colors text-sm sm:text-base`}>
-              <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${isHighlighted ? 'bg-indigo-500/20 text-indigo-400' : 'bg-slate-200 dark:bg-white/10 text-slate-500 dark:text-slate-400'}`}>
+            <li key={i} className={`flex items-start gap-3 text-slate-300 transition-colors text-sm sm:text-base`}>
+              <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${isHighlighted ? 'bg-indigo-500/20 text-indigo-400' : 'bg-white/10 text-slate-400'}`}>
                  <CheckCircle2 size={12} strokeWidth={3} />
               </div>
               {f}
@@ -93,7 +93,7 @@ function PricingCard({ plan, index }: { plan: any, index: number }) {
           className={`w-full py-4 rounded-xl font-bold relative overflow-hidden transition-all duration-300 ${
             isHighlighted
               ? "bg-white text-slate-900 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]"
-              : "bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/[0.08] text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-white/10"
+              : "bg-white/5 border border-white/[0.08] text-white hover:bg-white/10"
           }`}
         >
           {plan.button}
@@ -105,8 +105,8 @@ function PricingCard({ plan, index }: { plan: any, index: number }) {
 
 export default function Pricing() {
   return (
-    <section className="py-24 lg:py-32 px-6 md:px-12 lg:px-24 relative bg-slate-50 dark:bg-[#0A0A0F] overflow-hidden max-w-[1920px] mx-auto z-0 transition-colors duration-300">
-
+    <section className="relative w-full px-4 pb-4 sm:pb-6 overflow-hidden bg-slate-50 dark:bg-[#0A0A0F]">
+      <div className="relative w-full rounded-[32px] sm:rounded-[48px] overflow-hidden bg-[#111118] py-24 lg:py-32 px-6 md:px-12 lg:px-24 mx-auto max-w-[1920px]">
       <div className="absolute w-[600px] h-[600px] bg-indigo-500/5 blur-[150px] rounded-full left-1/2 -translate-x-1/2 top-0 pointer-events-none -z-10" />
 
       <motion.div
@@ -120,10 +120,10 @@ export default function Pricing() {
           <Sparkles size={14} />
           Pricing Structure
         </div>
-        <h2 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 tracking-[-0.04em] text-slate-900 dark:text-white">
+        <h2 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 tracking-[-0.04em] text-white">
           TRANSPARENT <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-violet-500">SCALE</span>
         </h2>
-        <p className="text-slate-600 dark:text-slate-400 text-lg md:text-xl max-w-2xl mx-auto">
+        <p className="text-slate-400 text-lg md:text-xl max-w-2xl mx-auto">
           Scale effortlessly. Pay only for the power you need to transform your entire recruitment pipeline.
         </p>
       </motion.div>
@@ -141,6 +141,7 @@ export default function Pricing() {
           <PricingCard key={index} plan={plan} index={index} />
         ))}
       </motion.div>
+      </div>
     </section>
   );
 }

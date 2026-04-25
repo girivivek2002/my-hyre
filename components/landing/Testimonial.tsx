@@ -45,8 +45,8 @@ export default function Testimonials() {
   };
 
   return (
-    <section className="py-24 lg:py-40 bg-slate-50 dark:bg-[#0A0A0F] relative max-w-[1920px] mx-auto overflow-hidden transition-colors duration-300">
-
+    <section className="relative w-full px-4 pb-4 sm:pb-6 overflow-hidden bg-slate-50 dark:bg-[#0A0A0F]">
+      <div className="relative w-full rounded-[32px] sm:rounded-[48px] overflow-hidden bg-[#111118] py-24 lg:py-40 mx-auto max-w-[1920px]">
       <div className="absolute w-[800px] h-[800px] bg-indigo-500/5 blur-[150px] rounded-full right-0 top-1/2 -translate-y-1/2 pointer-events-none -z-10" />
 
       <motion.div 
@@ -60,7 +60,7 @@ export default function Testimonials() {
           <Star size={14} className="fill-current" />
           Verified Success
         </div>
-        <h2 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 tracking-[-0.04em] text-slate-900 dark:text-white">
+        <h2 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 tracking-[-0.04em] text-white">
           ENGINEERED FOR <br/> 
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-violet-500">EXCELLENCE</span>
         </h2>
@@ -85,6 +85,7 @@ export default function Testimonials() {
           </motion.div>
         </div>
       </div>
+      </div>
     </section>
   );
 }
@@ -101,7 +102,7 @@ function TestimonialCard({ t, renderStars, gradientIndex }: { t: any, renderStar
         <div>
           <Quote size={32} className="text-indigo-500/20 mb-6 -ml-1" />
           {renderStars(t.rating)}
-          <p className="text-slate-700 dark:text-slate-300 text-lg leading-relaxed mb-10">
+          <p className="text-slate-300 text-lg leading-relaxed mb-10">
             &ldquo;{t.text}&rdquo;
           </p>
         </div>
@@ -111,8 +112,8 @@ function TestimonialCard({ t, renderStars, gradientIndex }: { t: any, renderStar
             {t.name.charAt(0)}
           </div>
           <div>
-            <div className="font-bold text-slate-900 dark:text-white text-base">{t.name}</div>
-            <div className="text-slate-500 dark:text-slate-400 text-sm font-medium">{t.role}</div>
+            <div className="font-bold text-white text-base">{t.name}</div>
+            <div className="text-slate-400 text-sm font-medium">{t.role}</div>
           </div>
         </div>
       </div>

@@ -75,10 +75,11 @@ export default function Features() {
   const containerRef = useRef(null);
 
   return (
-    <section ref={containerRef} className="py-32 lg:py-48 px-6 md:px-12 lg:px-24 relative overflow-hidden bg-slate-50 dark:bg-[#0A0A0F]">
+    <section ref={containerRef} className="relative w-full px-4 pb-4 sm:pb-6 overflow-hidden bg-slate-50 dark:bg-[#0A0A0F]">
+      <div className="relative w-full rounded-[32px] sm:rounded-[48px] overflow-hidden bg-[#111118] py-32 lg:py-48 px-6 md:px-12 lg:px-24">
 
       {/* Decorative background blur */}
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-500/5 blur-[150px] rounded-full pointer-events-none -z-10" />
+      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-500/10 blur-[150px] rounded-full pointer-events-none -z-10" />
 
       <div className="max-w-[1920px] mx-auto relative z-10">
         <div className="flex flex-col lg:flex-row justify-between items-end mb-20 gap-10">
@@ -93,7 +94,7 @@ export default function Features() {
               <Sparkles size={14} />
               Core Capabilities
             </div>
-            <h2 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-slate-900 dark:text-white tracking-[-0.04em] leading-[1.1]">
+            <h2 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-[-0.04em] leading-[1.1]">
               INTELLIGENT <br className="hidden md:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-violet-500">WORKSPACE</span>
             </h2>
@@ -104,7 +105,7 @@ export default function Features() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-            className="text-slate-600 dark:text-slate-400 text-lg md:text-xl max-w-lg leading-relaxed"
+            className="text-slate-400 text-lg md:text-xl max-w-lg leading-relaxed"
           >
             Everything you need to streamline the hiring lifecycle, powered completely by our native AI engines and high-fidelity parsing architecture.
           </motion.p>
@@ -123,6 +124,7 @@ export default function Features() {
             <FeatureCard key={index} feature={feature} index={index} />
           ))}
         </motion.div>
+      </div>
       </div>
     </section>
   );

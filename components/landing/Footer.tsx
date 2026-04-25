@@ -21,7 +21,8 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-white dark:bg-[#0A0A0F] border-t border-slate-200 dark:border-white/[0.04] px-6 md:px-12 lg:px-24 pt-16 lg:pt-24 pb-8 overflow-hidden relative max-w-[1920px] mx-auto z-10 transition-colors duration-300">
+    <footer className="relative w-full px-4 pb-4 sm:pb-6 overflow-hidden bg-slate-50 dark:bg-[#0A0A0F]">
+      <div className="relative w-full rounded-[32px] sm:rounded-[48px] overflow-hidden bg-[#111118] px-6 md:px-12 lg:px-24 pt-16 lg:pt-24 pb-8 max-w-[1920px] mx-auto z-10 transition-colors duration-300">
 
       {/* Gradient top line */}
       <motion.div
@@ -46,7 +47,7 @@ export default function Footer() {
             <Image src="/logo.png" alt="Mr Hyre Logo" width={40} height={40} className="rounded-xl" />
             <div className="text-2xl font-bold tracking-tight text-gradient-primary">Mr. Hyre</div>
           </div>
-          <p className="text-slate-500 dark:text-slate-400 text-sm md:text-base leading-relaxed max-w-sm lg:pr-8 transition-colors">
+          <p className="text-slate-400 text-sm md:text-base leading-relaxed max-w-sm lg:pr-8">
             The Intelligent Workspace for modern recruitment.
             Building bridges between top talent and innovative companies safely and securely.
           </p>
@@ -75,13 +76,14 @@ export default function Footer() {
               key={i}
               whileHover={{ scale: 1.15, y: -3 }}
               transition={{ type: "spring", stiffness: 400, damping: 15 }}
-              className={`cursor-pointer text-slate-400 dark:text-slate-500 transition-all p-2.5 bg-slate-50 dark:bg-white/[0.04] rounded-full border border-slate-200 dark:border-white/[0.06] ${item.hoverColor}`}
+              className={`cursor-pointer text-slate-400 transition-all p-2.5 bg-white/[0.04] rounded-full border border-white/[0.06] ${item.hoverColor}`}
             >
               {item.icon}
             </motion.div>
           ))}
         </div>
       </motion.div>
+      </div>
     </footer>
   );
 }
@@ -89,16 +91,16 @@ export default function Footer() {
 function FooterColumn({ title, links, itemVars }: { title: string; links: string[], itemVars: any }) {
   return (
     <motion.div variants={itemVars}>
-      <h4 className="text-slate-900 dark:text-slate-300 font-semibold text-xs sm:text-sm mb-6 tracking-widest uppercase transition-colors">
+      <h4 className="text-white font-semibold text-xs sm:text-sm mb-6 tracking-widest uppercase">
         {title}
       </h4>
-      <div className="space-y-4 text-slate-500 dark:text-slate-400 text-sm md:text-base">
+      <div className="space-y-4 text-slate-400 text-sm md:text-base">
         {links.map((link: string, i: number) => (
           <motion.div
             key={i}
             whileHover={{ x: 5 }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
-            className="cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors w-max"
+            className="cursor-pointer hover:text-indigo-400 transition-colors w-max"
           >
             {link}
           </motion.div>

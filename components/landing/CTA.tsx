@@ -34,13 +34,13 @@ export default function CTA() {
   }
 
   return (
-    <section className="py-20 md:py-32 px-6 md:px-12 lg:px-24 max-w-[1920px] mx-auto">
+    <section className="relative w-full px-4 pb-4 sm:pb-6 overflow-hidden bg-slate-50 dark:bg-[#0A0A0F]">
       <motion.div
         variants={containerVars}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
-        className="relative bg-gradient-to-br from-[#111118] via-[#0A0A0F] to-[#111118] border border-white/[0.06] rounded-[2rem] p-8 md:p-16 lg:p-24 text-center overflow-hidden shadow-premium-dark"
+        className="relative w-full rounded-[32px] sm:rounded-[48px] overflow-hidden bg-gradient-to-br from-[#111118] via-[#111118] to-[#151522] border border-white/[0.04] p-16 md:p-24 lg:p-32 text-center max-w-[1920px] mx-auto shadow-[0_20px_40px_rgba(0,0,0,0.5)]"
       >
         {/* Animated multi-color orbs */}
         <div className="absolute w-[400px] h-[400px] bg-indigo-500/15 blur-[120px] rounded-full left-[30%] top-[20%] pointer-events-none animate-orb-drift" />
@@ -58,10 +58,10 @@ export default function CTA() {
 
         <motion.h2 
           variants={itemVars}
-          className="relative text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 sm:mb-8 tracking-tight text-white"
+          className="relative text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 sm:mb-8 tracking-[-0.04em] text-white"
         >
-          Start Hiring Smarter{" "}
-          <span className="text-gradient-primary">Today</span>
+          START HIRING <br className="hidden md:block" />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-violet-500">SMARTER</span>
         </motion.h2>
 
         <motion.p 
@@ -82,16 +82,13 @@ export default function CTA() {
               disabled={isPending}
               className="flex-1 bg-transparent px-6 py-4 text-white placeholder:text-slate-500 outline-none focus:ring-0 transition-all font-medium disabled:opacity-50"
             />
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              type="submit"
+              <button
               disabled={isPending}
-              className="px-8 py-4 bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 rounded-xl text-white font-bold shadow-glow-indigo hover:shadow-[0_0_40px_rgba(99,102,241,0.5)] transition-all flex items-center justify-center gap-2 whitespace-nowrap disabled:opacity-70"
+              className="px-8 py-4 bg-white text-slate-900 rounded-full font-bold hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105 transition-all flex items-center justify-center gap-2 whitespace-nowrap disabled:opacity-70"
             >
               {isPending ? "Joining..." : "Get Early Access"}
               {!isPending && <ArrowRight size={20} />}
-            </motion.button>
+            </button>
           </form>
 
           {status.type && (

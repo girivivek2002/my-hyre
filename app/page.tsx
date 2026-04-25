@@ -7,22 +7,20 @@ import Recruiter from "@/components/landing/Recruiter";
 import Pricing from "@/components/landing/Pricing";
 import Testimonial from "@/components/landing/Testimonial";
 import CTA from "@/components/landing/CTA";
-import Footer from "@/components/landing/Footer";
 
 
 export default function Home() {
   return (
-     <main className="bg-slate-50 dark:bg-black text-slate-900 dark:text-white min-h-screen transition-colors duration-300">
+     <main className="bg-[#0A0A0F] text-white min-h-screen">
       <Navbar />
       <Hero />
       <Trusted />
+      <Features />
       <Engagement />
       <Recruiter />
-      <Features />
       <Pricing />
       <Testimonial />
       <CTA />
-      <Footer />
     </main>
   );
 }

@@ -1,98 +1,74 @@
 "use client";
 import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
 
 export default function Engagement() {
-  const items = [
-    { 
-      title: "Define Ideal Node", 
-      desc: "Input your target persona using semantic NLP. We translate intent into pure parity matching.",
-      type: "recruiter"
-    },
-    { 
-      title: "Deep Synchronization", 
-      desc: "Our neural algorithms scan unstructured global data to index passive and active talent simultaneously.",
-      type: "recruiter"
-    },
-    { 
-      title: "Smart Shortlisting", 
-      desc: "Instantly deploy curated, scored lists of verified candidates directly into your workflow.",
-      type: "recruiter"
-    },
-    { 
-      title: "Automated Profiling", 
-      desc: "Connect your history and let the AI instantly map your skills to the perfect hiring nodes.",
-      type: "candidate"
-    },
-    { 
-      title: "Direct Ingress", 
-      desc: "Bypass traditional noise and get routed directly to active high-end hiring managers.",
-      type: "candidate"
-    },
-  ];
-
   return (
-    <section className="relative py-24 lg:py-32 px-6 md:px-12 lg:px-24 w-full overflow-hidden bg-[#0A0A0F]">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-4xl h-[400px] bg-indigo-500/5 blur-[120px] rounded-full pointer-events-none -z-10" />
+    <section className="relative py-40 px-6 bg-[#0A0A0F] overflow-hidden">
+      <div className="max-w-7xl mx-auto">
+        <div className="relative rounded-[60px] bg-white/5 backdrop-blur-3xl border border-white/10 p-24 overflow-hidden shadow-2xl">
+          {/* Background Gradient */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/10 via-transparent to-emerald-500/10 pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 lg:gap-24">
-        
-        {/* Sticky Header Column */}
-        <div className="w-full lg:w-1/3 flex flex-col justify-start">
-           <div className="sticky top-40">
-              <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 text-slate-400 px-4 py-2 rounded-full text-xs font-bold mb-6 tracking-widest uppercase backdrop-blur-md">
-                Dual Operations
-              </div>
-              <h2 className="text-4xl lg:text-6xl font-extrabold text-white tracking-[-0.04em] leading-[1.05] mb-6">
-                Unified <br/>
-                <span className="text-transparent bg-clip-text bg-gradient-to-br from-indigo-500 to-violet-500">
-                   Experience
-                </span>
-              </h2>
-              <p className="text-slate-400 text-lg leading-relaxed mb-8">
-                A frictionless architecture designed simultaneously for elite talent and enterprise recruiters. One engine, two flawless experiences.
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
+            <div>
+              <h2 className="text-white text-sm font-bold uppercase tracking-[0.3em] mb-8">Structural Hiring</h2>
+              <h3 className="text-6xl font-bold text-white mb-10 leading-tight tracking-tighter">
+                Scale with <br />
+                architectural <br />
+                <span className="text-white/40">integrity.</span>
+              </h3>
+              <p className="text-white/60 text-xl leading-relaxed mb-12">
+                We bridge the gap between human ambition and organizational growth through 
+                high-fidelity data mapping and structural intelligence.
               </p>
-           </div>
-        </div>
+              
+              <div className="flex gap-12">
+                <div>
+                  <div className="text-4xl font-bold text-white mb-2">500+</div>
+                  <div className="text-white/40 text-xs uppercase tracking-widest font-bold">Companies</div>
+                </div>
+                <div>
+                  <div className="text-4xl font-bold text-white mb-2">2M+</div>
+                  <div className="text-white/40 text-xs uppercase tracking-widest font-bold">Candidates</div>
+                </div>
+              </div>
+            </div>
 
-        {/* Scrolling Cards Column */}
-        <div className="w-full lg:w-2/3 flex flex-col gap-6">
-           {items.map((item, index) => (
-             <motion.div
-               key={index}
-               initial={{ opacity: 0, y: 30 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true, margin: "-100px" }}
-               transition={{ duration: 0.6, delay: index * 0.1, ease: "easeOut" }}
-               className="group relative bg-white/5 dark:bg-[#111118]/60 backdrop-blur-2xl border border-slate-200/50 dark:border-white/[0.04] p-8 lg:p-10 rounded-[32px] hover:bg-white/10 dark:hover:bg-[#111118]/80 hover:border-indigo-500/30 transition-all duration-500 shadow-premium"
-             >
-                <div className="flex flex-col sm:flex-row justify-between items-start gap-6">
-                   <div className="flex-1">
-                      <div className="flex items-center gap-4 mb-4">
-                         <div className="text-2xl font-black text-indigo-500/30 group-hover:text-indigo-500 transition-colors duration-500">
-                           0{index + 1}
-                         </div>
-                         <h3 className="text-2xl font-bold text-white">{item.title}</h3>
+            {/* Overlapping Preview Card */}
+            <div className="relative">
+              <motion.div 
+                initial={{ rotate: -5, y: 40 }}
+                whileInView={{ rotate: 0, y: 0 }}
+                viewport={{ once: true }}
+                className="relative z-10 bg-[#0A0A0F] rounded-[48px] border border-white/10 p-8 shadow-[0_40px_80px_rgba(0,0,0,0.5)]"
+              >
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex gap-2">
+                    <div className="w-3 h-3 rounded-full bg-rose-500" />
+                    <div className="w-3 h-3 rounded-full bg-amber-500" />
+                    <div className="w-3 h-3 rounded-full bg-emerald-500" />
+                  </div>
+                  <div className="px-4 py-1.5 bg-white/5 rounded-full text-[10px] font-bold text-white/40 tracking-widest uppercase">Dashboard</div>
+                </div>
+                <div className="space-y-6">
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} className="flex items-center gap-4 p-4 bg-white/[0.02] border border-white/5 rounded-2xl">
+                      <div className="w-12 h-12 rounded-xl bg-white/10" />
+                      <div className="flex-1 space-y-2">
+                        <div className="h-3 w-1/3 bg-white/20 rounded-full" />
+                        <div className="h-2 w-1/2 bg-white/5 rounded-full" />
                       </div>
-                      <p className="text-slate-400 text-base leading-relaxed pl-10">
-                         {item.desc}
-                      </p>
-                   </div>
-                   <div className="w-12 h-12 shrink-0 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-400 group-hover:bg-indigo-500 group-hover:text-white transition-all duration-500 mt-2 sm:mt-0">
-                      <ArrowUpRight size={20} />
-                   </div>
+                      <div className="w-16 h-8 bg-indigo-500/20 rounded-lg" />
+                    </div>
+                  ))}
                 </div>
-                
-                {/* Accent Tag */}
-                <div className="absolute bottom-6 right-8">
-                   <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full ${item.type === 'recruiter' ? 'bg-indigo-500/10 text-indigo-500' : 'bg-violet-500/10 text-violet-500'}`}>
-                      {item.type}
-                   </span>
-                </div>
-             </motion.div>
-           ))}
-        </div>
+              </motion.div>
 
+              {/* Decorative Glow behind card */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-indigo-500/10 blur-[100px] rounded-full -z-10" />
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

@@ -1,139 +1,111 @@
 "use client";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
-import { ArrowRight, Sparkles, Crosshair } from "lucide-react";
-import Link from "next/link";
-import Image from "next/image";
+import { motion } from "framer-motion";
+import { ArrowRight, Play } from "lucide-react";
 
 export default function Hero() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
-  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.2]);
-
   return (
-    <section ref={containerRef} className="relative w-full h-[100vh] sm:h-[95vh] px-4 pt-28 pb-4 sm:p-6 overflow-hidden bg-slate-50 dark:bg-[#0A0A0F]">
-      <motion.div 
-        className="relative w-full h-full rounded-[32px] sm:rounded-[48px] overflow-hidden bg-[#111118]"
-        initial={{ scale: 0.95, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-      >
-        {/* Background Image with Parallax */}
-        <motion.div style={{ y, opacity }} className="absolute inset-0 z-0">
-          <Image 
-            src="/hero-bg.png" 
-            alt="AI Core" 
-            fill 
-            className="object-cover scale-110" 
-            priority
-          />
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-        </motion.div>
+    <section className="relative w-full h-screen min-h-[900px] flex items-center justify-center overflow-hidden bg-[#0A0A0F]">
+      {/* Background Image Layer */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src="/hero-bg-v2.png" 
+          alt="EcoDream Architectural Background" 
+          className="w-full h-full object-cover scale-105"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-[#0A0A0F]" />
+      </div>
 
-        {/* Hotspot Dots */}
-        <div className="absolute top-[30%] left-[25%] z-20 hidden md:block">
-           <div className="relative group cursor-pointer">
-              <div className="w-3 h-3 bg-white rounded-full animate-ping absolute inset-0 opacity-75" />
-              <div className="relative w-3 h-3 bg-white rounded-full shadow-[0_0_15px_rgba(255,255,255,1)]" />
-              <div className="absolute top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] uppercase font-bold tracking-widest px-3 py-1.5 rounded-full whitespace-nowrap">
-                Neural Sync
-              </div>
-           </div>
-        </div>
-
-        <div className="absolute top-[60%] right-[30%] z-20 hidden md:block">
-           <div className="relative group cursor-pointer">
-              <div className="w-3 h-3 bg-indigo-400 rounded-full animate-ping absolute inset-0 opacity-75 duration-1000" />
-              <div className="relative w-3 h-3 bg-indigo-400 rounded-full shadow-[0_0_15px_rgba(129,140,248,1)]" />
-              <div className="absolute top-6 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-indigo-500/20 backdrop-blur-md border border-indigo-400/30 text-white text-[10px] uppercase font-bold tracking-widest px-3 py-1.5 rounded-full whitespace-nowrap">
-                Match Parity
-              </div>
-           </div>
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 w-full h-full max-w-[1920px] mx-auto flex flex-col justify-end p-8 md:p-16 lg:p-24">
-          <div className="flex flex-col lg:flex-row justify-between items-end gap-10">
-            
-            <div className="max-w-4xl text-left">
-              <motion.div 
+      {/* Main Floating Content Card */}
+      <div className="relative z-10 w-full max-w-[1400px] px-6 mt-20">
+        <div className="flex flex-col items-center text-center">
+          
+          {/* Floating Tags */}
+          <div className="flex items-center gap-3 mb-8">
+            {["AI Matching", "Neural Search", "Global Scale"].map((tag, i) => (
+              <motion.span
+                key={tag}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5, duration: 0.8 }}
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] mb-6"
+                transition={{ delay: 0.1 * i + 0.3 }}
+                className="px-4 py-2 bg-white/10 backdrop-blur-xl border border-white/10 rounded-full text-white/80 text-xs font-bold uppercase tracking-widest"
               >
-                <Sparkles size={14} className="text-indigo-400" />
-                Intelligent Hiring Evolution
-              </motion.div>
-
-              <motion.h1 
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
-                className="text-5xl sm:text-7xl lg:text-[100px] leading-[0.95] font-extrabold tracking-[-0.04em] text-white mb-8"
-              >
-                THE FUTURE OF <br className="hidden md:block" /> 
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-white to-violet-300">INTELLIGENT HIRING</span>
-              </motion.h1>
-
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7, duration: 0.8 }}
-                className="flex flex-col sm:flex-row gap-4"
-              >
-                <Link href="/login?role=recruiter">
-                  <button className="px-8 py-4 bg-white text-[#0A0A0F] rounded-full font-bold text-sm tracking-wide hover:scale-105 transition-transform flex items-center gap-3">
-                    Start Hiring <ArrowRight size={16} />
-                  </button>
-                </Link>
-                <Link href="/login?role=candidate">
-                  <button className="px-8 py-4 bg-white/10 backdrop-blur-lg border border-white/20 text-white rounded-full font-bold text-sm tracking-wide hover:bg-white/20 transition-all">
-                    Find Opportunities
-                  </button>
-                </Link>
-              </motion.div>
-            </div>
-
-            {/* Overlapping Glass Cards */}
-            <motion.div 
-               initial={{ opacity: 0, x: 40 }}
-               animate={{ opacity: 1, x: 0 }}
-               transition={{ delay: 0.8, duration: 1, type: "spring", stiffness: 100 }}
-               className="flex flex-col gap-4 self-end w-full lg:w-auto"
-            >
-              <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-5 rounded-3xl w-full lg:w-72 flex flex-col shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
-                 <div className="flex justify-between items-center mb-4">
-                    <span className="text-[10px] text-white/70 font-bold uppercase tracking-widest">Time to Hire</span>
-                    <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400">
-                       <Crosshair size={14} />
-                    </div>
-                 </div>
-                 <p className="text-4xl font-extrabold text-white">-45%</p>
-                 <p className="text-xs text-white/50 mt-1">Accelerated by AI matching algorithms.</p>
-              </div>
-
-              <div className="bg-indigo-500/20 backdrop-blur-xl border border-indigo-400/30 p-5 rounded-3xl w-full lg:w-72 flex flex-col shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
-                 <div className="flex justify-between items-center mb-4">
-                    <span className="text-[10px] text-indigo-200 font-bold uppercase tracking-widest">Global Parity</span>
-                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white">
-                       <Sparkles size={14} />
-                    </div>
-                 </div>
-                 <p className="text-4xl font-extrabold text-white">98.4%</p>
-                 <p className="text-xs text-indigo-200/70 mt-1">Success rate in candidate placements.</p>
-              </div>
-            </motion.div>
-
+                {tag}
+              </motion.span>
+            ))}
           </div>
+
+          {/* Massive Heading */}
+          <motion.h1
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="text-7xl md:text-8xl lg:text-[140px] font-black text-white leading-[0.9] tracking-tighter mb-10"
+          >
+            SMART <br />
+            <span className="text-white/40">HIRES.</span>
+          </motion.h1>
+
+          {/* Subheading & CTA */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className="flex flex-col items-center gap-8"
+          >
+            <p className="text-white/60 text-lg md:text-xl max-w-2xl leading-relaxed">
+              Experience the next generation of recruitment with EcoDream's 
+              AI-driven neural workspace. Built for high-fidelity talent discovery.
+            </p>
+
+            <div className="flex items-center gap-4">
+              <button className="px-10 py-5 bg-white text-black rounded-full text-lg font-bold flex items-center gap-3 hover:scale-105 transition-transform">
+                Get Started
+                <ArrowRight size={24} />
+              </button>
+              <button className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-colors">
+                <Play size={24} fill="white" />
+              </button>
+            </div>
+          </motion.div>
         </div>
-      </motion.div>
+
+        {/* Secondary Overlapping Cards */}
+        <div className="absolute -bottom-40 left-1/2 -translate-x-1/2 w-full max-w-6xl hidden lg:flex gap-6">
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.8 }}
+            className="flex-1 bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[48px] p-10 flex items-center gap-8 shadow-2xl"
+          >
+            <div className="w-24 h-24 rounded-3xl bg-indigo-500/20 flex items-center justify-center text-indigo-400">
+               <span className="text-4xl font-bold">98%</span>
+            </div>
+            <div>
+              <h3 className="text-white font-bold text-2xl mb-2">Neural Accuracy</h3>
+              <p className="text-white/40 text-sm">Matching candidates with architectural precision across global pools.</p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 1, duration: 0.8 }}
+            className="flex-1 bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[48px] p-10 flex items-center gap-8 shadow-2xl"
+          >
+            <div className="w-24 h-24 rounded-3xl bg-emerald-500/20 flex items-center justify-center text-emerald-400">
+               <span className="text-4xl font-bold">2.4s</span>
+            </div>
+            <div>
+              <h3 className="text-white font-bold text-2xl mb-2">Instant Parsing</h3>
+              <p className="text-white/40 text-sm">Real-time data extraction with high-fidelity vector mapping.</p>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Atmospheric Blur Orbs */}
+      <div className="absolute top-[20%] -left-40 w-[600px] h-[600px] bg-indigo-500/10 blur-[150px] rounded-full" />
+      <div className="absolute bottom-[10%] -right-40 w-[600px] h-[600px] bg-emerald-500/10 blur-[150px] rounded-full" />
     </section>
   );
 }

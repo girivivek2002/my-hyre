@@ -1,111 +1,77 @@
 "use client";
-import { motion, Variants } from "framer-motion";
-import { useState } from "react";
-import { ArrowRight, Sparkles } from "lucide-react";
-import { joinWaitlist } from "@/lib/actions";
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { ArrowRight, Globe, AtSign, Share2 } from "lucide-react";
 
 export default function CTA() {
-  const containerVars: Variants = {
-    hidden: { opacity: 0, y: 40 },
-    visible: { 
-      opacity: 1, y: 0,
-      transition: { duration: 0.8, ease: "easeOut", staggerChildren: 0.15, when: "beforeChildren" } 
-    }
-  };
-
-  const itemVars: Variants = {
-    hidden: { opacity: 0, y: 20, filter: "blur(4px)" },
-    visible: { opacity: 1, y: 0, filter: "blur(0px)", transition: { type: "spring", stiffness: 250, damping: 22 } }
-  };
-
-  const [status, setStatus] = useState<{ type: 'success' | 'error' | null, message: string }>({ type: null, message: "" });
-  const [isPending, setIsPending] = useState(false);
-
-  async function handleSubmit(formData: FormData) {
-    setIsPending(true);
-    setStatus({ type: null, message: "" });
-    const result = await joinWaitlist(formData);
-    setIsPending(false);
-    if (result.error) {
-      setStatus({ type: 'error', message: result.error });
-    } else {
-      setStatus({ type: 'success', message: result.success || result.message || "Welcome aboard!" });
-    }
-  }
-
   return (
-    <section className="relative py-20 md:py-32 px-6 md:px-12 lg:px-24 w-full overflow-hidden bg-[#0A0A0F]">
-      <motion.div
-        variants={containerVars}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        className="relative bg-gradient-to-br from-[#111118] via-[#0A0A0F] to-[#111118] border border-white/[0.04] rounded-[32px] p-16 md:p-24 lg:p-32 text-center max-w-7xl mx-auto shadow-premium-dark"
-      >
-        {/* Animated multi-color orbs */}
-        <div className="absolute w-[400px] h-[400px] bg-indigo-500/15 blur-[120px] rounded-full left-[30%] top-[20%] pointer-events-none animate-orb-drift" />
-        <div className="absolute w-[350px] h-[350px] bg-violet-500/12 blur-[100px] rounded-full right-[25%] bottom-[15%] pointer-events-none animate-orb-drift-reverse" />
-        <div className="absolute w-[200px] h-[200px] bg-fuchsia-500/8 blur-[80px] rounded-full left-[15%] bottom-[25%] pointer-events-none animate-orb-drift" />
+    <section className="relative py-40 px-6 bg-[#0A0A0F] overflow-hidden">
+      <div className="max-w-7xl mx-auto">
+        <div className="relative rounded-[60px] bg-white/5 backdrop-blur-3xl border border-white/10 p-24 overflow-hidden flex flex-col items-center text-center shadow-2xl">
+          {/* Background Glow */}
+          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-tr from-indigo-500/10 via-transparent to-emerald-500/10 pointer-events-none" />
 
-        {/* Sparkle decoration */}
-        <motion.div
-          animate={{ rotate: [0, 360] }}
-          transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-          className="absolute top-10 right-10 opacity-10 pointer-events-none"
-        >
-          <Sparkles size={120} />
-        </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="relative z-10 max-w-4xl"
+          >
+            <h2 className="text-white text-sm font-bold uppercase tracking-[0.4em] mb-10">Start Your Journey</h2>
+            <h3 className="text-7xl md:text-8xl font-black text-white leading-tight mb-12 tracking-tighter">
+              Build your <br />
+              <span className="text-white/40">dream team.</span>
+            </h3>
+            
+            <div className="flex flex-col md:flex-row items-center justify-center gap-6 mb-24">
+              <button className="px-12 py-6 bg-white text-black rounded-full text-xl font-black hover:scale-105 transition-transform flex items-center gap-3 shadow-2xl">
+                Get Started Now
+                <ArrowRight size={24} />
+              </button>
+              <button className="px-10 py-6 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-white text-lg font-bold hover:bg-white/20 transition-colors">
+                Contact Sales
+              </button>
+            </div>
+          </motion.div>
 
-        <motion.h2 
-          variants={itemVars}
-          className="relative text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 sm:mb-8 tracking-[-0.04em] text-white"
-        >
-          START HIRING <br className="hidden md:block" />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-violet-500">SMARTER</span>
-        </motion.h2>
+          {/* Footer Integration */}
+          <div className="w-full pt-24 border-t border-white/10 relative z-10 grid grid-cols-1 md:grid-cols-4 gap-12 text-left">
+            <div>
+              <div className="flex items-center gap-2 mb-6">
+                <div className="w-6 h-6 bg-white rounded-full" />
+                <span className="text-white font-bold text-lg">Mr. Hyre</span>
+              </div>
+              <p className="text-white/40 text-sm leading-relaxed">
+                The neural workspace for high-fidelity talent discovery. Architectural precision in every hire.
+              </p>
+            </div>
 
-        <motion.p 
-          variants={itemVars}
-          className="relative text-slate-400 text-base sm:text-lg lg:text-xl mb-10 max-w-2xl mx-auto leading-relaxed"
-        >
-          Join over 5,000+ companies who are building the future with
-          Mr. Hyre&apos;s intelligent workspace. Drop the busywork and let AI do the matching.
-        </motion.p>
+            {[
+              { title: "Company", links: ["About", "Blog", "Careers"] },
+              { title: "Product", links: ["Platform", "Security", "Pricing"] },
+              { title: "Support", links: ["Help Center", "Privacy", "Terms"] }
+            ].map((col) => (
+              <div key={col.title}>
+                <h4 className="text-white font-bold uppercase text-xs tracking-widest mb-6">{col.title}</h4>
+                <div className="flex flex-col gap-4">
+                  {col.links.map((l) => (
+                    <Link key={l} href="#" className="text-white/40 hover:text-white transition-colors text-sm">{l}</Link>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
 
-        <motion.div variants={itemVars} className="relative max-w-xl mx-auto">
-          <form action={handleSubmit} className="flex flex-col sm:flex-row gap-3 p-2 bg-white/[0.04] backdrop-blur-xl border border-white/[0.08] rounded-2xl shadow-2xl relative">
-            <input 
-              type="email" 
-              name="email"
-              placeholder="Enter your work email" 
-              required
-              disabled={isPending}
-              className="flex-1 bg-transparent px-6 py-4 text-white placeholder:text-slate-500 outline-none focus:ring-0 transition-all font-medium disabled:opacity-50"
-            />
-              <button
-              disabled={isPending}
-              className="px-8 py-4 bg-white text-slate-900 rounded-full font-bold hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105 transition-all flex items-center justify-center gap-2 whitespace-nowrap disabled:opacity-70"
-            >
-              {isPending ? "Joining..." : "Get Early Access"}
-              {!isPending && <ArrowRight size={20} />}
-            </button>
-          </form>
-
-          {status.type && (
-            <motion.p 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`mt-4 font-medium ${status.type === 'success' ? 'text-emerald-400' : 'text-rose-400'}`}
-            >
-              {status.message}
-            </motion.p>
-          )}
-
-          <p className="mt-4 text-slate-500 text-sm font-medium">
-            Join 500+ recruiters already on the list. No spam, ever.
-          </p>
-        </motion.div>
-      </motion.div>
+          <div className="w-full mt-24 flex flex-col md:flex-row justify-between items-center gap-8 relative z-10 border-t border-white/5 pt-12">
+            <p className="text-white/20 text-xs font-bold uppercase tracking-widest">© 2026 Mr. Hyre. All Rights Reserved.</p>
+            <div className="flex gap-6">
+              {[Globe, AtSign, Share2].map((Icon, i) => (
+                <Icon key={i} size={20} className="text-white/40 hover:text-white cursor-pointer transition-colors" />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

@@ -1,127 +1,89 @@
 "use client";
 import { motion } from "framer-motion";
-import { Sparkles, FileSearch, LayoutDashboard, MessageSquareLock, CalendarRange, TrendingUp, ArrowUpRight } from "lucide-react";
-import { useRef } from "react";
-
-const features = [
-  {
-    title: "AI Matching Parity",
-    desc: "Connect candidates with perfect opportunities using intelligent matching algorithms.",
-    Icon: Sparkles,
-  },
-  {
-    title: "Resume Parsing",
-    desc: "Extract skills, experience, and education automatically from resumes with high fidelity.",
-    Icon: FileSearch,
-  },
-  {
-    title: "Recruiter Hub",
-    desc: "Manage jobs, candidates, and hiring workflow from one unified intelligent platform.",
-    Icon: LayoutDashboard,
-  },
-  {
-    title: "Secure Comm Links",
-    desc: "Communicate directly with candidates and recruiters through encrypted channels.",
-    Icon: MessageSquareLock,
-  },
-  {
-    title: "Automated Scheduling",
-    desc: "Schedule interviews and meetings with integrated automated calendar tools.",
-    Icon: CalendarRange,
-  },
-  {
-    title: "Pipeline Analytics",
-    desc: "Track hiring performance, candidate pipeline, and recruitment metrics in real-time.",
-    Icon: TrendingUp,
-  },
-];
-
-function FeatureCard({ feature, index }: { feature: typeof features[0], index: number }) {
-  const { Icon, title, desc } = feature;
-
-  return (
-    <motion.div
-      variants={{
-        hidden: { opacity: 0, y: 50 },
-        visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 20, delay: index * 0.1 } },
-      }}
-      whileHover={{ y: -10, scale: 1.02 }}
-      className="group relative flex w-full flex-col items-start rounded-[32px] bg-white/5 dark:bg-[#111118]/60 backdrop-blur-3xl border border-slate-200/50 dark:border-white/[0.06] p-8 lg:p-10 hover:bg-white/10 dark:hover:bg-[#111118]/80 hover:border-indigo-500/30 transition-all duration-500 shadow-premium"
-    >
-      <div className="absolute inset-0 rounded-[32px] bg-gradient-to-br from-white/40 to-transparent dark:from-white/5 dark:to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-      <div className="relative z-10 w-full">
-        <div className="flex justify-between items-start mb-8 w-full">
-          <div className="w-16 h-16 rounded-full bg-indigo-500/10 dark:bg-indigo-500/20 border border-indigo-500/20 flex items-center justify-center text-indigo-500 shadow-glow-indigo group-hover:scale-110 transition-transform duration-500">
-            <Icon strokeWidth={1.5} size={28} />
-          </div>
-          <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center text-slate-400 group-hover:bg-indigo-500 group-hover:text-white transition-all duration-500">
-            <ArrowUpRight size={20} />
-          </div>
-        </div>
-
-        <h3 className="text-2xl font-bold mb-4 text-slate-900 dark:text-white group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors duration-300">
-          {title}
-        </h3>
-        <p className="text-slate-600 dark:text-slate-400 text-base leading-relaxed">
-          {desc}
-        </p>
-      </div>
-    </motion.div>
-  );
-}
+import { Sparkles, Zap, Shield, Globe } from "lucide-react";
 
 export default function Features() {
-  const containerRef = useRef(null);
+  const features = [
+    {
+      title: "Neural Matching",
+      desc: "Our proprietary AI doesn't just scan keywords; it understands talent intent.",
+      icon: Sparkles,
+      color: "bg-indigo-500",
+      className: "lg:col-span-2 lg:row-span-2"
+    },
+    {
+      title: "Hyper-Speed",
+      desc: "Parse thousands of resumes in seconds with sub-millisecond latency.",
+      icon: Zap,
+      color: "bg-amber-500",
+      className: "lg:col-span-1 lg:row-span-1"
+    },
+    {
+      title: "Enterprise Security",
+      desc: "Bank-grade encryption for all candidate and company data flows.",
+      icon: Shield,
+      color: "bg-rose-500",
+      className: "lg:col-span-1 lg:row-span-1"
+    }
+  ];
 
   return (
-    <section ref={containerRef} className="relative w-full py-24 lg:py-40 px-6 md:px-12 lg:px-24 overflow-hidden bg-[#0A0A0F]">
-      {/* Decorative background blur */}
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-500/10 blur-[150px] rounded-full pointer-events-none -z-10" />
+    <section className="relative py-40 px-6 bg-[#0A0A0F] overflow-hidden">
+      {/* Background Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-white/[0.02] blur-[150px] rounded-full" />
 
-      <div className="max-w-[1920px] mx-auto relative z-10">
-        <div className="flex flex-col lg:flex-row justify-between items-end mb-20 gap-10">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="max-w-3xl"
-          >
-            <div className="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 px-4 py-2 rounded-full text-xs font-bold mb-8 tracking-[0.2em] uppercase">
-              <Sparkles size={14} />
+      <div className="max-w-7xl mx-auto relative z-10">
+        <div className="flex flex-col lg:flex-row items-end justify-between mb-24 gap-12">
+          <div className="max-w-2xl">
+            <h2 className="text-white text-sm font-bold uppercase tracking-[0.3em] mb-6 flex items-center gap-3">
+              <span className="w-8 h-[1px] bg-white/20" />
               Core Capabilities
-            </div>
-            <h2 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-[-0.04em] leading-[1.1]">
-              INTELLIGENT <br className="hidden md:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-violet-500">WORKSPACE</span>
             </h2>
-          </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-            className="text-slate-400 text-lg md:text-xl max-w-lg leading-relaxed"
-          >
-            Everything you need to streamline the hiring lifecycle, powered completely by our native AI engines and high-fidelity parsing architecture.
-          </motion.p>
+            <h3 className="text-5xl md:text-7xl font-bold text-white leading-tight">
+              A workspace designed <br />
+              <span className="text-white/30">for the future.</span>
+            </h3>
+          </div>
+          <p className="text-white/40 text-lg max-w-sm mb-2">
+            Scaling your team with architectural precision through our neural-driven workspace.
+          </p>
         </div>
 
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          variants={{
-            visible: { transition: { staggerChildren: 0.15 } },
-          }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
-        >
-          {features.map((feature, index) => (
-            <FeatureCard key={index} feature={feature} index={index} />
-          ))}
-        </motion.div>
+        {/* Feature Grid with Overlapping Asymmetry */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map((f, i) => {
+            const Icon = f.icon;
+            return (
+              <motion.div
+                key={f.title}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 * i }}
+                className={`group relative overflow-hidden bg-white/5 backdrop-blur-3xl border border-white/10 rounded-[48px] p-12 hover:bg-white/10 transition-all ${f.className}`}
+              >
+                {/* Accent Glow */}
+                <div className={`absolute -top-20 -right-20 w-40 h-40 ${f.color} opacity-10 blur-[60px] group-hover:opacity-20 transition-opacity`} />
+                
+                <div className="relative z-10 flex flex-col h-full">
+                  <div className={`w-16 h-16 rounded-2xl ${f.color}/20 flex items-center justify-center text-white mb-10`}>
+                    <Icon size={32} />
+                  </div>
+                  
+                  <h4 className="text-3xl font-bold text-white mb-6">{f.title}</h4>
+                  <p className="text-white/40 text-lg leading-relaxed">{f.desc}</p>
+                  
+                  <div className="mt-auto pt-10">
+                    <button className="flex items-center gap-2 text-white font-bold text-sm uppercase tracking-widest group/btn">
+                      Explore
+                      <div className="w-8 h-[1px] bg-white/40 group-hover/btn:w-12 transition-all" />
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

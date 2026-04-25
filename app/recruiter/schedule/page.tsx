@@ -1,6 +1,6 @@
 "use client";
-import React, { ReactNode, MouseEvent, useState } from "react";
-import { motion, useMotionTemplate, useMotionValue, Variants } from "framer-motion";
+import React, { ReactNode, MouseEvent, useState, useEffect } from "react";
+import { motion, useMotionTemplate, useMotionValue, Variants, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {

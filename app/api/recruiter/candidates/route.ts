@@ -70,18 +70,31 @@ export async function GET(req: NextRequest) {
     }
 
     const formatted = await Promise.all(candidates.map(async (c: any) => {
-      // Self-healing: Create profile if missing
-      let profile = c.candidateProfile;
+      // Get profile
+      const profile = c.candidateProfile;
+      
+      // If profile is missing, return a partial object without creating a record
+      // This prevents 'phantom' profiles for recruiters who might be misconfigured
       if (!profile) {
-        profile = await prisma.candidate.create({
-          data: {
-            userId: c.id,
-            name: c.name || "Anonymous User",
-            email: c.email || `${c.id}@mrhyre.com`,
-            role: "",
-            biography: "Professional profile currently being synchronized."
-          }
-        });
+        return {
+          id: c.id,
+          name: c.name || "Pending Onboarding",
+          email: c.email || "pending@mrhyre.com",
+          initials: (c.name || "P").slice(0, 2).toUpperCase(),
+          role: "Candidate",
+          location: "Syncing...",
+          experience: "Pending",
+          match: 0,
+          matchAnalysis: {
+            summary: "Profile data is currently unavailable. The candidate must complete their intelligence sync.",
+            strengths: [],
+            gaps: []
+          },
+          skills: [],
+          summary: "This user has not yet initialized their professional intelligence profile.",
+          resume: null,
+          status: "Pending",
+        };
       }
 
       let matchResult: any = { score: 85, summary: "Initial screening...", strengths: [], gaps: [] };
@@ -128,7 +141,10 @@ export async function GET(req: NextRequest) {
       };
     }));
 
-    return NextResponse.json({ candidates: formatted });
+    // Sort by match score descending
+    const sorted = formatted.sort((a, b) => b.match - a.match);
+
+    return NextResponse.json({ candidates: sorted });
   } catch (error) {
     console.error("Recruiter Candidates Stream Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
@@ -146,25 +162,7 @@ export async function POST(req: NextRequest) {
     // We need the Candidate table ID.
     const candidate = await prisma.candidate.findUnique({ where: { userId: candidateId } });
     if (!candidate) {
-      // More self-healing: if the recruiter tries to shortlist a user without a profile, create it now.
-      const user = await prisma.user.findUnique({ where: { id: candidateId } });
-      if (!user) return NextResponse.json({ error: "User node not found" }, { status: 404 });
-
-      const newCandidate = await prisma.candidate.create({
-        data: {
-          userId: user.id,
-          name: user.name,
-          email: user.email,
-          role: "Job Seeker"
-        }
-      });
-
-      const shortlist = await prisma.shortlist.upsert({
-        where: { candidateId_jobId: { candidateId: newCandidate.id, jobId } },
-        update: { status: status || "SHORTLISTED" },
-        create: { candidateId: newCandidate.id, jobId, status: status || "SHORTLISTED" }
-      });
-      return NextResponse.json({ message: "Candidate synchronized and shortlisted", shortlist });
+      return NextResponse.json({ error: "Candidate profile not found. The user must complete their profile before being shortlisted." }, { status: 404 });
     }
 
     const shortlist = await prisma.shortlist.upsert({

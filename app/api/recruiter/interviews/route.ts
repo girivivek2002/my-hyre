@@ -59,19 +59,28 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Shortlist not found or access denied" }, { status: 403 });
     }
 
+    let finalPlatform = platform || "Google Meet";
+    if (finalPlatform === "Google Meet") {
+      // Generate a random-looking meet link: meet.google.com/abc-defg-hij
+      const part1 = Math.random().toString(36).substring(2, 5);
+      const part2 = Math.random().toString(36).substring(2, 6);
+      const part3 = Math.random().toString(36).substring(2, 5);
+      finalPlatform = `meet.google.com/${part1}-${part2}-${part3}`;
+    }
+
     const interview = await prisma.interview.upsert({
       where: { shortlistId },
       update: {
         date: date ? new Date(date) : undefined,
         time,
-        platform,
+        platform: finalPlatform,
         status: "SCHEDULED"
       },
       create: {
         shortlistId,
         date: date ? new Date(date) : undefined,
         time,
-        platform: platform || "Google Meet",
+        platform: finalPlatform,
         status: "SCHEDULED"
       }
     });

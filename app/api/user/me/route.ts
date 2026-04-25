@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "User profile not found." }, { status: 404 });
     }
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       user,
       stats: {
         resumesUploaded: user._count.resumes, 
@@ -47,6 +47,13 @@ export async function GET(req: NextRequest) {
         hiringRate: 0
       }
     }, { status: 200 });
+
+    // Prevent caching of sensitive user data
+    response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    response.headers.set("Pragma", "no-cache");
+    response.headers.set("Expires", "0");
+
+    return response;
 
   } catch (error: any) {
     console.error("User Profile Error:", error);

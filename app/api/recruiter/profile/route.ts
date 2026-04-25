@@ -38,7 +38,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       profile: {
         id: userRecord.id,
         name: userRecord.name,
@@ -55,6 +55,13 @@ export async function GET(req: NextRequest) {
         coverUrl: userRecord.recruiterProfile?.coverUrl || "",
       },
     });
+
+    // Prevent cross-account data leakage via browser cache
+    response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    response.headers.set("Pragma", "no-cache");
+    response.headers.set("Expires", "0");
+    
+    return response;
   } catch (error: any) {
     console.error("Recruiter Profile GET Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

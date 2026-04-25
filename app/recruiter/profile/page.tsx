@@ -74,9 +74,17 @@ export default function CompanyProfile() {
     }, []);
 
     const fetchProfile = async () => {
+        setIsLoading(true);
+        // Reset state to prevent stale data visibility
+        setProfile({
+            name: "", email: "", companyName: "", companySize: "",
+            industry: "", bio: "", website: "", location: "",
+            marketStatus: "", phone: "", logoUrl: "", coverUrl: ""
+        });
+
         try {
             const token = localStorage.getItem("authToken");
-            const headers: any = {};
+            const headers: any = { "Cache-Control": "no-cache" };
             if (token) headers["Authorization"] = `Bearer ${token}`;
 
             const res = await fetch("/api/recruiter/profile", { headers });

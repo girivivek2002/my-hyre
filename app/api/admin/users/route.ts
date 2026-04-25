@@ -1,22 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
 import prisma from "@/lib/db";
-
-const JWT_SECRET = process.env.JWT_SECRET || "super-secret-fallback-key";
-
-function verifyAdmin(req: NextRequest) {
-  const auth = req.headers.get("authorization");
-  if (!auth?.startsWith("Bearer ")) return false;
-  try {
-    const decoded: any = jwt.verify(auth.split(" ")[1], JWT_SECRET);
-    return decoded.role === "admin";
-  } catch {
-    return false;
-  }
-}
+import { verifyAdmin } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
-  if (!verifyAdmin(req)) {
+  const admin = await verifyAdmin(req);
+  if (!admin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -58,14 +46,20 @@ export async function GET(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  if (!verifyAdmin(req)) {
+  const admin = await verifyAdmin(req);
+  if (!admin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
     const { id } = await req.json();
     if (!id) return NextResponse.json({ error: "User ID required" }, { status: 400 });
+    
+    // Cascading delete safety
     await prisma.resume.deleteMany({ where: { userId: id } });
+    await prisma.candidate.deleteMany({ where: { userId: id } });
+    await prisma.recruiter.deleteMany({ where: { userId: id } });
+    
     await prisma.user.delete({ where: { id } });
     return NextResponse.json({ message: "User deleted successfully" });
   } catch (error) {

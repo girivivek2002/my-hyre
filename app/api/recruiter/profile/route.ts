@@ -1,46 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
 import prisma from "@/lib/db";
+import { verifyRecruiter } from "@/lib/auth";
 
-const JWT_SECRET = process.env.JWT_SECRET || "super-secret-fallback-key";
-
-import { getToken } from "next-auth/jwt";
-
-async function verifyRecruiter(req: NextRequest) {
-  // 1. Try NextAuth
-  const nextAuthToken = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  if (nextAuthToken && nextAuthToken.role === "recruiter") {
-    let userId = nextAuthToken.userId;
-    if (!userId && nextAuthToken.email) {
-      // Fallback for old sessions that lack the custom userId property
-      const dbUser = await prisma.user.findUnique({ where: { email: nextAuthToken.email } });
-      if (dbUser) userId = dbUser.id;
-    }
-    if (!userId) return null;
-
-    return { id: userId, role: nextAuthToken.role, email: nextAuthToken.email, name: nextAuthToken.name };
-  }
-
-  // 2. Try Custom JWT via Header
-  const auth = req.headers.get("authorization");
-  if (auth?.startsWith("Bearer ") && auth.split(" ")[1] !== "null") {
-    try {
-      const decoded: any = jwt.verify(auth.split(" ")[1], JWT_SECRET);
-      if (decoded.role === "recruiter") return decoded;
-    } catch {}
-  }
-
-  // 3. Try Custom JWT via Cookie
-  const customCookie = req.cookies.get("authToken")?.value;
-  if (customCookie) {
-    try {
-      const decoded: any = jwt.verify(customCookie, JWT_SECRET);
-      if (decoded.role === "recruiter") return decoded;
-    } catch {}
-  }
-
-  return null;
-}
+export const dynamic = "force-dynamic";
 
 // GET: Fetch recruiter company profile
 export async function GET(req: NextRequest) {

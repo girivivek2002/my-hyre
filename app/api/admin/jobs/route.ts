@@ -1,24 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
 import prisma from "@/lib/db";
+import { verifyAdmin } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
-const JWT_SECRET = process.env.JWT_SECRET || "super-secret-fallback-key";
-
-function verifyAdmin(req: NextRequest) {
-  const auth = req.headers.get("authorization");
-  if (!auth?.startsWith("Bearer ")) return false;
-  try {
-    const decoded: any = jwt.verify(auth.split(" ")[1], JWT_SECRET);
-    return decoded.role === "admin";
-  } catch {
-    return false;
-  }
-}
-
 export async function GET(req: NextRequest) {
-  if (!verifyAdmin(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const admin = await verifyAdmin(req);
+  if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
     const jobs = await prisma.job.findMany({
@@ -32,13 +20,20 @@ export async function GET(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  if (!verifyAdmin(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const admin = await verifyAdmin(req);
+  if (!admin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
     const { id } = await req.json();
+    if (!id) return NextResponse.json({ error: "Job ID required" }, { status: 400 });
+    
+    // Cascade delete shortlists and interviews
+    await prisma.shortlist.deleteMany({ where: { jobId: id } });
     await prisma.job.delete({ where: { id } });
+    
     return NextResponse.json({ message: "Job deleted" });
   } catch (err) {
+    console.error("Admin Job Delete Error:", err);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

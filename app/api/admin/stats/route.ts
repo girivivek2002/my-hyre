@@ -1,24 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
 import prisma from "@/lib/db";
+import { verifyAdmin } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
-const JWT_SECRET = process.env.JWT_SECRET || "super-secret-fallback-key";
-
-function verifyAdmin(req: NextRequest) {
-  const auth = req.headers.get("authorization");
-  if (!auth?.startsWith("Bearer ")) return false;
-  try {
-    const decoded: any = jwt.verify(auth.split(" ")[1], JWT_SECRET);
-    return decoded.role === "admin";
-  } catch {
-    return false;
-  }
-}
-
 export async function GET(req: NextRequest) {
-  if (!verifyAdmin(req)) {
+  const admin = await verifyAdmin(req);
+  if (!admin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

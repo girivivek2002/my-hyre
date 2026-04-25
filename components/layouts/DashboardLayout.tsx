@@ -8,7 +8,7 @@ import {
   Menu, X, Bell, ChevronDown, User, LogOut, CalendarDays
 } from "lucide-react";
 
-export default function DashboardLayout({ children, role }: { children: ReactNode, role: "recruiter" | "candidate" }) {
+export default function DashboardLayout({ children, role }: { children: ReactNode, role: "recruiter" | "candidate" | "admin" }) {
   // Mobile responsive sidebar state
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -52,9 +52,16 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
     { icon: <BarChart3 size={20} />, label: "Talent Profile", path: "/candidate/profile" },
   ];
 
-  const links = role === "recruiter" ? recruiterLinks : candidateLinks;
-  const settingsPath = role === "recruiter" ? "/recruiter/settings" : "/candidate/settings";
-  const portalName = role === "recruiter" ? "Intelligence" : "Candidate Hub";
+  const adminLinks = [
+    { icon: <LayoutDashboard size={20} />, label: "Platform Overview", path: "/admin/dashboard" },
+    { icon: <Users size={20} />, label: "User Control", path: "/admin/dashboard?tab=users" },
+    { icon: <Briefcase size={20} />, label: "Job Operations", path: "/admin/dashboard?tab=jobs" },
+    { icon: <BarChart3 size={20} />, label: "Resume Vault", path: "/admin/dashboard?tab=resumes" },
+  ];
+
+  const links = role === "admin" ? adminLinks : (role === "recruiter" ? recruiterLinks : candidateLinks);
+  const settingsPath = role === "admin" ? "/admin/settings" : (role === "recruiter" ? "/recruiter/settings" : "/candidate/settings");
+  const portalName = role === "admin" ? "Platform Control" : (role === "recruiter" ? "Intelligence" : "Candidate Hub");
 
   const handleNavigation = (path: string) => {
     setIsMobileMenuOpen(false);

@@ -76,9 +76,10 @@ export default function CompanyProfile() {
     const fetchProfile = async () => {
         try {
             const token = localStorage.getItem("authToken");
-            const res = await fetch("/api/recruiter/profile", {
-                headers: { Authorization: `Bearer ${token}` }
-            });
+            const headers: any = {};
+            if (token) headers["Authorization"] = `Bearer ${token}`;
+
+            const res = await fetch("/api/recruiter/profile", { headers });
             if (res.ok) {
                 const data = await res.json();
                 setProfile(prev => ({ ...prev, ...data.profile }));
@@ -92,6 +93,9 @@ export default function CompanyProfile() {
                     setIsFirstTimeSetup(true);
                     setIsEditing(true);
                 }
+            } else if (res.status === 401) {
+                // If middleware somehow let it through but API rejected, go to login
+                router.push("/login");
             }
         } catch (error) {
             console.error("Error fetching profile", error);
@@ -104,12 +108,12 @@ export default function CompanyProfile() {
         setIsSaving(true);
         try {
             const token = localStorage.getItem("authToken");
+            const headers: any = { "Content-Type": "application/json" };
+            if (token) headers["Authorization"] = `Bearer ${token}`;
+
             const res = await fetch("/api/recruiter/profile", {
                 method: "PATCH",
-                headers: { 
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}` 
-                },
+                headers,
                 body: JSON.stringify(profile)
             });
             if (res.ok) {

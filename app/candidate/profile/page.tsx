@@ -106,15 +106,13 @@ export default function CandidateProfile() {
 
   useEffect(() => {
     setMounted(true);
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      router.push("/login");
-      return;
-    }
 
     const fetchData = async () => {
       try {
-        const headers = { "Authorization": `Bearer ${token}` };
+        const token = localStorage.getItem("authToken");
+        const headers: any = {};
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+
         const [userRes, profileRes] = await Promise.all([
           fetch("/api/user/me", { headers }),
           fetch("/api/candidate/profile", { headers })
@@ -126,6 +124,10 @@ export default function CandidateProfile() {
           if (uData.user.resumes?.length > 0) {
             setExistingResume(uData.user.resumes[0].name);
           }
+        } else if (userRes.status === 401) {
+          // If middleware somehow let it through but API rejected, go to login
+          router.push("/login");
+          return;
         }
 
         if (profileRes.ok) {
@@ -145,7 +147,7 @@ export default function CandidateProfile() {
               noticePeriod: pData.profile.noticePeriod || "",
             }));
             if (pData.profile.skills) {
-              setSkills(pData.profile.skills); // DB now returns String[]
+              setSkills(pData.profile.skills);
             }
           }
         }

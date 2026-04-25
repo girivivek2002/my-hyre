@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@mrhyre.com";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin123";
-const JWT_SECRET = process.env.JWT_SECRET || "super-secret-fallback-key";
+const JWT_SECRET = (process.env.JWT_SECRET || "super-secret-fallback-key").replace(/['"]+/g, '');
 
 export async function POST(req: NextRequest) {
   try {
@@ -12,16 +12,26 @@ export async function POST(req: NextRequest) {
 
     if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
       const token = jwt.sign(
-        { id: "admin-id", email: ADMIN_EMAIL, role: "admin" },
+        { id: "admin-id", email: ADMIN_EMAIL, role: "admin", name: "Platform Admin" },
         JWT_SECRET,
-        { expiresIn: "1d" }
+        { expiresIn: "7d" }
       );
 
-      return NextResponse.json({
+      const response = NextResponse.json({
         message: "Admin login successful",
         token,
         user: { name: "Platform Admin", email: ADMIN_EMAIL, role: "admin" }
       }, { status: 200 });
+
+      response.cookies.set("authToken", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 7,
+        path: "/",
+      });
+
+      return response;
     }
 
     return NextResponse.json({ error: "Invalid admin credentials" }, { status: 401 });

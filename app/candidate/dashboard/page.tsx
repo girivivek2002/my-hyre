@@ -59,15 +59,12 @@ export default function CandidateDashboard() {
 
   useEffect(() => {
     setMounted(true);
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      router.push("/login");
-      return;
-    }
 
     const fetchAllData = async () => {
       try {
-        const headers = { "Authorization": `Bearer ${token}` };
+        const token = localStorage.getItem("authToken");
+        const headers: any = {};
+        if (token) headers["Authorization"] = `Bearer ${token}`;
         
         const [userRes, statsRes, jobsRes, interviewsRes] = await Promise.all([
           fetch("/api/user/me", { headers }),
@@ -76,12 +73,17 @@ export default function CandidateDashboard() {
           fetch("/api/candidate/interviews", { headers })
         ]);
 
-        const userData = await userRes.json();
-        if (!userRes.ok || userData.user.role !== "candidate") {
-          router.push(userData.user?.role === "recruiter" ? "/recruiter/dashboard" : "/login");
+        if (userRes.ok) {
+          const userData = await userRes.json();
+          if (userData.user.role !== "candidate") {
+            router.push(userData.user?.role === "recruiter" ? "/recruiter/dashboard" : "/login");
+            return;
+          }
+          setUserData(userData.user);
+        } else if (userRes.status === 401) {
+          router.push("/login");
           return;
         }
-        setUserData(userData.user);
 
         if (statsRes.ok) {
           const sData = await statsRes.json();
@@ -101,7 +103,6 @@ export default function CandidateDashboard() {
         setIsLoading(false);
       } catch (err) {
         console.error("Dashboard Fetch Error:", err);
-        localStorage.removeItem("authToken");
         router.push("/login");
       }
     };

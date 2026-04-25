@@ -39,6 +39,8 @@ const StatCard = ({ title, value, icon: Icon, trend, color }: any) => (
   </GlassCard>
 );
 
+import DashboardLayout from "@/components/layouts/DashboardLayout";
+
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [stats, setStats] = useState<any>(null);
@@ -51,9 +53,14 @@ export default function AdminDashboard() {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem("adminToken");
+    // Handle Tab via URL params
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get("tab");
+    if (tab) setActiveTab(tab);
+
+    const token = localStorage.getItem("authToken");
     if (!token) {
-      router.push("/admin/login");
+      router.push("/login");
       return;
     }
 
@@ -62,7 +69,7 @@ export default function AdminDashboard() {
 
   const fetchData = async () => {
     setIsLoading(true);
-    const token = localStorage.getItem("adminToken");
+    const token = localStorage.getItem("authToken");
     try {
       const headers = { Authorization: `Bearer ${token}` };
       const [statsRes, usersRes, jobsRes, resumesRes] = await Promise.all([
@@ -99,7 +106,7 @@ export default function AdminDashboard() {
     if (!confirm(`Are you sure you want to delete this ${type.slice(0,-1)}?`)) return;
     
     setIsDeleting(id);
-    const token = localStorage.getItem("adminToken");
+    const token = localStorage.getItem("authToken");
     try {
       const res = await fetch(`/api/admin/${type}`, {
         method: "DELETE",
@@ -123,9 +130,10 @@ export default function AdminDashboard() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("adminToken");
-    localStorage.removeItem("adminData");
-    router.push("/admin/login");
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userRole");
+    router.push("/login");
   };
 
   const menuItems = [
@@ -138,15 +146,18 @@ export default function AdminDashboard() {
   ];
 
   if (isLoading && !stats) return (
-    <div className="flex-1 flex items-center justify-center p-10">
-      <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
-        <RefreshCw size={40} className="text-blue-500" />
-      </motion.div>
-    </div>
+    <DashboardLayout role="admin">
+      <div className="flex-1 flex items-center justify-center p-10">
+        <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
+          <RefreshCw size={40} className="text-blue-500" />
+        </motion.div>
+      </div>
+    </DashboardLayout>
   );
 
 
   return (
+    <DashboardLayout role="admin">
         <main className="flex-1 overflow-y-auto custom-scrollbar relative z-10 p-10">
 
 
@@ -362,5 +373,6 @@ export default function AdminDashboard() {
         </AnimatePresence>
 
     </main>
-  );
+  </DashboardLayout>
+);
 }

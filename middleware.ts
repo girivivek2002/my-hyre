@@ -5,7 +5,7 @@ import { jwtVerify } from "jose";
 const JWT_SECRET = (process.env.JWT_SECRET as string || "").replace(/['"]+/g, '');
 const secretKey = new TextEncoder().encode(JWT_SECRET);
 
-export async function proxy(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
 
   // 1. Define Public Routes
@@ -25,8 +25,6 @@ export async function proxy(req: NextRequest) {
       try {
         const { payload } = await jwtVerify(customToken, secretKey);
         token = payload;
-        // Map custom token fields to match NextAuth token structure if necessary
-        token.isProfileComplete = true; // Manual signups/logins are marked complete
       } catch (err) {
         console.error("Custom JWT verification failed:", err);
       }

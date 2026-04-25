@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import jwt from "jsonwebtoken";
 import prisma from "@/lib/db";
-
-const JWT_SECRET = (process.env.JWT_SECRET || "super-secret-fallback-key").replace(/['"]+/g, '');
+import { verifyCandidate } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
-  const auth = req.headers.get("authorization");
-  if (!auth?.startsWith("Bearer ")) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const candidateUser = await verifyCandidate(req);
+  if (!candidateUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   
   try {
-    const decoded: any = jwt.verify(auth.split(" ")[1], JWT_SECRET);
     const formData = await req.formData();
     const file = formData.get("file") as File;
 
@@ -18,13 +15,13 @@ export async function POST(req: NextRequest) {
     }
 
     // In a real app, you would upload to S3/Cloudinary here.
-    // For now, we simulate success and store the filename.
+    // For now, we simulate success and store the filename in the database.
     const resume = await prisma.resume.create({
       data: {
-        userId: decoded.id,
+        userId: candidateUser.id,
         name: file.name,
-        experience: 0, // Placeholder
-        skills: [], // Placeholder
+        experience: 0, // Placeholder for AI parsing results
+        skills: [], // Placeholder for AI parsing results
       }
     });
 

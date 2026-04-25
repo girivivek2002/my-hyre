@@ -56,23 +56,26 @@ export default function RecruiterDashboard() {
   // Close menus when clicking outside could be implemented, but simple toggle suffices for now
   useEffect(() => {
     setMounted(true);
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      router.push("/login");
-      return;
-    }
 
     const fetchData = async () => {
       try {
+        const token = localStorage.getItem("authToken");
+        const headers: any = {};
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+
         const [userRes, statsRes] = await Promise.all([
-          fetch("/api/user/me", { headers: { "Authorization": `Bearer ${token}` } }),
-          fetch("/api/recruiter/stats", { headers: { "Authorization": `Bearer ${token}` } })
+          fetch("/api/user/me", { headers }),
+          fetch("/api/recruiter/stats", { headers })
         ]);
 
         if (userRes.ok) {
           const data = await userRes.json();
           setUserData(data.user || data);
+        } else if (userRes.status === 401) {
+          router.push("/login");
+          return;
         }
+
         if (statsRes.ok) setStats(await statsRes.json());
       } catch (err) {
         console.error("Dashboard synchronization failure:", err);

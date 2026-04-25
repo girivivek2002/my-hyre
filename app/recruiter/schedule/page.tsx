@@ -68,7 +68,121 @@ const priorityColor = { high: "bg-red-500", medium: "bg-amber-500", low: "bg-blu
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function SchedulePage() {
     const router = useRouter();
+    const [mounted, setMounted] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [interviews, setInterviews] = useState<any[]>([]);
     const [taskList, setTaskList] = useState(tasks);
+    
+    // Modal State
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [candidates, setCandidates] = useState<any[]>([]);
+    const [jobs, setJobs] = useState<any[]>([]);
+    const [formData, setFormData] = useState({
+        candidateId: "",
+        jobId: "",
+        date: "",
+        time: "",
+        platform: "Google Meet"
+    });
+
+    useEffect(() => {
+        setMounted(true);
+        fetchInterviews();
+        fetchMeta();
+        
+        // Handle Query Params
+        const params = new URLSearchParams(window.location.search);
+        const cId = params.get("candidate");
+        const jId = params.get("job");
+        if (cId && jId) {
+            setFormData(prev => ({ ...prev, candidateId: cId, jobId: jId }));
+            setIsModalOpen(true);
+        }
+    }, []);
+
+    const fetchMeta = async () => {
+        try {
+            const token = localStorage.getItem("authToken");
+            const [cRes, jRes] = await Promise.all([
+                fetch("/api/recruiter/candidates?jobId=talent-pool", { headers: { "Authorization": `Bearer ${token}` } }),
+                fetch("/api/recruiter/jobs", { headers: { "Authorization": `Bearer ${token}` } })
+            ]);
+            if (cRes.ok) {
+                const cData = await cRes.json();
+                setCandidates(cData.candidates || []);
+            }
+            if (jRes.ok) {
+                const jData = await jRes.json();
+                setJobs(jData.jobs || []);
+            }
+        } catch (err) {
+            console.error("Meta Fetch Error:", err);
+        }
+    };
+
+    const fetchInterviews = async () => {
+        try {
+            const token = localStorage.getItem("authToken");
+            const res = await fetch("/api/recruiter/interviews", {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setInterviews(data.interviews);
+            }
+            setIsLoading(false);
+        } catch (err) {
+            console.error("Fetch Interviews Error:", err);
+            setIsLoading(false);
+        }
+    };
+
+    const handleSchedule = async () => {
+        try {
+            const token = localStorage.getItem("authToken");
+            
+            // 1. Ensure Shortlist exists
+            const slRes = await fetch("/api/recruiter/candidates", {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ 
+                    candidateId: formData.candidateId, 
+                    jobId: formData.jobId,
+                    status: "INTERVIEW_SCHEDULED"
+                })
+            });
+            
+            if (!slRes.ok) throw new Error("Failed to sync shortlist");
+            const slData = await slRes.json();
+            
+            // 2. Create Interview
+            const intRes = await fetch("/api/recruiter/interviews", {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    shortlistId: slData.shortlist.id,
+                    date: formData.date,
+                    time: formData.time,
+                    platform: formData.platform
+                })
+            });
+
+            if (intRes.ok) {
+                setIsModalOpen(false);
+                fetchInterviews();
+                alert("Interview Scheduled Successfully!");
+            }
+        } catch (err) {
+            console.error("Schedule Error:", err);
+            alert("Error scheduling interview.");
+        }
+    };
 
     const toggleTask = (id: number) => {
         setTaskList(prev => prev.map(t => t.id === id ? { ...t, done: !t.done } : t));
@@ -97,14 +211,119 @@ export default function SchedulePage() {
                                 </h1>
                                 <p className="text-slate-500 dark:text-neutral-400 text-lg flex items-center gap-2">
                                     <Calendar size={18} className="text-blue-500 dark:text-blue-400" />
-                                    Wednesday, April 9, 2026 — {todayMeetings.length} meetings today
+                                    {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })} — {interviews.length} meetings
                                 </p>
                             </div>
-                            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                                className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-500 px-5 py-3 rounded-xl text-sm font-bold shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] transition-shadow">
+                            <motion.button 
+                                onClick={() => setIsModalOpen(true)}
+                                whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                                className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-500 px-5 py-3 rounded-xl text-sm font-bold shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] transition-shadow text-white">
                                 <Plus size={18} strokeWidth={3} /> New Meeting
                             </motion.button>
                         </motion.div>
+
+                        {/* Modal UI */}
+                        <AnimatePresence>
+                            {isModalOpen && (
+                                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                                    <motion.div 
+                                        initial={{ opacity: 0 }} 
+                                        animate={{ opacity: 1 }} 
+                                        exit={{ opacity: 0 }}
+                                        onClick={() => setIsModalOpen(false)}
+                                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                                    />
+                                    <motion.div 
+                                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                                        className="relative w-full max-w-lg"
+                                    >
+                                        <GlassCard className="!p-8">
+                                            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                                                <CalendarDays size={24} className="text-blue-500" /> Schedule Intelligence Sync
+                                            </h2>
+                                            
+                                            <div className="space-y-4">
+                                                <div>
+                                                    <label className="text-[10px] uppercase font-bold text-slate-500 mb-1.5 block">Select Candidate</label>
+                                                    <select 
+                                                        value={formData.candidateId}
+                                                        onChange={(e) => setFormData(prev => ({ ...prev, candidateId: e.target.value }))}
+                                                        className="w-full bg-slate-100 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 p-3 rounded-xl text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                                                    >
+                                                        <option value="">Select Candidate...</option>
+                                                        {candidates.map(c => <option key={c.id} value={c.id}>{c.name} ({c.role})</option>)}
+                                                    </select>
+                                                </div>
+
+                                                <div>
+                                                    <label className="text-[10px] uppercase font-bold text-slate-500 mb-1.5 block">Job Role</label>
+                                                    <select 
+                                                        value={formData.jobId}
+                                                        onChange={(e) => setFormData(prev => ({ ...prev, jobId: e.target.value }))}
+                                                        className="w-full bg-slate-100 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 p-3 rounded-xl text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                                                    >
+                                                        <option value="">Select Job...</option>
+                                                        {jobs.map(j => <option key={j.id} value={j.id}>{j.title}</option>)}
+                                                    </select>
+                                                </div>
+
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div>
+                                                        <label className="text-[10px] uppercase font-bold text-slate-500 mb-1.5 block">Date</label>
+                                                        <input 
+                                                            type="date"
+                                                            value={formData.date}
+                                                            onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
+                                                            className="w-full bg-slate-100 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 p-3 rounded-xl text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                                                        />
+                                                    </div>
+                                                    <div>
+                                                        <label className="text-[10px] uppercase font-bold text-slate-500 mb-1.5 block">Time</label>
+                                                        <input 
+                                                            type="time"
+                                                            value={formData.time}
+                                                            onChange={(e) => setFormData(prev => ({ ...prev, time: e.target.value }))}
+                                                            className="w-full bg-slate-100 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 p-3 rounded-xl text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <label className="text-[10px] uppercase font-bold text-slate-500 mb-1.5 block">Platform</label>
+                                                    <select 
+                                                        value={formData.platform}
+                                                        onChange={(e) => setFormData(prev => ({ ...prev, platform: e.target.value }))}
+                                                        className="w-full bg-slate-100 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 p-3 rounded-xl text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                                                    >
+                                                        <option value="Google Meet">Google Meet</option>
+                                                        <option value="Zoom">Zoom</option>
+                                                        <option value="Microsoft Teams">Microsoft Teams</option>
+                                                        <option value="In-Person">In-Person</option>
+                                                    </select>
+                                                </div>
+
+                                                <div className="pt-4 flex gap-3">
+                                                    <button 
+                                                        onClick={() => setIsModalOpen(false)}
+                                                        className="flex-1 py-3 rounded-xl border border-slate-200 dark:border-neutral-700 font-bold text-sm hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                    <button 
+                                                        onClick={handleSchedule}
+                                                        className="flex-1 py-3 rounded-xl bg-blue-600 text-white font-bold text-sm shadow-lg shadow-blue-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                                                    >
+                                                        Confirm Sync
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </GlassCard>
+                                    </motion.div>
+                                </div>
+                            )}
+                        </AnimatePresence>
 
                         {/* ── Today's Timeline ─────────────────────── */}
                         <motion.div variants={itemVars} className="mb-10">
@@ -119,7 +338,7 @@ export default function SchedulePage() {
                                 </div>
 
                                 <div className="space-y-3">
-                                    {todayMeetings.map((m, i) => (
+                                    {interviews.length > 0 ? interviews.map((m, i) => (
                                         <motion.div
                                             key={m.id}
                                             initial={{ opacity: 0, x: -20 }}
@@ -129,51 +348,50 @@ export default function SchedulePage() {
                                         >
                                             {/* Priority Dot */}
                                             <div className="flex flex-col items-center gap-1 shrink-0">
-                                                <div className={`w-2.5 h-2.5 rounded-full ${priorityColor[m.priority]} shadow-none dark:shadow-[0_0_8px_rgba(255,255,255,0.15)]`} />
-                                                {i < todayMeetings.length - 1 && <div className="w-px h-8 bg-slate-200 dark:bg-neutral-800" />}
+                                                <div className={`w-2.5 h-2.5 rounded-full ${m.status === 'SCHEDULED' ? 'bg-blue-500' : 'bg-emerald-500'} shadow-none dark:shadow-[0_0_8px_rgba(255,255,255,0.15)]`} />
+                                                {i < interviews.length - 1 && <div className="w-px h-8 bg-slate-200 dark:bg-neutral-800" />}
                                             </div>
-
-                                            {/* Time */}
-                                            <div className="w-28 shrink-0">
-                                                <p className="text-sm font-bold text-slate-900 dark:text-white">{m.time}</p>
-                                                <p className="text-[11px] text-slate-500 dark:text-neutral-500">{m.endTime}</p>
-                                            </div>
-
-                                            {/* Avatar */}
-                                            {m.candidate ? (
-                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-sm font-bold text-white shrink-0 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
-                                                    {m.candidate}
-                                                </div>
-                                            ) : (
-                                                <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-neutral-800 flex items-center justify-center text-slate-500 dark:text-neutral-400 shrink-0 border border-slate-200 dark:border-neutral-700/50">
-                                                    <Users size={18} />
-                                                </div>
-                                            )}
-
-                                            {/* Details */}
-                                            <div className="flex-1 min-w-0">
-                                                <p className="font-semibold text-sm text-slate-900 dark:text-white truncate group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors">{m.title}</p>
-                                                <p className="text-xs text-slate-500 dark:text-neutral-500 truncate">{m.role}</p>
-                                            </div>
-
-                                            {/* Type + Status */}
-                                            <div className="flex items-center gap-3 shrink-0">
-                                                <div className="flex items-center gap-1.5 text-slate-600 dark:text-neutral-400 bg-slate-100 dark:bg-neutral-800/80 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-neutral-700/50">
-                                                    {typeIcon[m.type]}
-                                                    <span className="capitalize">{m.type}</span>
-                                                </div>
-                                                <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold border ${m.status === "confirmed" ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30" : "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30"}`}>
-                                                    {m.status === "confirmed" ? "Confirmed" : "Pending"}
-                                                </span>
-                                            </div>
-
-                                            {/* Join button */}
-                                            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                                                className="bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 px-3 py-2 rounded-xl text-xs font-bold hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-colors shrink-0 flex items-center gap-1.5">
-                                                <ExternalLink size={12} /> Join
-                                            </motion.button>
-                                        </motion.div>
-                                    ))}
+ 
+                                             {/* Time */}
+                                             <div className="w-28 shrink-0">
+                                                 <p className="text-sm font-bold text-slate-900 dark:text-white">{m.time || "TBD"}</p>
+                                                 <p className="text-[11px] text-slate-500 dark:text-neutral-500">{m.date ? new Date(m.date).toLocaleDateString() : "Pending"}</p>
+                                             </div>
+ 
+                                             {/* Avatar */}
+                                             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-sm font-bold text-white shrink-0 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                                                 {m.shortlist.candidate.name.substring(0, 2).toUpperCase()}
+                                             </div>
+ 
+                                             {/* Details */}
+                                             <div className="flex-1 min-w-0">
+                                                 <p className="font-semibold text-sm text-slate-900 dark:text-white truncate group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors">{m.shortlist.candidate.name} — Interview</p>
+                                                 <p className="text-xs text-slate-500 dark:text-neutral-500 truncate">{m.shortlist.job.title}</p>
+                                             </div>
+ 
+                                             {/* Type + Status */}
+                                             <div className="flex items-center gap-3 shrink-0">
+                                                 <div className="flex items-center gap-1.5 text-slate-600 dark:text-neutral-400 bg-slate-100 dark:bg-neutral-800/80 px-2.5 py-1.5 rounded-lg text-xs font-medium border border-slate-200 dark:border-neutral-700/50">
+                                                     <Video size={16} />
+                                                     <span className="capitalize">{m.platform}</span>
+                                                 </div>
+                                                 <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold border ${m.status === "SCHEDULED" ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30" : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"}`}>
+                                                     {m.status}
+                                                 </span>
+                                             </div>
+ 
+                                             {/* Join button */}
+                                             <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                                                 className="bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 px-3 py-2 rounded-xl text-xs font-bold hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-colors shrink-0 flex items-center gap-1.5">
+                                                 <ExternalLink size={12} /> Join
+                                             </motion.button>
+                                         </motion.div>
+                                    )) : (
+                                        <div className="p-12 text-center text-slate-400">
+                                            <Calendar size={48} className="mx-auto mb-4 opacity-20" />
+                                            <p className="text-sm font-bold uppercase tracking-widest">No interviews scheduled yet</p>
+                                        </div>
+                                    )}
                                 </div>
                             </GlassCard>
                         </motion.div>

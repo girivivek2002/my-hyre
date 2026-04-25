@@ -25,15 +25,15 @@ function GlassCard({ children, className = "" }: { children: ReactNode, classNam
   return (
     <div
       onMouseMove={handleMouseMove}
-      className={`group relative bg-white/60 dark:bg-neutral-900/40 backdrop-blur-md border border-slate-200 dark:border-neutral-800/60 rounded-3xl overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.2)] ${className}`}
+      className={`group relative bg-white/70 dark:bg-[#111118]/70 backdrop-blur-md border border-slate-200 dark:border-white/[0.06] rounded-3xl overflow-hidden shadow-premium dark:shadow-premium-dark ${className}`}
     >
       <motion.div
         className="pointer-events-none absolute -inset-px opacity-0 transition duration-500 group-hover:opacity-100 z-[-1]"
         style={{
-          background: useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, rgba(59, 130, 246, 0.15), transparent 80%)`,
+          background: useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, rgba(139, 92, 246, 0.08), transparent 80%)`,
         }}
       />
-      <div className="absolute inset-0 bg-slate-50/80 dark:bg-neutral-950/80 -z-10" />
+      <div className="absolute inset-0 bg-white/80 dark:bg-[#0A0A0F]/80 -z-10" />
       <div className="relative z-10 w-full h-full p-4 sm:p-6">
         {children}
       </div>
@@ -133,11 +133,11 @@ export default function CandidateDashboard() {
 
             {/* Welcome */}
             <motion.div variants={itemVars} className="mb-8">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 text-[10px] font-bold uppercase tracking-widest mb-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-600 dark:text-violet-400 text-[10px] font-bold uppercase tracking-widest mb-4">
                   <Zap size={10} fill="currentColor" /> Intelligence Sync Complete
                 </div>
                 <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 leading-tight">
-                  Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-400">{userData?.name?.split(' ')[0]}</span>
+                  Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-fuchsia-500 dark:from-violet-400 dark:to-fuchsia-400">{userData?.name?.split(' ')[0]}</span>
                 </h1>
                 <p className="text-slate-500 dark:text-neutral-400 text-sm sm:text-base font-medium">
                   Your AI profile is optimized for <strong className="text-slate-900 dark:text-white">Professional Growth</strong>.
@@ -147,8 +147,8 @@ export default function CandidateDashboard() {
             {/* Stats Grid */}
             <motion.div variants={itemVars} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
               {[
-                { title: "Citizens Stream", value: stats?.totalCitizens || 0, icon: <LayoutDashboard size={20} className="text-blue-500" />, trend: "Global pool size", color: "blue" },
-                { title: "Active Selections", value: stats?.activeJobs || 0, icon: <Briefcase size={20} className="text-purple-500" />, trend: "Recruiter shortlists", color: "purple" },
+                { title: "Citizens Stream", value: stats?.totalCitizens || 0, icon: <LayoutDashboard size={20} className="text-violet-500" />, trend: "Global pool size", color: "violet" },
+                { title: "Active Selections", value: stats?.activeJobs || 0, icon: <Briefcase size={20} className="text-indigo-500" />, trend: "Recruiter shortlists", color: "indigo" },
                 { title: "Resume Nodes", value: stats?.resumeNodes || 0, icon: <FileText size={20} className="text-amber-500" />, trend: "High-fidelity files", color: "amber" },
                 { title: "Waitlist Ingress", value: stats?.waitlistCount || 0, icon: <Clock size={20} className="text-emerald-500" />, trend: "Queue position", color: "emerald" },
               ].map((stat, i) => (
@@ -157,7 +157,7 @@ export default function CandidateDashboard() {
                     <div className={`p-2 rounded-lg bg-${stat.color}-500/10 border border-${stat.color}-500/20`}>
                       {stat.icon}
                     </div>
-                    <ArrowUpRight size={16} className="text-slate-300 dark:text-neutral-700 group-hover:text-blue-500 transition-colors" />
+                    <ArrowUpRight size={16} className="text-slate-300 dark:text-slate-600 group-hover:text-violet-500 transition-colors" />
                   </div>
                   <p className="text-xs font-semibold text-slate-500 dark:text-neutral-500 uppercase tracking-wider mb-1">{stat.title}</p>
                   <div className="flex items-end gap-2">
@@ -175,15 +175,15 @@ export default function CandidateDashboard() {
                 <GlassCard className="h-full">
                   <div className="flex justify-between items-center mb-8">
                     <h2 className="text-xl font-bold tracking-tight">Intelligence Selection Roadmap</h2>
-                    <button onClick={() => router.push("/candidate/jobs")} className="text-xs font-bold text-blue-500 hover:text-blue-400 transition-colors">See All Selections →</button>
+                    <button onClick={() => router.push("/candidate/jobs")} className="text-xs font-bold text-violet-500 hover:text-violet-400 transition-colors">See All Selections →</button>
                   </div>
 
                   <div className="space-y-6">
                     {recentJobs.length > 0 ? (
                       recentJobs.slice(0, 3).map((job, idx) => (
-                        <div key={idx} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-neutral-900 border border-slate-100 dark:border-neutral-800 group hover:border-blue-500/30 transition-all gap-4">
+                        <div key={idx} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.04] group hover:border-violet-500/30 transition-all gap-4">
                           <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-neutral-950 flex items-center justify-center font-bold text-blue-500 border border-slate-200 dark:border-neutral-800 shrink-0">
+                            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-[#111118] flex items-center justify-center font-bold text-violet-500 border border-slate-200 dark:border-white/[0.06] shrink-0">
                               {job.logo}
                             </div>
                             <div>
@@ -192,8 +192,8 @@ export default function CandidateDashboard() {
                             </div>
                           </div>
                           <div className="flex items-center justify-between w-full sm:w-auto gap-4">
-                             <span className="px-2 py-1 rounded-md bg-blue-500/10 text-blue-500 text-[10px] font-bold uppercase tracking-widest">{job.status}</span>
-                             <ArrowRight size={14} className="text-slate-300 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
+                             <span className="px-2 py-1 rounded-md bg-violet-500/10 text-violet-500 text-[10px] font-bold uppercase tracking-widest">{job.status}</span>
+                             <ArrowRight size={14} className="text-slate-300 group-hover:text-violet-500 group-hover:translate-x-1 transition-all" />
                           </div>
                         </div>
                       ))
@@ -202,7 +202,7 @@ export default function CandidateDashboard() {
                         <Briefcase size={40} className="mb-3 opacity-20" />
                         <p className="font-semibold text-slate-600 dark:text-neutral-400">No Applications Yet</p>
                         <p className="text-xs mt-1">Recruiters haven't shortlisted you yet. Build your profile.</p>
-                        <button onClick={() => router.push("/candidate/profile")} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg text-xs font-bold hover:bg-blue-600 transition-colors">Build Profile</button>
+                        <button onClick={() => router.push("/candidate/profile")} className="mt-4 px-4 py-2 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white rounded-lg text-xs font-bold hover:scale-105 transition-transform shadow-glow-violet">Build Profile</button>
                       </div>
                     )}
                   </div>
@@ -214,19 +214,19 @@ export default function CandidateDashboard() {
                 
                 {/* AI Intelligence Hero */}
                 <motion.div variants={itemVars}>
-                  <div className="bg-gradient-to-tr from-blue-600 to-indigo-700 p-6 rounded-3xl border border-blue-500/30 shadow-2xl relative overflow-hidden group">
+                  <div className="bg-gradient-to-tr from-violet-600 via-fuchsia-600 to-pink-600 p-6 rounded-3xl border border-violet-500/30 shadow-glow-violet relative overflow-hidden group">
                     <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-700">
                       <Zap size={100} />
                     </div>
                     <div className="relative z-10 text-white">
                       <div className="flex items-center gap-2 mb-4">
-                        <Sparkles size={18} className="text-blue-200" />
+                        <Sparkles size={18} className="text-violet-200" />
                         <h2 className="text-lg font-bold">Matching Intelligence</h2>
                       </div>
-                      <p className="text-sm text-blue-100 leading-relaxed mb-6">
+                      <p className="text-sm text-violet-100 leading-relaxed mb-6">
                         Sync your latest achievement architecture to increase visibility to elite recruitment nodes.
                       </p>
-                      <button onClick={() => router.push("/candidate/profile")} className="w-full py-2.5 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-xl text-xs font-bold border border-white/20 transition-all">
+                      <button onClick={() => router.push("/candidate/profile")} className="w-full py-2.5 bg-white text-violet-600 hover:bg-violet-50 rounded-xl text-xs font-extrabold border border-white/20 transition-all shadow-xl">
                         Update Architecture
                       </button>
                     </div>
@@ -244,7 +244,7 @@ export default function CandidateDashboard() {
                         recentInterviews.slice(0, 2).map((interview, idx) => (
                           <div key={idx} className="p-3 rounded-xl bg-slate-50 dark:bg-neutral-900 border border-slate-100 dark:border-neutral-800">
                              <div className="flex justify-between items-start mb-2">
-                                <p className="text-[10px] font-bold text-blue-500 uppercase">{interview.date}</p>
+                                <p className="text-[10px] font-bold text-violet-500 uppercase">{interview.date}</p>
                                 <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-500 font-bold uppercase tracking-tighter">Confirmed</span>
                              </div>
                              <p className="text-xs font-bold text-slate-800 dark:text-neutral-200">{interview.company}</p>
@@ -277,15 +277,15 @@ export default function CandidateDashboard() {
               {recentJobs.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                    {recentJobs.slice(0, 3).map((job, idx) => (
-                     <GlassCard key={idx} className="hover:border-blue-500/30 transition-all group">
-                        <div className="w-10 h-10 rounded-xl bg-white dark:bg-neutral-950 flex items-center justify-center font-bold text-blue-500 shadow-sm mb-4">
+                     <GlassCard key={idx} className="hover:border-violet-500/30 transition-all group">
+                        <div className="w-10 h-10 rounded-xl bg-white dark:bg-[#111118] flex items-center justify-center font-bold text-violet-500 shadow-sm mb-4 border border-slate-200 dark:border-white/[0.06]">
                           {job.logo}
                         </div>
                         <h3 className="text-sm font-bold mb-1">{job.role}</h3>
                         <p className="text-xs text-slate-500 mb-4">{job.company}</p>
                         <div className="flex gap-2">
                            <span className="px-2 py-0.5 rounded-md bg-slate-100 dark:bg-neutral-800 text-[9px] font-bold text-slate-600 dark:text-neutral-400">{job.location}</span>
-                           <span className="px-2 py-0.5 rounded-md bg-blue-500/10 text-[9px] font-bold text-blue-500">{job.salary}</span>
+                           <span className="px-2 py-0.5 rounded-md bg-violet-500/10 text-[9px] font-bold text-violet-500">{job.salary}</span>
                         </div>
                      </GlassCard>
                    ))}

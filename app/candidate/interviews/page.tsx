@@ -28,15 +28,15 @@ function GlassCard({ children, className = "", delay = 0 }: { children: ReactNod
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
       onMouseMove={handleMouseMove}
-      className={`group relative bg-white/60 dark:bg-neutral-900/40 backdrop-blur-md border border-slate-200 dark:border-neutral-800/60 rounded-3xl overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.2)] ${className}`}
+      className={`group relative bg-white/70 dark:bg-[#111118]/70 backdrop-blur-md border border-slate-200 dark:border-white/[0.06] rounded-3xl overflow-hidden shadow-premium dark:shadow-premium-dark ${className}`}
     >
       <motion.div
         className="pointer-events-none absolute -inset-px opacity-0 transition duration-500 group-hover:opacity-100 z-[-1]"
         style={{
-          background: useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, rgba(59, 130, 246, 0.15), transparent 80%)`,
+          background: useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, rgba(139, 92, 246, 0.08), transparent 80%)`,
         }}
       />
-      <div className="absolute inset-0 bg-slate-50/80 dark:bg-neutral-950/80 -z-10" />
+      <div className="absolute inset-0 bg-white/80 dark:bg-[#0A0A0F]/80 -z-10" />
       <div className="relative z-10 w-full h-full p-6">
         {children}
       </div>
@@ -101,7 +101,7 @@ export default function InterviewsPage() {
                   <CheckCircle2 size={10} fill="currentColor" /> Preparation Optimized
               </div>
               <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-3">
-                Your Interview <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-indigo-400">Roadmap</span>
+                Your Interview <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-fuchsia-500 dark:from-violet-400 dark:to-fuchsia-400">Roadmap</span>
               </h1>
               <p className="text-slate-500 dark:text-neutral-400 font-medium">
                 We've synthesized preparation notes and interviewer architecture to give you a 92% statistical advantage.
@@ -111,7 +111,7 @@ export default function InterviewsPage() {
             {isLoading ? (
                <div className="flex flex-col items-center justify-center py-20 opacity-50">
                   <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }} className="mb-4">
-                     <Sparkles size={32} className="text-blue-500" />
+                     <Sparkles size={32} className="text-violet-500" />
                   </motion.div>
                   <p className="text-xs font-bold uppercase tracking-widest">Synchronizing Roadmap...</p>
                </div>
@@ -128,7 +128,7 @@ export default function InterviewsPage() {
                     <motion.div key={interview.id} variants={itemVars} className="flex gap-8 group">
                       {/* Circle Indicator */}
                       <div className="relative shrink-0">
-                         <div className={`w-14 h-14 rounded-2xl bg-white dark:bg-neutral-950 border-2 ${interview.status === 'SCHEDULED' ? 'border-blue-500 shadow-[0_0_20px_rgba(59,130,246,0.3)]' : 'border-slate-200 dark:border-neutral-800'} flex items-center justify-center font-bold text-blue-500 group-hover:scale-110 transition-transform duration-500 z-10 relative bg-white dark:bg-neutral-900`}>
+                         <div className={`w-14 h-14 rounded-2xl bg-white dark:bg-[#111118] border-2 ${interview.status === 'SCHEDULED' ? 'border-violet-500 shadow-glow-violet' : 'border-slate-200 dark:border-white/[0.06]'} flex items-center justify-center font-bold text-violet-500 group-hover:scale-110 transition-transform duration-500 z-10 relative`}>
                             {interview.company[0]}
                          </div>
                       </div>
@@ -138,11 +138,11 @@ export default function InterviewsPage() {
                             <div className="p-6">
                               <div className="flex justify-between items-start mb-6">
                                  <div>
-                                    <p className="text-[10px] font-bold text-blue-500 uppercase tracking-widest mb-1">{interview.date} • {interview.time}</p>
+                                    <p className="text-[10px] font-bold text-violet-500 uppercase tracking-widest mb-1">{interview.date} • {interview.time}</p>
                                     <h3 className="text-xl font-bold">{interview.company}</h3>
                                     <p className="text-sm font-semibold text-slate-500 dark:text-neutral-500">{interview.role}</p>
                                  </div>
-                                 <div className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${interview.status === 'SCHEDULED' ? 'bg-blue-500/10 text-blue-500 border border-blue-500/20' : 'bg-slate-100 dark:bg-neutral-900 text-slate-400 dark:text-neutral-600 border border-transparent'}`}>
+                                 <div className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${interview.status === 'SCHEDULED' ? 'bg-violet-500/10 text-violet-500 border border-violet-500/20' : 'bg-slate-100 dark:bg-white/[0.04] text-slate-400 dark:text-slate-600 border border-transparent'}`}>
                                     {interview.status}
                                  </div>
                               </div>
@@ -171,12 +171,12 @@ export default function InterviewsPage() {
                               {interview.prep && interview.prep.length > 0 && (
                                 <div className="border-t border-slate-100 dark:border-neutral-800/50 pt-6">
                                   <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-neutral-500 mb-4 flex items-center gap-2">
-                                      <Sparkles size={14} className="text-blue-500" /> Pre-Interview Intelligence
+                                      <Sparkles size={14} className="text-violet-500" /> Pre-Interview Intelligence
                                   </h4>
                                   <ul className="space-y-3">
                                       {interview.prep.map((item: string, idx: number) => (
                                         <li key={idx} className="flex items-start gap-3 text-xs text-slate-600 dark:text-neutral-400 leading-relaxed group/item">
-                                          <div className="mt-1 w-1.5 h-1.5 rounded-full bg-blue-500/40 group-hover/item:bg-blue-500 transition-colors" />
+                                          <div className="mt-1 w-1.5 h-1.5 rounded-full bg-violet-500/40 group-hover/item:bg-violet-500 transition-colors" />
                                           {item}
                                         </li>
                                       ))}
@@ -203,7 +203,7 @@ export default function InterviewsPage() {
                        </div>
                        <h3 className="text-lg font-bold mb-2">No interviews scheduled yet</h3>
                        <p className="text-sm text-slate-500 dark:text-neutral-400 max-w-xs">Once a recruiter shortlists you for a role, your interview roadmap will appear here.</p>
-                       <button onClick={() => router.push("/candidate/jobs")} className="mt-8 px-6 py-3 bg-blue-500 text-white rounded-2xl text-xs font-bold shadow-xl shadow-blue-500/20 hover:scale-105 transition-all">Explore Opportunities</button>
+                       <button onClick={() => router.push("/candidate/jobs")} className="mt-8 px-6 py-3 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white rounded-2xl text-xs font-bold shadow-glow-violet hover:scale-105 transition-all">Explore Opportunities</button>
                     </div>
                   )}
                 </div>
@@ -213,7 +213,7 @@ export default function InterviewsPage() {
                   
                   {/* Preparation Hero */}
                   <motion.div variants={itemVars}>
-                     <div className="bg-gradient-to-tr from-indigo-600 to-blue-700 p-8 rounded-[40px] border border-white/10 shadow-2xl relative overflow-hidden group">
+                     <div className="bg-gradient-to-tr from-violet-600 via-fuchsia-600 to-pink-600 p-8 rounded-[40px] border border-violet-500/20 shadow-glow-violet relative overflow-hidden group">
                         <div className="absolute -right-4 -top-4 p-4 opacity-10 group-hover:scale-110 transition-transform duration-700">
                            <BarChart3 size={150} />
                         </div>

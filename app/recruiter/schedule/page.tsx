@@ -21,9 +21,9 @@ function GlassCard({ children, className = "" }: { children: ReactNode, classNam
         mouseY.set(clientY - top);
     }
     return (
-        <div onMouseMove={handleMouseMove} className={`group relative bg-white/60 dark:bg-neutral-900/40 backdrop-blur-md border border-slate-200 dark:border-neutral-800/60 rounded-3xl overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.2)] ${className}`}>
-            <motion.div className="pointer-events-none absolute -inset-px opacity-0 transition duration-500 group-hover:opacity-100 z-[-1]" style={{ background: useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, rgba(59, 130, 246, 0.15), transparent 80%)` }} />
-            <div className="absolute inset-0 bg-slate-50/80 dark:bg-neutral-950/80 -z-10" />
+        <div onMouseMove={handleMouseMove} className={`group relative bg-white/70 dark:bg-[#111118]/70 backdrop-blur-md border border-slate-200 dark:border-white/[0.06] rounded-3xl overflow-hidden shadow-premium dark:shadow-premium-dark ${className}`}>
+            <motion.div className="pointer-events-none absolute -inset-px opacity-0 transition duration-500 group-hover:opacity-100 z-[-1]" style={{ background: useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, rgba(99, 102, 241, 0.08), transparent 80%)` }} />
+            <div className="absolute inset-0 bg-white/80 dark:bg-[#0A0A0F]/80 -z-10" />
             <div className="relative z-10 w-full h-full p-6">{children}</div>
         </div>
     );
@@ -58,12 +58,12 @@ const tasks = [
 const reminders = [
     { icon: <AlertCircle size={16} />, text: "Sarah Jenkins' offer deadline expires in 2 days", color: "text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/20" },
     { icon: <Star size={16} />, text: "Michael Chen received a competing offer from Google", color: "text-red-700 dark:text-red-400 bg-red-50 dark:bg-red-500/10 border-red-200 dark:border-red-500/20" },
-    { icon: <UserCheck size={16} />, text: "3 new candidates matched for DevOps Architect role", color: "text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/20" },
-    { icon: <FileText size={16} />, text: "Quarterly hiring report is due next Monday", color: "text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-purple-500/10 border-purple-200 dark:border-purple-500/20" },
+    { icon: <UserCheck size={16} />, text: "3 new candidates matched for DevOps Architect role", color: "text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 border-indigo-200 dark:border-indigo-500/20" },
+    { icon: <FileText size={16} />, text: "Quarterly hiring report is due next Monday", color: "text-violet-700 dark:text-violet-400 bg-violet-50 dark:bg-violet-500/10 border-violet-200 dark:border-violet-500/20" },
 ];
 
 const typeIcon = { video: <Video size={16} />, phone: <Phone size={16} />, chat: <MessageSquare size={16} /> };
-const priorityColor = { high: "bg-red-500", medium: "bg-amber-500", low: "bg-blue-500" };
+const priorityColor = { high: "bg-red-500", medium: "bg-amber-500", low: "bg-indigo-500" };
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function SchedulePage() {
@@ -207,17 +207,17 @@ export default function SchedulePage() {
                         <motion.div variants={itemVars} className="mb-10 flex flex-col sm:flex-row justify-between sm:items-end gap-4">
                             <div>
                                 <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 text-slate-900 dark:text-white">
-                                    Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500 dark:from-blue-400 dark:to-indigo-300">Schedule</span>
+                                    Your <span className="text-gradient-primary">Schedule</span>
                                 </h1>
                                 <p className="text-slate-500 dark:text-neutral-400 text-lg flex items-center gap-2">
-                                    <Calendar size={18} className="text-blue-500 dark:text-blue-400" />
+                                    <Calendar size={18} className="text-indigo-500" />
                                     {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })} — {interviews.length} meetings
                                 </p>
                             </div>
                             <motion.button 
                                 onClick={() => setIsModalOpen(true)}
                                 whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                                className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-500 px-5 py-3 rounded-xl text-sm font-bold shadow-[0_0_20px_rgba(59,130,246,0.3)] hover:shadow-[0_0_30px_rgba(59,130,246,0.5)] transition-shadow text-white">
+                                className="flex items-center gap-2 btn-primary px-5 py-3 rounded-xl text-sm font-bold shadow-glow-indigo hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] transition-shadow text-white">
                                 <Plus size={18} strokeWidth={3} /> New Meeting
                             </motion.button>
                         </motion.div>
@@ -241,7 +241,7 @@ export default function SchedulePage() {
                                     >
                                         <GlassCard className="!p-8">
                                             <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                                                <CalendarDays size={24} className="text-blue-500" /> Schedule Intelligence Sync
+                                                <CalendarDays size={24} className="text-indigo-500" /> Schedule Interview
                                             </h2>
                                             
                                             <div className="space-y-4">
@@ -250,7 +250,7 @@ export default function SchedulePage() {
                                                     <select 
                                                         value={formData.candidateId}
                                                         onChange={(e) => setFormData(prev => ({ ...prev, candidateId: e.target.value }))}
-                                                        className="w-full bg-slate-100 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 p-3 rounded-xl text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                                                        className="w-full bg-slate-50 dark:bg-[#111118] border border-slate-200 dark:border-white/[0.08] p-3 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 transition-all"
                                                     >
                                                         <option value="">Select Candidate...</option>
                                                         {candidates.map(c => <option key={c.id} value={c.id}>{c.name} ({c.role})</option>)}
@@ -262,7 +262,7 @@ export default function SchedulePage() {
                                                     <select 
                                                         value={formData.jobId}
                                                         onChange={(e) => setFormData(prev => ({ ...prev, jobId: e.target.value }))}
-                                                        className="w-full bg-slate-100 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 p-3 rounded-xl text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                                                        className="w-full bg-slate-50 dark:bg-[#111118] border border-slate-200 dark:border-white/[0.08] p-3 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 transition-all"
                                                     >
                                                         <option value="">Select Job...</option>
                                                         {jobs.map(j => <option key={j.id} value={j.id}>{j.title}</option>)}
@@ -276,7 +276,7 @@ export default function SchedulePage() {
                                                             type="date"
                                                             value={formData.date}
                                                             onChange={(e) => setFormData(prev => ({ ...prev, date: e.target.value }))}
-                                                            className="w-full bg-slate-100 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 p-3 rounded-xl text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                                                            className="w-full bg-slate-50 dark:bg-[#111118] border border-slate-200 dark:border-white/[0.08] p-3 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 transition-all"
                                                         />
                                                     </div>
                                                     <div>
@@ -285,7 +285,7 @@ export default function SchedulePage() {
                                                             type="time"
                                                             value={formData.time}
                                                             onChange={(e) => setFormData(prev => ({ ...prev, time: e.target.value }))}
-                                                            className="w-full bg-slate-100 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 p-3 rounded-xl text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                                                            className="w-full bg-slate-50 dark:bg-[#111118] border border-slate-200 dark:border-white/[0.08] p-3 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 transition-all"
                                                         />
                                                     </div>
                                                 </div>
@@ -295,7 +295,7 @@ export default function SchedulePage() {
                                                     <select 
                                                         value={formData.platform}
                                                         onChange={(e) => setFormData(prev => ({ ...prev, platform: e.target.value }))}
-                                                        className="w-full bg-slate-100 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 p-3 rounded-xl text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                                                        className="w-full bg-slate-50 dark:bg-[#111118] border border-slate-200 dark:border-white/[0.08] p-3 rounded-xl text-sm focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 transition-all"
                                                     >
                                                         <option value="Google Meet">Google Meet</option>
                                                         <option value="Zoom">Zoom</option>
@@ -313,7 +313,7 @@ export default function SchedulePage() {
                                                     </button>
                                                     <button 
                                                         onClick={handleSchedule}
-                                                        className="flex-1 py-3 rounded-xl bg-blue-600 text-white font-bold text-sm shadow-lg shadow-blue-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                                                        className="flex-1 py-3 rounded-xl btn-primary text-sm shadow-glow-indigo hover:scale-[1.02] active:scale-[0.98] transition-all"
                                                     >
                                                         Confirm Sync
                                                     </button>
@@ -330,7 +330,7 @@ export default function SchedulePage() {
                             <GlassCard>
                                 <div className="flex items-center justify-between mb-6">
                                     <h2 className="text-xl font-bold tracking-tight flex items-center gap-2 text-slate-900 dark:text-white">
-                                        <Clock size={20} className="text-blue-500 dark:text-blue-400" /> Today&apos;s Agenda
+                                        <Clock size={20} className="text-indigo-500" /> Today&apos;s Agenda
                                     </h2>
                                     <span className="text-xs bg-emerald-500/10 text-emerald-400 px-3 py-1 rounded-full border border-emerald-500/20 font-bold">
                                         {todayMeetings.filter(m => m.status === "confirmed").length} confirmed
@@ -359,13 +359,13 @@ export default function SchedulePage() {
                                              </div>
  
                                              {/* Avatar */}
-                                             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-sm font-bold text-white shrink-0 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
+                                             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-sm font-bold text-white shrink-0 shadow-glow-indigo">
                                                  {m.shortlist.candidate.name.substring(0, 2).toUpperCase()}
                                              </div>
  
                                              {/* Details */}
                                              <div className="flex-1 min-w-0">
-                                                 <p className="font-semibold text-sm text-slate-900 dark:text-white truncate group-hover:text-blue-600 dark:group-hover:text-blue-300 transition-colors">{m.shortlist.candidate.name} — Interview</p>
+                                                 <p className="font-semibold text-sm text-slate-900 dark:text-white truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">{m.shortlist.candidate.name} — Interview</p>
                                                  <p className="text-xs text-slate-500 dark:text-neutral-500 truncate">{m.shortlist.job.title}</p>
                                              </div>
  
@@ -375,14 +375,14 @@ export default function SchedulePage() {
                                                      <Video size={16} />
                                                      <span className="capitalize">{m.platform}</span>
                                                  </div>
-                                                 <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold border ${m.status === "SCHEDULED" ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30" : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30"}`}>
+                                                 <span className={`text-[10px] px-2.5 py-1 rounded-full font-bold border ${m.status === "SCHEDULED" ? "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/25" : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/25"}`}>
                                                      {m.status}
                                                  </span>
                                              </div>
  
                                              {/* Join button */}
                                              <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                                                 className="bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 px-3 py-2 rounded-xl text-xs font-bold hover:bg-blue-100 dark:hover:bg-blue-500/20 transition-colors shrink-0 flex items-center gap-1.5">
+                                                 className="bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 px-3 py-2 rounded-xl text-xs font-bold hover:bg-indigo-100 dark:hover:bg-indigo-500/20 transition-colors shrink-0 flex items-center gap-1.5">
                                                  <ExternalLink size={12} /> Join
                                              </motion.button>
                                          </motion.div>
@@ -488,7 +488,7 @@ export default function SchedulePage() {
 
                         {/* ── AI Insight ────────────────────────────── */}
                         <motion.div variants={itemVars} className="mb-10">
-                            <div className="bg-gradient-to-br from-blue-600 to-indigo-600 p-6 rounded-3xl border border-blue-500 shadow-[0_20px_40px_rgba(59,130,246,0.3)] relative overflow-hidden group">
+                            <div className="bg-gradient-to-br from-indigo-600 via-violet-600 to-purple-600 p-6 rounded-3xl border border-indigo-500/30 shadow-glow-indigo relative overflow-hidden group">
                                 <div className="absolute top-0 right-0 p-4 opacity-40 transform rotate-12 scale-150 group-hover:rotate-45 group-hover:scale-110 transition-transform duration-700 pointer-events-none">
                                     <Sparkles size={100} strokeWidth={1} className="text-white" />
                                 </div>

@@ -1,13 +1,20 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ArrowRight } from "lucide-react";
 
 export default function Navbar() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navItems = [
     { name: "For Recruiters", href: "/login?role=recruiter" },
@@ -26,8 +33,8 @@ export default function Navbar() {
         type: "spring",
         stiffness: 100,
         damping: 20,
-        staggerChildren: 0.1,
-        delayChildren: 0.2
+        staggerChildren: 0.08,
+        delayChildren: 0.15
       }
     }
   };
@@ -37,51 +44,37 @@ export default function Navbar() {
     visible: { y: 0, opacity: 1, transition: { type: "spring", stiffness: 300, damping: 24 } }
   };
 
-  const mobileMenuVariants: Variants = {
-    closed: { opacity: 0, height: 0, transition: { duration: 0.3 } },
-    open: {
-      opacity: 1,
-      height: "auto",
-      transition: {
-        duration: 0.3,
-        staggerChildren: 0.1,
-        delayChildren: 0.1
-      }
-    }
-  };
-
-  const mobileItemVariants: Variants = {
-    closed: { x: -20, opacity: 0 },
-    open: { x: 0, opacity: 1, transition: { type: "spring", stiffness: 300, damping: 24 } }
-  };
-
   return (
     <motion.nav
       initial="hidden"
       animate="visible"
       variants={navVariants}
-      className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-white/80 dark:bg-black/80 border-b border-slate-200 dark:border-white/10 transition-colors duration-300"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? "backdrop-blur-2xl bg-white/80 dark:bg-[#0A0A0F]/80 border-b border-slate-200/50 dark:border-white/[0.06] shadow-[0_1px_3px_rgba(0,0,0,0.05)]"
+          : "backdrop-blur-md bg-white/50 dark:bg-transparent border-b border-transparent"
+      }`}
     >
-      <div className="w-full px-6 md:px-10 py-4 md:py-5 flex items-center justify-between">
+      <div className="w-full px-6 md:px-10 py-4 md:py-5 flex items-center justify-between max-w-[1920px] mx-auto">
 
         {/* Logo */}
         <Link href="/">
           <motion.div
             variants={itemVariants}
-            whileHover={{ scale: 1.05, rotate: [0, -5, 5, 0], transition: { duration: 0.5 } }}
+            whileHover={{ scale: 1.04 }}
             className="flex items-center gap-3 cursor-pointer"
           >
             <div className="relative w-8 h-8 md:w-9 md:h-9">
-              <Image src="/logo.png" alt="Mr. Hyre" fill sizes="36px" className="object-contain drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+              <Image src="/logo.png" alt="Mr. Hyre" fill sizes="36px" className="object-contain drop-shadow-[0_0_10px_rgba(99,102,241,0.5)]" />
             </div>
-            <span className="text-xl md:text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-neutral-400">
+            <span className="text-xl md:text-2xl font-bold tracking-tight text-gradient-primary">
               Mr. Hyre
             </span>
           </motion.div>
         </Link>
 
         {/* Desktop Menu */}
-        <motion.div variants={itemVariants} className="hidden md:flex items-center gap-2 relative">
+        <motion.div variants={itemVariants} className="hidden md:flex items-center gap-1 relative">
           {navItems.map((item, index) => (
             <div
               key={item.name}
@@ -91,7 +84,7 @@ export default function Navbar() {
             >
               <Link
                 href={item.href}
-                className={`relative z-10 text-sm font-medium transition-colors duration-300 ${hoveredIndex === index ? "text-blue-600 dark:text-white" : "text-slate-600 dark:text-neutral-400"
+                className={`relative z-10 text-sm font-medium transition-colors duration-300 ${hoveredIndex === index ? "text-indigo-600 dark:text-white" : "text-slate-600 dark:text-slate-400"
                   }`}
               >
                 {item.name}
@@ -100,11 +93,11 @@ export default function Navbar() {
                 {hoveredIndex === index && (
                   <motion.div
                     layoutId="navbar-hover"
-                    initial={{ opacity: 0, scale: 0.8 }}
+                    initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                    className="absolute inset-0 bg-slate-100 dark:bg-white/10 rounded-full z-0 pointer-events-none"
+                    className="absolute inset-0 bg-indigo-50 dark:bg-indigo-500/10 rounded-full z-0 pointer-events-none"
                   />
                 )}
               </AnimatePresence>
@@ -116,9 +109,9 @@ export default function Navbar() {
         <motion.div variants={itemVariants} className="hidden md:flex items-center gap-4">
           <Link href="/login">
             <motion.button
-              whileHover={{ scale: 1.05, color: "#3182ce" }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="text-slate-600 dark:text-neutral-400 text-sm font-medium px-4 py-2 transition-colors"
+              className="text-slate-600 dark:text-slate-400 text-sm font-medium px-4 py-2 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
             >
               Login
             </motion.button>
@@ -126,69 +119,74 @@ export default function Navbar() {
 
           <Link href="/signup">
             <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="relative px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full text-white font-medium text-sm overflow-hidden group shadow-[0_0_20px_rgba(37,99,235,0.4)] hover:shadow-[0_0_30px_rgba(37,99,235,0.6)] transition-shadow duration-300"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+              className="relative px-6 py-2.5 bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 rounded-full text-white font-semibold text-sm overflow-hidden group shadow-glow-indigo hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] transition-shadow duration-500"
             >
               <span className="relative z-10 flex items-center gap-2">
-                Sign Up
-                <motion.span
-                  initial={{ x: 0 }}
-                  whileHover={{ x: 3 }}
-                  transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                >
-                  →
-                </motion.span>
+                Get Started
+                <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform duration-300" />
               </span>
 
-              {/* Animated Inner Shine */}
+              {/* Animated shimmer */}
               <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12"
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent"
                 initial={{ x: "-100%" }}
                 animate={{ x: "200%" }}
                 transition={{
                   repeat: Infinity,
                   repeatType: "loop",
-                  duration: 2.5,
+                  duration: 3,
                   ease: "linear",
-                  repeatDelay: 0.5
+                  repeatDelay: 1
                 }}
               />
             </motion.button>
           </Link>
         </motion.div>
 
-        {/* Mobile Hamburger Toggle */}
+        {/* Mobile Hamburger */}
         <motion.div variants={itemVariants} className="md:hidden flex items-center">
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="text-slate-600 dark:text-neutral-400 hover:text-blue-600 dark:hover:text-white transition-colors p-2 focus:outline-none"
+            className="text-slate-600 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-white transition-colors p-2 focus:outline-none"
           >
-            {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            <AnimatePresence mode="wait">
+              {isMobileMenuOpen ? (
+                <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                  <X size={28} />
+                </motion.div>
+              ) : (
+                <motion.div key="menu" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }} transition={{ duration: 0.2 }}>
+                  <Menu size={28} />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </button>
         </motion.div>
 
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            variants={mobileMenuVariants}
-            initial="closed"
-            animate="open"
-            exit="closed"
-            className="md:hidden flex flex-col bg-white/95 dark:bg-black/95 px-6 pt-4 pb-8 gap-4 overflow-hidden border-t border-slate-100 dark:border-white/5 shadow-xl"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto", transition: { duration: 0.35, ease: [0.22, 1, 0.36, 1], staggerChildren: 0.06, delayChildren: 0.08 } }}
+            exit={{ opacity: 0, height: 0, transition: { duration: 0.25, ease: "easeIn" } }}
+            className="md:hidden flex flex-col bg-white/95 dark:bg-[#0A0A0F]/95 backdrop-blur-2xl px-6 pt-4 pb-8 gap-2 overflow-hidden border-t border-slate-100 dark:border-white/[0.04] shadow-xl"
           >
             {navItems.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block text-lg font-medium text-slate-700 dark:text-neutral-300 hover:text-blue-600 dark:hover:text-white transition-colors py-2 border-b border-slate-100 dark:border-white/5"
+                className="block text-lg font-medium text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white transition-colors py-3 border-b border-slate-100 dark:border-white/[0.04]"
               >
                 <motion.span
-                  whileHover={{ x: 10 }}
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  whileHover={{ x: 8 }}
                   className="block w-full"
                 >
                   {item.name}
@@ -196,28 +194,28 @@ export default function Navbar() {
               </Link>
             ))}
 
-            <motion.div variants={mobileItemVariants} className="flex flex-col gap-4 mt-4">
+            <div className="flex flex-col gap-3 mt-4">
               <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                <button className="w-full text-center text-slate-700 dark:text-neutral-300 hover:text-blue-600 dark:hover:text-white py-3 border border-slate-200 dark:border-white/10 rounded-xl transition-colors font-medium">
+                <button className="w-full text-center text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-white py-3 border border-slate-200 dark:border-white/[0.08] rounded-xl transition-colors font-medium">
                   Login
                 </button>
               </Link>
               <Link href="/signup" onClick={() => setIsMobileMenuOpen(false)}>
-                <button className="relative w-full text-center py-3 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl text-white font-medium overflow-hidden shadow-[0_0_20px_rgba(37,99,235,0.4)]">
-                  Sign Up
+                <button className="w-full text-center py-3 bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 rounded-xl text-white font-semibold overflow-hidden shadow-glow-indigo">
+                  Get Started
                 </button>
               </Link>
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Animated Bottom Line */}
+      {/* Animated bottom line */}
       <motion.div
         initial={{ scaleX: 0, opacity: 0 }}
         animate={{ scaleX: 1, opacity: 1 }}
         transition={{ delay: 0.6, duration: 1, ease: "easeOut" }}
-        className="h-[1px] bg-gradient-to-r from-transparent via-blue-500/50 to-transparent w-full origin-center"
+        className="h-[1px] bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent w-full origin-center"
       />
     </motion.nav>
   );

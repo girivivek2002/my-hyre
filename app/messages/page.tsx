@@ -21,9 +21,9 @@ function GlassCard({ children, className = "" }: { children: ReactNode, classNam
     mouseY.set(clientY - top);
   }
   return (
-    <div onMouseMove={handleMouseMove} className={`group relative bg-white/60 dark:bg-neutral-900/40 backdrop-blur-md border border-slate-200 dark:border-neutral-800/60 rounded-3xl overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.05)] dark:shadow-[0_20px_40px_rgba(0,0,0,0.2)] ${className}`}>
-      <motion.div className="pointer-events-none absolute -inset-px opacity-0 transition duration-500 group-hover:opacity-100 z-[-1]" style={{ background: useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, rgba(59, 130, 246, 0.15), transparent 80%)` }} />
-      <div className="absolute inset-0 bg-slate-50/80 dark:bg-neutral-950/80 -z-10" />
+    <div onMouseMove={handleMouseMove} className={`group relative bg-white/70 dark:bg-[#111118]/70 backdrop-blur-md border border-slate-200 dark:border-white/[0.06] rounded-3xl overflow-hidden shadow-premium dark:shadow-premium-dark ${className}`}>
+      <motion.div className="pointer-events-none absolute -inset-px opacity-0 transition duration-500 group-hover:opacity-100 z-[-1]" style={{ background: useMotionTemplate`radial-gradient(400px circle at ${mouseX}px ${mouseY}px, rgba(99, 102, 241, 0.08), transparent 80%)` }} />
+      <div className="absolute inset-0 bg-white/80 dark:bg-[#0A0A0F]/80 -z-10" />
       <div className="relative z-10 w-full h-full">{children}</div>
     </div>
   );
@@ -140,13 +140,13 @@ export default function MessagingPage() {
   if (!mounted || isLoading) return null;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#050505] text-slate-900 dark:text-white flex overflow-hidden selection:bg-blue-500/30 font-sans transition-colors duration-300">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0A0A0F] text-slate-900 dark:text-white flex overflow-hidden selection:bg-indigo-500/30 font-sans transition-colors duration-300">
       
-      <div className="absolute top-[-10%] right-[-10%] w-[80%] h-[80%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-blue-100/40 via-transparent to-transparent dark:from-blue-900/10 dark:via-transparent dark:to-transparent pointer-events-none -z-10 blur-[120px]" />
+      <div className="absolute top-[-10%] right-[-10%] w-[80%] h-[80%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-100/40 via-transparent to-transparent dark:from-indigo-900/10 dark:via-transparent dark:to-transparent pointer-events-none -z-10 blur-[120px]" />
 
       {/* Sidebar */}
       <motion.div initial={{ x: -100, opacity: 0 }} animate={{ x: 0, opacity: 1 }}
-        className="w-20 bg-white/50 dark:bg-neutral-950/50 backdrop-blur-2xl border-r border-slate-200 dark:border-neutral-800/60 flex flex-col items-center py-8 z-20 shrink-0 shadow-2xl">
+        className="w-20 bg-white/50 dark:bg-[#0A0A0F]/80 backdrop-blur-2xl border-r border-slate-200 dark:border-white/[0.04] flex flex-col items-center py-8 z-20 shrink-0 shadow-premium dark:shadow-premium-dark">
         <Image src="/logo.png" alt="Logo" width={32} height={32} className="mb-10 cursor-pointer" onClick={() => router.push(`/${user?.role}/dashboard`)} />
         <div className="space-y-4">
           {[
@@ -155,7 +155,7 @@ export default function MessagingPage() {
             { icon: <Briefcase size={22} />, path: `/${user?.role === 'candidate' ? 'candidate/jobs' : 'recruiter/candidates'}` },
             { icon: <Settings size={22} />, path: `/${user?.role}/profile` },
           ].map((item, i) => (
-            <div key={i} onClick={() => item.path && router.push(item.path)} className={`w-12 h-12 rounded-2xl flex items-center justify-center cursor-pointer transition-all ${item.active ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/30' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-neutral-900 hover:text-blue-500'}`}>
+            <div key={i} onClick={() => item.path && router.push(item.path)} className={`w-12 h-12 rounded-2xl flex items-center justify-center cursor-pointer transition-all ${item.active ? 'bg-gradient-to-br from-indigo-500 to-violet-600 text-white shadow-glow-indigo' : 'text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04] hover:text-indigo-500'}`}>
                {item.icon}
             </div>
           ))}
@@ -163,19 +163,19 @@ export default function MessagingPage() {
       </motion.div>
 
       {/* Chat List */}
-      <div className="w-80 sm:w-96 border-r border-slate-200 dark:border-neutral-800/60 bg-white/30 dark:bg-neutral-950/30 backdrop-blur-md flex flex-col shrink-0">
-         <div className="p-6 border-b border-slate-200 dark:border-neutral-800/60">
+      <div className="w-80 sm:w-96 border-r border-slate-200 dark:border-white/[0.04] bg-white/30 dark:bg-[#0A0A0F]/50 backdrop-blur-md flex flex-col shrink-0">
+         <div className="p-6 border-b border-slate-200 dark:border-white/[0.04]">
             <h1 className="text-xl font-bold mb-4 tracking-tight">Intelligence Inbox</h1>
             <div className="relative">
                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
-               <input placeholder="Search conversations..." className="w-full bg-slate-100/50 dark:bg-neutral-900/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-2 pl-10 pr-4 text-xs focus:outline-none focus:border-blue-500/50 transition-all" />
+               <input placeholder="Search conversations..." className="w-full bg-slate-50/50 dark:bg-[#111118] border border-slate-200 dark:border-white/[0.08] rounded-xl py-2 pl-10 pr-4 text-xs focus:outline-none focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/20 transition-all" />
             </div>
          </div>
          <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1">
             {chats.length > 0 ? chats.map((chat) => (
-              <div key={chat.id} onClick={() => setActiveChat(chat)} className={`p-4 rounded-2xl cursor-pointer transition-all flex gap-4 relative group ${activeChat?.id === chat.id ? 'bg-white dark:bg-neutral-900 shadow-xl' : 'hover:bg-slate-100/50 dark:hover:bg-neutral-900/40'}`}>
+              <div key={chat.id} onClick={() => setActiveChat(chat)} className={`p-4 rounded-2xl cursor-pointer transition-all flex gap-4 relative group ${activeChat?.id === chat.id ? 'bg-white dark:bg-white/[0.03] shadow-premium dark:shadow-premium-dark border border-indigo-500/20' : 'hover:bg-slate-50/50 dark:hover:bg-white/[0.02] border border-transparent'}`}>
                  <div className="relative shrink-0">
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-sm shadow-inner mt-1">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-bold text-sm shadow-lg mt-1">
                        {chat.avatar}
                     </div>
                     {chat.online && <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-emerald-500 border-2 border-white dark:border-neutral-950 rounded-full" />}
@@ -187,7 +187,7 @@ export default function MessagingPage() {
                     </div>
                     <p className="text-xs text-slate-500 dark:text-neutral-500 truncate mb-1">{chat.lastMsg}</p>
                     <div className="flex items-center gap-2">
-                       <span className="text-[9px] px-1.5 py-0.5 bg-blue-500/10 text-blue-500 rounded font-bold uppercase tracking-tighter border border-blue-500/10">{chat.company}</span>
+                       <span className="text-[9px] px-1.5 py-0.5 bg-indigo-500/10 text-indigo-500 rounded font-bold uppercase tracking-tighter border border-indigo-500/15">{chat.company}</span>
                        <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-tighter">{chat.match}% Match</span>
                     </div>
                  </div>
@@ -202,9 +202,9 @@ export default function MessagingPage() {
       <div className="flex-1 flex flex-col bg-white/20 dark:bg-black/20 backdrop-blur-sm relative">
          {activeChat ? (
            <>
-              <div className="h-20 border-b border-slate-200 dark:border-neutral-800/60 px-8 flex justify-between items-center bg-white/40 dark:bg-neutral-950/40 shrink-0">
+              <div className="h-20 border-b border-slate-200 dark:border-white/[0.04] px-8 flex justify-between items-center bg-white/40 dark:bg-[#0A0A0F]/60 shrink-0 backdrop-blur-md">
                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-lg">
+                    <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white font-bold text-xs shadow-glow-indigo">
                        {activeChat.avatar}
                     </div>
                     <div>
@@ -216,7 +216,7 @@ export default function MessagingPage() {
                     <button className="hover:text-blue-500 transition-colors"><Phone size={18} /></button>
                     <button className="hover:text-blue-500 transition-colors"><Video size={18} /></button>
                     <div className="w-px h-6 bg-slate-200 dark:bg-neutral-800 mx-2" />
-                    <button className="hover:text-blue-500 transition-colors"><Info size={18} /></button>
+                    <button className="hover:text-indigo-500 transition-colors"><Info size={18} /></button>
                  </div>
               </div>
 
@@ -227,12 +227,12 @@ export default function MessagingPage() {
                    return (
                     <motion.div key={msg.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                       <div className={`max-w-[70%] space-y-2 ${isMe ? 'items-end' : 'items-start'}`}>
-                          <div className={`p-4 rounded-2xl text-sm leading-relaxed shadow-sm ${isMe ? 'bg-blue-600 text-white rounded-tr-none' : 'bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-tl-none'}`}>
+                          <div className={`p-4 rounded-2xl text-sm leading-relaxed shadow-sm ${isMe ? 'bg-gradient-to-br from-indigo-600 to-violet-600 text-white rounded-tr-none shadow-glow-indigo' : 'bg-white dark:bg-[#111118] border border-slate-200 dark:border-white/[0.06] rounded-tl-none'}`}>
                             {msg.content}
                           </div>
                           <div className="flex items-center gap-2 px-1">
                             <span className="text-[10px] text-slate-400 font-medium">{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                            {isMe && <CheckCheck size={12} className="text-blue-500" />}
+                            {isMe && <CheckCheck size={12} className="text-indigo-400" />}
                           </div>
                       </div>
                     </motion.div>
@@ -249,8 +249,8 @@ export default function MessagingPage() {
               <div className="p-6 shrink-0">
                  <GlassCard className="!rounded-[32px] overflow-visible">
                     <div className="p-2 flex items-end gap-2">
-                       <button className="p-3 text-slate-400 hover:text-blue-500 transition-colors"><Smile size={20} /></button>
-                       <button className="p-3 text-slate-400 hover:text-blue-500 transition-colors"><Paperclip size={20} /></button>
+                       <button className="p-3 text-slate-400 hover:text-indigo-500 transition-colors"><Smile size={20} /></button>
+                       <button className="p-3 text-slate-400 hover:text-indigo-500 transition-colors"><Paperclip size={20} /></button>
                        <textarea 
                         value={msgInput} 
                         onChange={(e) => setMsgInput(e.target.value)} 
@@ -259,7 +259,7 @@ export default function MessagingPage() {
                         rows={1} 
                         className="flex-1 bg-transparent py-3 px-2 text-sm focus:outline-none resize-none no-scrollbar font-medium" 
                        />
-                       <button onClick={handleSendMessage} className="p-3 bg-blue-600 text-white rounded-2xl shadow-xl shadow-blue-500/20 hover:scale-105 active:scale-95 transition-all">
+                       <button onClick={handleSendMessage} className="p-3 bg-gradient-to-br from-indigo-600 to-violet-600 text-white rounded-2xl shadow-glow-indigo hover:scale-105 active:scale-95 transition-all">
                           <Send size={20} />
                        </button>
                     </div>
@@ -276,13 +276,13 @@ export default function MessagingPage() {
       </div>
 
       {/* Right Intelligence Pane */}
-      <div className="hidden xl:flex w-80 border-l border-slate-200 dark:border-neutral-800/60 bg-white/30 dark:bg-neutral-950/30 backdrop-blur-md flex-col p-8 space-y-8 shrink-0 overflow-y-auto no-scrollbar">
+      <div className="hidden xl:flex w-80 border-l border-slate-200 dark:border-white/[0.04] bg-white/30 dark:bg-[#0A0A0F]/50 backdrop-blur-md flex-col p-8 space-y-8 shrink-0 overflow-y-auto no-scrollbar">
          {activeChat && (
            <>
               <h2 className="text-xs font-bold text-slate-400 uppercase tracking-[0.2em] mb-4">Context Hub</h2>
               <div className="space-y-6">
                 <div className="text-center">
-                   <div className="w-20 h-20 rounded-[30px] bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white text-2xl font-extrabold shadow-2xl mx-auto mb-4 relative">
+                   <div className="w-20 h-20 rounded-[30px] bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center text-white text-2xl font-extrabold shadow-glow-indigo mx-auto mb-4 relative">
                       {activeChat.avatar}
                    </div>
                    <h3 className="text-lg font-bold">{activeChat.name}</h3>
@@ -290,8 +290,8 @@ export default function MessagingPage() {
                 </div>
 
                 <div className="flex justify-center gap-3">
-                   <div className="px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-lg text-[10px] font-bold text-blue-500">95% FIT</div>
-                   <div className="px-3 py-1 bg-purple-500/10 border border-purple-500/20 rounded-lg text-[10px] font-bold text-purple-500">VERIFIED</div>
+                   <div className="px-3 py-1 bg-indigo-500/10 border border-indigo-500/20 rounded-lg text-[10px] font-bold text-indigo-500">95% FIT</div>
+                   <div className="px-3 py-1 bg-violet-500/10 border border-violet-500/20 rounded-lg text-[10px] font-bold text-violet-500">VERIFIED</div>
                 </div>
 
                 <GlassCard className="!p-5">

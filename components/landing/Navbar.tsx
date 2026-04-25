@@ -9,96 +9,85 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const navLinks = [
-    { name: "About", href: "#" },
-    { name: "Recruiters", href: "#" },
-    { name: "Candidates", href: "#" },
-    { name: "Support", href: "#" },
+    { name: "Features", href: "#features" },
+    { name: "Recruiters", href: "#recruiters" },
+    { name: "Pricing", href: "#pricing" },
+    { name: "Testimonials", href: "#testimonials" },
   ];
 
   return (
-    <div className="fixed top-6 left-0 right-0 z-[100] px-6">
+    <div className="fixed top-5 left-0 right-0 z-[100] px-6">
       <motion.nav
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className={`max-w-7xl mx-auto rounded-full transition-all duration-500 border border-white/10 ${
-          scrolled 
-            ? "bg-black/40 backdrop-blur-3xl py-3 px-8 shadow-2xl" 
-            : "bg-white/5 backdrop-blur-2xl py-4 px-10"
-        } flex items-center justify-between`}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className={`max-w-5xl mx-auto rounded-full transition-all duration-500 flex items-center justify-between ${
+          scrolled
+            ? "bg-white/70 backdrop-blur-2xl shadow-[0_2px_20px_rgba(0,0,0,0.06)] border border-slate-200/60 py-2.5 px-6"
+            : "bg-white/40 backdrop-blur-xl border border-slate-200/40 py-3 px-8"
+        }`}
       >
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-             <div className="w-4 h-4 bg-black rounded-sm" />
+        <Link href="/" className="flex items-center gap-2.5 group">
+          <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform">
+            <div className="w-3.5 h-3.5 bg-white rounded-sm" />
           </div>
-          <span className="text-white font-bold tracking-tight text-lg">Mr. Hyre</span>
+          <span className="text-slate-900 font-bold tracking-tight text-lg">Mr. Hyre</span>
         </Link>
 
-        {/* Links (Desktop) */}
-        <div className="hidden md:flex items-center gap-10">
+        {/* Links */}
+        <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
             <Link
               key={link.name}
               href={link.href}
-              className="text-white/70 hover:text-white text-sm font-medium transition-colors"
+              className="text-slate-500 hover:text-slate-900 text-sm font-medium transition-colors duration-300"
             >
               {link.name}
             </Link>
           ))}
         </div>
 
-        {/* Action (Desktop) */}
-        <div className="hidden md:block">
-          <Link 
-            href="/login" 
-            className="px-6 py-2 bg-white text-black rounded-full text-sm font-bold hover:scale-105 transition-transform"
+        {/* CTA */}
+        <div className="hidden md:flex items-center gap-3">
+          <Link href="/login" className="text-slate-600 hover:text-slate-900 text-sm font-medium transition-colors px-4 py-2">
+            Log in
+          </Link>
+          <Link
+            href="/login"
+            className="px-5 py-2 bg-indigo-600 text-white rounded-full text-sm font-semibold hover:bg-indigo-700 hover:scale-105 transition-all duration-300 shadow-[0_2px_8px_rgba(99,102,241,0.3)]"
           >
-            Login
+            Get Started
           </Link>
         </div>
 
-        {/* Mobile Menu Toggle */}
-        <button
-          className="md:hidden text-white"
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        >
-          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        {/* Mobile */}
+        <button className="md:hidden text-slate-700" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
         </button>
       </motion.nav>
 
-      {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="absolute top-20 left-6 right-6 bg-black/80 backdrop-blur-3xl border border-white/10 rounded-3xl p-8 flex flex-col gap-6 md:hidden z-[101]"
+            initial={{ opacity: 0, y: -10, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.98 }}
+            className="absolute top-20 left-6 right-6 bg-white/90 backdrop-blur-2xl border border-slate-200/60 rounded-2xl p-6 flex flex-col gap-4 md:hidden shadow-xl z-[101]"
           >
             {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-white/80 text-lg font-medium"
-              >
+              <Link key={link.name} href={link.href} onClick={() => setMobileMenuOpen(false)} className="text-slate-700 text-base font-medium py-2">
                 {link.name}
               </Link>
             ))}
-            <Link
-              href="/login"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full py-4 bg-white text-black text-center rounded-2xl font-bold"
-            >
-              Login
+            <Link href="/login" onClick={() => setMobileMenuOpen(false)} className="w-full py-3 bg-indigo-600 text-white text-center rounded-xl font-semibold mt-2">
+              Get Started
             </Link>
           </motion.div>
         )}

@@ -26,12 +26,20 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
     if (logo) setUserLogo(logo);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem("authToken");
     localStorage.removeItem("userName");
     localStorage.removeItem("userLogo");
     localStorage.removeItem("userRole");
-    window.location.href = "/login";
+    // Clear the custom JWT cookie
+    document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    
+    try {
+      const { signOut } = await import("next-auth/react");
+      await signOut({ callbackUrl: "/login" });
+    } catch (e) {
+      window.location.href = "/login";
+    }
   };
 
   const recruiterLinks = [

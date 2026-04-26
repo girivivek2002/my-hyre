@@ -115,13 +115,20 @@ export default function CompanyProfile() {
         }
     };
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         localStorage.removeItem("authToken");
         localStorage.removeItem("userName");
         localStorage.removeItem("userLogo");
         localStorage.removeItem("userRole");
-        // Force a full page reload to clear all in-memory state and caches
-        window.location.href = "/login";
+        // Clear the custom JWT cookie
+        document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        
+        try {
+            const { signOut } = await import("next-auth/react");
+            await signOut({ callbackUrl: "/login" });
+        } catch (e) {
+            window.location.href = "/login";
+        }
     };
 
     const handleSave = async () => {

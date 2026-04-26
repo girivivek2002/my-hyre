@@ -16,29 +16,45 @@ export async function getSession(req: NextRequest) {
   let userName: string | null = null;
   let userRole: string | null = null;
 
-  // 1. Try NextAuth
-  const nextAuthToken = await getToken({ req, secret: NEXTAUTH_SECRET });
-  if (nextAuthToken) {
-    userId = (nextAuthToken.userId as string) || null;
-    userEmail = nextAuthToken.email || null;
-    userName = nextAuthToken.name || null;
-    userRole = (nextAuthToken.role as string) || null;
+  // 1. Try Explicit Authorization Header (Custom JWT) FIRST
+  const auth = req.headers.get("authorization");
+  const bearerToken = auth?.startsWith("Bearer ") ? auth.split(" ")[1] : null;
+
+  if (bearerToken && bearerToken !== "null") {
+    try {
+      const decoded: any = jwt.verify(bearerToken, JWT_SECRET);
+      userId = decoded.id;
+      userEmail = decoded.email;
+      userName = decoded.name;
+      userRole = decoded.role;
+    } catch (err) {
+      // Invalid bearer token
+    }
   }
 
-  // 2. Try Custom JWT (Header or Cookie) as fallback or primary for manual login
+  // 2. Try NextAuth Token if no valid bearer token
   if (!userId) {
-    const auth = req.headers.get("authorization");
-    const token = auth?.startsWith("Bearer ") ? auth.split(" ")[1] : req.cookies.get("authToken")?.value;
-    
-    if (token && token !== "null") {
+    const nextAuthToken = await getToken({ req, secret: NEXTAUTH_SECRET });
+    if (nextAuthToken) {
+      userId = (nextAuthToken.userId as string) || null;
+      userEmail = nextAuthToken.email || null;
+      userName = nextAuthToken.name || null;
+      userRole = (nextAuthToken.role as string) || null;
+    }
+  }
+
+  // 3. Try Custom JWT Cookie as last resort
+  if (!userId) {
+    const cookieToken = req.cookies.get("authToken")?.value;
+    if (cookieToken && cookieToken !== "null") {
       try {
-        const decoded: any = jwt.verify(token, JWT_SECRET);
+        const decoded: any = jwt.verify(cookieToken, JWT_SECRET);
         userId = decoded.id;
         userEmail = decoded.email;
         userName = decoded.name;
         userRole = decoded.role;
       } catch (err) {
-        // Token invalid or expired
+        // Invalid cookie token
       }
     }
   }

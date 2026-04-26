@@ -52,9 +52,19 @@ export default function CandidateDashboard() {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem("authToken");
-    router.push("/login");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userRole");
+    // Clear the custom JWT cookie
+    document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    
+    try {
+      const { signOut } = await import("next-auth/react");
+      await signOut({ callbackUrl: "/login" });
+    } catch (e) {
+      window.location.href = "/login";
+    }
   };
 
   useEffect(() => {

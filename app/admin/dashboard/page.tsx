@@ -129,11 +129,18 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     localStorage.removeItem("authToken");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userRole");
-    router.push("/login");
+    localStorage.removeItem("adminRole");
+    // Clear the custom JWT cookie
+    document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    
+    try {
+      const { signOut } = await import("next-auth/react");
+      await signOut({ callbackUrl: "/admin/login" });
+    } catch (e) {
+      router.push("/admin/login");
+    }
   };
 
   const menuItems = [

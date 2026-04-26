@@ -275,12 +275,12 @@ export default function CandidateProfile() {
           icon={<User className="text-blue-500" size={24} />}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <PremiumInput icon={<User size={18} />} label="Full Name" name="name" value={formData.name} onChange={handleInputChange} placeholder="Ex: Sterling Archer" />
-            <PremiumInput icon={<Mail size={18} />} label="Email Address" name="email" value={formData.email} onChange={handleInputChange} placeholder="archer@agency.com" disabled />
+            <PremiumInput icon={<User size={18} />} label="Full Name" name="name" value={formData.name} onChange={handleInputChange} placeholder="Your Full Name" />
+            <PremiumInput icon={<Mail size={18} />} label="Email Address" name="email" value={formData.email} onChange={handleInputChange} placeholder="your.email@example.com" disabled />
             <PremiumInput icon={<Phone size={18} />} label="Phone Number" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="+1 (555) 000-0000" />
-            <PremiumInput icon={<LinkedinIcon />} label="LinkedIn Profile" name="linkedin" value={formData.linkedin} onChange={handleInputChange} placeholder="linkedin.com/in/username" />
-            <PremiumInput icon={<GithubIcon />} label="GitHub Profile" name="github" value={formData.github} onChange={handleInputChange} placeholder="github.com/username" />
-            <PremiumInput icon={<Globe size={18} />} label="Portfolio Website" name="website" value={formData.website} onChange={handleInputChange} placeholder="sterling-archer.com" />
+            <PremiumInput icon={<LinkedinIcon />} label="LinkedIn Profile" name="linkedin" value={formData.linkedin} onChange={handleInputChange} placeholder="linkedin.com/in/your-username" />
+            <PremiumInput icon={<GithubIcon />} label="GitHub Profile" name="github" value={formData.github} onChange={handleInputChange} placeholder="github.com/your-username" />
+            <PremiumInput icon={<Globe size={18} />} label="Portfolio Website" name="website" value={formData.website} onChange={handleInputChange} placeholder="your-portfolio.com" />
           </div>
         </SectionWrapper>
 
@@ -291,8 +291,8 @@ export default function CandidateProfile() {
           icon={<Briefcase className="text-indigo-500" size={24} />}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <PremiumInput icon={<Briefcase size={18} />} label="Desired Role" name="desiredRole" value={formData.desiredRole} onChange={handleInputChange} placeholder="Ex: Lead Software Engineer" />
-            <PremiumInput icon={<Clock size={18} />} label="Years of Experience" name="experience" value={formData.experience} onChange={handleInputChange} placeholder="Ex: 8+" />
+            <PremiumInput icon={<Briefcase size={18} />} label="Desired Role" name="desiredRole" value={formData.desiredRole} onChange={handleInputChange} placeholder="Ex: Senior Developer" />
+            <PremiumInput icon={<Clock size={18} />} label="Years of Experience" name="experience" value={formData.experience} onChange={handleInputChange} placeholder="Ex: 5" />
           </div>
         </SectionWrapper>
 

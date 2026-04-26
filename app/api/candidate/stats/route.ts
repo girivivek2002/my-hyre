@@ -10,30 +10,36 @@ export async function GET(req: NextRequest) {
     const candidateId = candidateUser.profile.id;
 
     const [
-      totalCitizens,
-      activeJobs,
+      activeApplications,
+      interviewsCount,
       resumeNodes,
-      waitlistCount,
-      recentShortlists
+      profileStrength
     ] = await Promise.all([
-      prisma.user.count({ where: { role: "candidate" } }),
       prisma.shortlist.count({ where: { candidateId } }),
+      prisma.interview.count({ where: { shortlist: { candidateId } } }),
       prisma.resume.count({ where: { userId: candidateUser.id } }),
-      prisma.waitlist.count(),
-      prisma.shortlist.findMany({
-        where: { candidateId },
-        take: 5,
-        orderBy: { updatedAt: "desc" },
-        include: { job: true }
-      })
+      // Simple profile strength calculation
+      Promise.resolve(
+        (candidateUser.profile.phone ? 20 : 0) +
+        (candidateUser.profile.skills.length > 0 ? 30 : 0) +
+        (candidateUser.profile.biography ? 20 : 0) +
+        (candidateUser.profile.experience ? 30 : 0)
+      )
     ]);
+
+    const recentShortlists = await prisma.shortlist.findMany({
+      where: { candidateId },
+      take: 5,
+      orderBy: { updatedAt: "desc" },
+      include: { job: true }
+    });
 
     return NextResponse.json({
       stats: {
-        totalCitizens,
-        activeJobs,
+        activeApplications,
+        interviewsCount,
         resumeNodes,
-        waitlistCount,
+        profileStrength,
       },
       recentShortlists
     });

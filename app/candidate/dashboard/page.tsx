@@ -147,10 +147,10 @@ export default function CandidateDashboard() {
             {/* Stats Grid */}
             <motion.div variants={itemVars} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
               {[
-                { title: "Citizens Stream", value: stats?.totalCitizens || 0, icon: <LayoutDashboard size={20} className="text-violet-500" />, trend: "Global pool size", color: "violet" },
-                { title: "Active Selections", value: stats?.activeJobs || 0, icon: <Briefcase size={20} className="text-indigo-500" />, trend: "Recruiter shortlists", color: "indigo" },
+                { title: "Applications", value: stats?.activeApplications || 0, icon: <Briefcase size={20} className="text-violet-500" />, trend: "Total active selections", color: "violet" },
+                { title: "Interviews", value: stats?.interviewsCount || 0, icon: <CalendarDays size={20} className="text-indigo-500" />, trend: "Scheduled syncs", color: "indigo" },
                 { title: "Resume Nodes", value: stats?.resumeNodes || 0, icon: <FileText size={20} className="text-amber-500" />, trend: "High-fidelity files", color: "amber" },
-                { title: "Waitlist Ingress", value: stats?.waitlistCount || 0, icon: <Clock size={20} className="text-emerald-500" />, trend: "Queue position", color: "emerald" },
+                { title: "Profile Score", value: `${stats?.profileStrength || 0}%`, icon: <Zap size={20} className="text-emerald-500" />, trend: "Matching intelligence", color: "emerald" },
               ].map((stat, i) => (
                 <GlassCard key={i} className="group cursor-pointer">
                   <div className="flex justify-between items-start mb-4">

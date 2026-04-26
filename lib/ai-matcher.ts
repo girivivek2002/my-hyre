@@ -3,6 +3,16 @@ export interface MatchResult {
   summary: string;
   strengths: string[];
   gaps: string[];
+  scoreBreakdown: {
+    technicalSkills: number;
+    experience: number;
+    roleAlignment: number;
+    resumeRelevance: number;
+    locationWorkMode: number;
+    financialAlignment: number;
+    availability: number;
+  };
+  interviewQuestions: string[];
 }
 
 export async function calculateCandidateMatch(
@@ -17,55 +27,74 @@ export async function calculateCandidateMatch(
       score: fallbackMatchScore(candidate.skills, job.skills),
       summary: "Manual keyword analysis performed due to missing AI credentials.",
       strengths: ["Keyword overlap detected"],
-      gaps: ["Advanced AI analysis unavailable"]
+      gaps: ["Advanced AI analysis unavailable"],
+      scoreBreakdown: {
+        technicalSkills: 0,
+        experience: 0,
+        roleAlignment: 0,
+        resumeRelevance: 0,
+        locationWorkMode: 0,
+        financialAlignment: 0,
+        availability: 0
+      },
+      interviewQuestions: ["Tell me about your relevant experience."]
     };
   }
 
   try {
     const prompt = `
-      You are an AI-powered Candidate Matching Engine. Analyze the candidate against the job description with extreme precision.
+      You are an Expert Executive Recruiter and AI Hiring Consultant. Your task is to provide a world-class, multi-dimensional analysis of a candidate's fit for a specific role.
       
-      MATCHING LOGIC WEIGHTS (Total 100%):
-      1. Technical Skills Match (25%): Direct overlap of required vs possessed skills.
-      2. Experience & Seniority (20%): Relevance of years and level of professional history.
-      3. Role Alignment (15%): How well the candidate's professional trajectory matches the job title and core responsibilities.
-      4. Resume Semantic Relevance & Keyword Consistency (15%): Analyzing the uploaded resume file content for consistency with profile and job requirements.
-      5. Geographical & Work Mode (10%): Location proximity and work preference (Remote/Hybrid/Onsite) vs Job requirements.
-      6. Financial Alignment (10%): Candidate's salary expectations vs Job salary range.
-      7. Availability & Notice Period (5%): How well the candidate's availability matches the hiring timeline.
+      MATCHING CRITERIA & WEIGHTS:
+      1. Technical Skills Match (25%): Direct overlap + ADJACENT/TRANSFERABLE skills (e.g., React vs Vue, AWS vs Azure).
+      2. Experience & Seniority (20%): Relevance of years, industry depth (e.g., FinTech, SaaS), and career growth.
+      3. Role Alignment (15%): Consistency between candidate's trajectory and the role's seniority/direction.
+      4. Resume Semantic Intelligence (15%): Depth and quality of project descriptions in the parsed resume vs profile claims.
+      5. Geography & Work Mode (10%): Location proximity and preference (Remote/Onsite) alignment.
+      6. Financial & Budgetary Fit (10%): Salary expectations vs range.
+      7. Logistics & Availability (5%): Notice period and start date alignment.
 
-      JOB DESCRIPTION:
+      DOMAIN ANALYSIS:
+      - Look for domain-specific intelligence (e.g., does a developer have experience in the specific sector of the job?).
+      - Identify "implied" skills from the Bio and Experience summaries.
+
+      JOB CONTEXT:
       - Title: ${job.title}
-      - Required Skills: ${(job.skills || []).join(", ")}
-      - Description: ${job.description}
-      - Location: ${job.location || "Not specified"}
-      - Work Type: ${job.type || "Not specified"}
-      - Salary/Budget: ${job.salary || "Not specified"}
+      - Core Requirements: ${(job.skills || []).join(", ")}
+      - Detailed Description: ${job.description}
+      - Environment: ${job.location || "Not specified"} | ${job.type || "Not specified"} | ${job.salary || "Not specified"}
 
-      CANDIDATE PROFILE:
+      CANDIDATE DOSSIER:
       - Name: ${candidate.name}
-      - Professional Role: ${candidate.role}
-      - Possessed Skills: ${(candidate.skills || []).join(", ")}
-      - Experience: ${candidate.experience}
-      - Bio Summary: ${candidate.biography}
-      - Current Location: ${candidate.location || "Not specified"}
-      - Work Preference: ${candidate.workPreference || "Not specified"}
-      - Salary Expectation: ${candidate.salaryExpectation || "Not specified"}
-      - Notice Period: ${candidate.noticePeriod || "Not specified"}
+      - Professional Title: ${candidate.role}
+      - Declared Skills: ${(candidate.skills || []).join(", ")}
+      - Experience: ${candidate.experience} years
+      - Profile Bio: ${candidate.biography}
+      - Expectations: ${candidate.location || "Not specified"} | ${candidate.workPreference || "Not specified"} | ${candidate.salaryExpectation || "Not specified"} | ${candidate.noticePeriod || "Not specified"}
 
-      UPLOADED RESUME DATA:
+      RESUME INTELLIGENCE:
       ${resumeData ? `
       - Parsed Name: ${resumeData.name}
-      - Extracted Skills: ${(resumeData.skills || []).join(", ")}
-      - Extracted Experience: ${resumeData.experience} years
-      ` : "No resume uploaded."}
+      - Extracted Keywords: ${(resumeData.skills || []).join(", ")}
+      - Extracted Tenure: ${resumeData.experience} years
+      ` : "No deeper resume data available."}
 
-      OUTPUT FORMAT (STRICT JSON):
+      OUTPUT SPECIFICATION (VALID JSON ONLY):
       {
-        "score": number (0-100),
-        "summary": "string (A detailed technical explanation of why this score was given, including a comparison between profile and resume if available)",
-        "strengths": ["string (at least 3 key strengths)"],
-        "gaps": ["string (at least 2 identified gaps or areas for improvement)"]
+        "score": number (Final weighted score 0-100),
+        "summary": "string (A high-level professional evaluation summarizing the overall fit)",
+        "strengths": ["string (High-impact professional strengths)"],
+        "gaps": ["string (Critical gaps or areas requiring clarification)"],
+        "scoreBreakdown": {
+          "technicalSkills": number (0-25),
+          "experience": number (0-20),
+          "roleAlignment": number (0-15),
+          "resumeRelevance": number (0-15),
+          "locationWorkMode": number (0-10),
+          "financialAlignment": number (0-10),
+          "availability": number (0-5)
+        },
+        "interviewQuestions": ["string (3-5 targeted interview questions to validate gaps or deeper skills)"]
       }
     `;
 
@@ -92,7 +121,17 @@ export async function calculateCandidateMatch(
       score: result.score || 0,
       summary: result.summary || "No summary provided.",
       strengths: result.strengths || [],
-      gaps: result.gaps || []
+      gaps: result.gaps || [],
+      scoreBreakdown: result.scoreBreakdown || {
+        technicalSkills: 0,
+        experience: 0,
+        roleAlignment: 0,
+        resumeRelevance: 0,
+        locationWorkMode: 0,
+        financialAlignment: 0,
+        availability: 0
+      },
+      interviewQuestions: result.interviewQuestions || []
     };
 
   } catch (error) {
@@ -101,7 +140,17 @@ export async function calculateCandidateMatch(
       score: fallbackMatchScore(candidate.skills, job.skills),
       summary: "Intelligence engine encountered a processing error. Falling back to keyword matching.",
       strengths: ["Historical data consistency"],
-      gaps: ["Full semantic analysis failed"]
+      gaps: ["Full semantic analysis failed"],
+      scoreBreakdown: {
+        technicalSkills: 0,
+        experience: 0,
+        roleAlignment: 0,
+        resumeRelevance: 0,
+        locationWorkMode: 0,
+        financialAlignment: 0,
+        availability: 0
+      },
+      interviewQuestions: ["Tell me about your relevant experience."]
     };
   }
 }

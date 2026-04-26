@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard, Users, Briefcase, BarChart3, Settings,
-  Menu, X, Bell, ChevronDown, User, LogOut, CalendarDays
+  Menu, X, Bell, ChevronDown, User, LogOut, CalendarDays, MessageSquare
 } from "lucide-react";
 
 export default function DashboardLayout({ children, role }: { children: ReactNode, role: "recruiter" | "candidate" | "admin" }) {
@@ -40,6 +40,7 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
     { icon: <Briefcase size={20} />, label: "Jobs", path: "/recruiter/post-job" },
     { icon: <BarChart3 size={20} />, label: "Analytics", path: "/recruiter/analytics" },
     { icon: <CalendarDays size={20} />, label: "Schedule", path: "/recruiter/schedule" },
+    { icon: <MessageSquare size={20} />, label: "Messages", path: "/recruiter/messages" },
   ];
 
   const candidateLinks = [
@@ -47,6 +48,7 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
     { icon: <Briefcase size={20} />, label: "Shortlisted Roles", path: "/candidate/jobs" },
     { icon: <CalendarDays size={20} />, label: "Interviews", path: "/candidate/interviews" },
     { icon: <BarChart3 size={20} />, label: "Talent Profile", path: "/candidate/profile" },
+    { icon: <MessageSquare size={20} />, label: "Messages", path: "/candidate/messages" },
   ];
 
   const adminLinks = [

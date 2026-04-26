@@ -10,7 +10,7 @@ import { signIn } from "next-auth/react";
 export default function CompanySignup() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [errorObj, setErrorObj] = useState(null);
+    const [errorObj, setErrorObj] = useState<string | null>(null);
 
     // Form states
     const [name, setName] = useState("");
@@ -36,7 +36,7 @@ export default function CompanySignup() {
         visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
         setErrorObj(null);

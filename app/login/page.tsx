@@ -23,6 +23,10 @@ export default function LoginPage() {
           localStorage.setItem("authToken", (session as any).customJwt);
           localStorage.setItem("userRole", (session as any).userRole || "candidate");
           localStorage.setItem("userName", (session as any).user?.name || "");
+          
+          // Auto-redirect after OAuth sync
+          const role = (session as any).userRole || "candidate";
+          router.push(`/${role}/dashboard`);
         }
       } catch (err) {
         console.error("Session sync failed:", err);

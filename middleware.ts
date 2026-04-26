@@ -39,13 +39,7 @@ export async function middleware(req: NextRequest) {
 
   // 4. Handle Authenticated Access
   if (token) {
-    // A. Prevent logged-in users from accessing login/signup pages
-    if (isPublicRoute && (path.includes("/login") || path.includes("/signup"))) {
-      const dashboard = token.role === "recruiter" ? "/recruiter/dashboard" : "/candidate/dashboard";
-      return NextResponse.redirect(new URL(dashboard, req.url));
-    }
-
-    // B. Force Onboarding if profile is incomplete
+    // A. Force Onboarding if profile is incomplete
     const isCompletingProfile = path === "/complete-profile";
     const hasProfileCompletedCookie = req.cookies.get("profileCompleted")?.value === "true";
     const isProfileComplete = (token as any).isProfileComplete || hasProfileCompletedCookie;

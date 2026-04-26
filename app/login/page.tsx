@@ -16,6 +16,9 @@ export default function LoginPage() {
   const router = useRouter();
 
   useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const isOAuthCallback = searchParams.get("oauth") === "1";
+
     const syncOAuth = async () => {
       try {
         const session = await getSession();
@@ -24,16 +27,18 @@ export default function LoginPage() {
           localStorage.setItem("userRole", (session as any).userRole || "candidate");
           localStorage.setItem("userName", (session as any).user?.name || "");
           
-          // Auto-redirect after OAuth sync
-          const role = (session as any).userRole || "candidate";
-          router.push(`/${role}/dashboard`);
+          if (isOAuthCallback) {
+            // Auto-redirect after OAuth sync
+            const role = (session as any).userRole || "candidate";
+            router.push(`/${role}/dashboard`);
+          }
         }
       } catch (err) {
         console.error("Session sync failed:", err);
       }
     };
     syncOAuth();
-  }, []);
+  }, [router]);
 
   const containerVars: Variants = {
     hidden: { opacity: 0, scale: 0.96, filter: "blur(8px)" },
@@ -246,14 +251,23 @@ export default function LoginPage() {
 
             <motion.button 
               onClick={() => signIn("linkedin", { callbackUrl: `/${selectedRole}/dashboard` })}
+          <motion.div variants={itemVars} className="grid grid-cols-1 gap-3">
+            <button
               type="button"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="flex items-center justify-center gap-2 border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.03] py-3 rounded-xl hover:border-violet-300 dark:hover:border-violet-500/30 hover:bg-violet-50 dark:hover:bg-violet-500/5 transition-all text-sm font-semibold text-slate-700 dark:text-slate-300"
+              onClick={() => signIn("google", { callbackUrl: `/login?oauth=1` })}
+              className="flex items-center justify-center gap-3 w-full py-3.5 px-4 rounded-xl bg-white dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.08] hover:border-indigo-300 dark:hover:border-indigo-500/30 hover:bg-indigo-50 dark:hover:bg-indigo-500/5 transition-all text-sm font-semibold text-slate-700 dark:text-slate-300 shadow-sm"
+            >
+              <Image src="https://www.google.com/favicon.ico" alt="Google" width={18} height={18} />
+              Continue with Google
+            </button>
+            <button
+              type="button"
+              onClick={() => signIn("linkedin", { callbackUrl: `/login?oauth=1` })}
+              className="flex items-center justify-center gap-3 w-full py-3.5 px-4 rounded-xl bg-white dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.08] hover:border-violet-300 dark:hover:border-violet-500/30 hover:bg-violet-50 dark:hover:bg-violet-500/5 transition-all text-sm font-semibold text-slate-700 dark:text-slate-300 shadow-sm"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-              LinkedIn
-            </motion.button>
+              Continue with LinkedIn
+            </button>
           </motion.div>
 
           {/* Signup Link */}

@@ -40,10 +40,15 @@ export async function POST(req: NextRequest) {
       match: user?.password === password 
     });
 
+    if (user && user.password === "oauth-placeholder-password") {
+      return NextResponse.json({ 
+        error: "This account was created with Google or LinkedIn. Please sign in using that method." 
+      }, { status: 401 });
+    }
+
     if (!user || user.password !== password) {
       return NextResponse.json({ 
-        error: "Invalid credentials.", 
-        debug: process.env.NODE_ENV === "development" ? `Found: ${!!user}, Match: ${user?.password === password}` : undefined 
+        error: "Invalid credentials. Please check your email and password." 
       }, { status: 401 });
     }
 

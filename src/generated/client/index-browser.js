@@ -238,6 +238,15 @@ exports.Prisma.ResumeScalarFieldEnum = {
   createdAt: 'createdAt'
 };
 
+exports.Prisma.OtpVerificationScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  otp: 'otp',
+  expiresAt: 'expiresAt',
+  verified: 'verified',
+  createdAt: 'createdAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -267,7 +276,8 @@ exports.Prisma.ModelName = {
   Interview: 'Interview',
   Message: 'Message',
   User: 'User',
-  Resume: 'Resume'
+  Resume: 'Resume',
+  OtpVerification: 'OtpVerification'
 };
 
 /**

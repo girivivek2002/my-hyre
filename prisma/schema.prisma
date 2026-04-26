@@ -165,3 +165,14 @@ model Resume {
   user       User     @relation(fields: [userId], references: [id])
   createdAt  DateTime @default(now())
 }
+
+model OtpVerification {
+  id        String   @id @default(cuid())
+  email     String
+  otp       String
+  expiresAt DateTime
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([email, otp])
+}

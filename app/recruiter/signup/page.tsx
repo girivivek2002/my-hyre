@@ -1,5 +1,5 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
@@ -22,16 +22,21 @@ export default function CompanySignup() {
 
     const router = useRouter();
 
-    const containerVars = {
+    const containerVars: Variants = {
         hidden: { opacity: 0, scale: 0.95 },
         visible: {
             opacity: 1,
             scale: 1,
-            transition: { staggerChildren: 0.08, delayChildren: 0.1, ease: "easeOut", duration: 0.5 }
+            transition: { 
+                staggerChildren: 0.08, 
+                delayChildren: 0.1, 
+                opacity: { duration: 0.5, ease: "easeOut" },
+                scale: { duration: 0.5, ease: "easeOut" }
+            }
         }
     };
 
-    const itemVars = {
+    const itemVars: Variants = {
         hidden: { opacity: 0, y: 15 },
         visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
     };

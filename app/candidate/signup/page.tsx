@@ -27,7 +27,12 @@ export default function CandidateSignup() {
     visible: { 
       opacity: 1, 
       scale: 1,
-      transition: { staggerChildren: 0.1, delayChildren: 0.1, ease: "easeOut", duration: 0.5 } 
+      transition: { 
+        staggerChildren: 0.1, 
+        delayChildren: 0.1, 
+        opacity: { duration: 0.5, ease: "easeOut" },
+        scale: { duration: 0.5, ease: "easeOut" }
+      } 
     }
   };
 

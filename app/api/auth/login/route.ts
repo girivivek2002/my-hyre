@@ -7,6 +7,9 @@ const JWT_SECRET = (process.env.JWT_SECRET as string).replace(/['"]+/g, '');
 
 export async function POST(req: NextRequest) {
   try {
+    console.log("DB_URL present:", !!process.env.DATABASE_URL);
+    console.log("JWT_SECRET present:", !!process.env.JWT_SECRET);
+
     // 4. ANTI-SPAM: Rate Limiting
     const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
     if (!checkRateLimit(ip)) {
@@ -14,7 +17,8 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { email, password } = body;
+    const email = body.email?.trim().toLowerCase();
+    const password = body.password?.trim();
 
     if (!email || !password) {
       return NextResponse.json({ error: "Email and password required." }, { status: 400 });
@@ -25,8 +29,22 @@ export async function POST(req: NextRequest) {
       include: { candidateProfile: true, recruiterProfile: true }
     });
 
+    console.log("Login Attempt:", { email, found: !!user, passwordMatch: user?.password === password });
+
+    console.log("Login Attempt Debug:", { 
+      inputEmail: email, 
+      dbEmail: user?.email, 
+      found: !!user, 
+      inputPassword: password, 
+      dbPassword: user?.password, 
+      match: user?.password === password 
+    });
+
     if (!user || user.password !== password) {
-      return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
+      return NextResponse.json({ 
+        error: "Invalid credentials.", 
+        debug: process.env.NODE_ENV === "development" ? `Found: ${!!user}, Match: ${user?.password === password}` : undefined 
+      }, { status: 401 });
     }
 
     // Role Synchronization: If role is candidate but only recruiter profile exists (or vice versa), fix it.

@@ -43,9 +43,11 @@ export default function Hero() {
   const opacityFade = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
 
   return (
-    <section ref={containerRef} className="relative w-full min-h-[120vh] flex items-end justify-center overflow-hidden bg-gradient-to-b from-[#F0F0FF] via-[#FAFBFD] to-[#FAFBFD]">
-      {/* Subtle Background Image */}
-      <motion.div className="absolute inset-0 z-0 opacity-40" style={{ y: yParallax, scale: scaleImg }}>
+    <section ref={containerRef} className="relative w-full min-h-[115vh] flex items-end justify-center bg-gradient-to-b from-[#F0F0FF] via-[#FAFBFD] to-[#FAFBFD]">
+      {/* Background Container to prevent overflow of orbs without clipping the cards */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Subtle Background Image */}
+        <motion.div className="absolute inset-0 z-0 opacity-40" style={{ y: yParallax, scale: scaleImg }}>
         <img src="/hero-light.png" alt="Abstract Background" className="w-full h-full object-cover" />
       </motion.div>
 
@@ -63,14 +65,15 @@ export default function Hero() {
         animate={{ scale: [1, 0.9, 1.1, 1] }}
         transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
       />
-      <motion.div
-        className="absolute top-[40%] right-[20%] w-[350px] h-[350px] bg-rose-200/10 blur-[120px] rounded-full z-[1]"
-        animate={{ scale: [1, 1.1, 0.95, 1] }}
-        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 4 }}
-      />
+        <motion.div
+          className="absolute top-[40%] right-[20%] w-[350px] h-[350px] bg-rose-200/10 blur-[120px] rounded-full z-[1]"
+          animate={{ scale: [1, 1.1, 0.95, 1] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 4 }}
+        />
+      </div>
 
       {/* Main Content */}
-      <motion.div style={{ opacity: opacityFade }} className="relative z-10 w-full max-w-7xl px-6 pb-32 md:pb-52">
+      <motion.div style={{ opacity: opacityFade }} className="relative z-10 w-full max-w-7xl px-6 pb-40 md:pb-52">
         <div className="flex flex-col items-center text-center">
 
           {/* Tags */}

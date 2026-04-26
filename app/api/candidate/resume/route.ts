@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/db";
 import { verifyCandidate } from "@/lib/auth";
+import fs from "fs/promises";
+import path from "path";
 
 export async function POST(req: NextRequest) {
   const candidateUser = await verifyCandidate(req);
@@ -14,14 +16,21 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
     }
 
-    // In a real app, you would upload to S3/Cloudinary here.
-    // For now, we simulate success and store the filename in the database.
+    // Save the file to public/uploads
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+    
+    const uploadDir = path.join(process.cwd(), "public/uploads");
+    const filePath = path.join(uploadDir, file.name);
+    
+    await fs.writeFile(filePath, buffer);
+
     const resume = await prisma.resume.create({
       data: {
         userId: candidateUser.id,
         name: file.name,
-        experience: 0, // Placeholder for AI parsing results
-        skills: [], // Placeholder for AI parsing results
+        experience: 0, 
+        skills: [], 
       }
     });
 

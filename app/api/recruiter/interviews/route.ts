@@ -45,8 +45,10 @@ export async function POST(req: NextRequest) {
   const recruiter = await verifyRecruiter(req);
   if (!recruiter) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  try {
+    try {
     const { shortlistId, date, time, platform } = await req.json();
+    console.log("[POST /api/recruiter/interviews] Received:", { shortlistId, date, time, platform });
+    
     if (!shortlistId) return NextResponse.json({ error: "Missing shortlistId" }, { status: 400 });
 
     // Verify ownership: shortlist -> job -> recruiterId
@@ -56,6 +58,11 @@ export async function POST(req: NextRequest) {
     });
 
     if (!shortlist || shortlist.job.recruiterId !== recruiter.profile.id) {
+      console.error("[POST /api/recruiter/interviews] Verification failed:", { 
+        found: !!shortlist, 
+        owner: shortlist?.job?.recruiterId, 
+        caller: recruiter.profile.id 
+      });
       return NextResponse.json({ error: "Shortlist not found or access denied" }, { status: 403 });
     }
 
@@ -68,22 +75,32 @@ export async function POST(req: NextRequest) {
       finalPlatform = `meet.google.com/${part1}-${part2}-${part3}`;
     }
 
-    const interview = await prisma.interview.upsert({
-      where: { shortlistId },
-      update: {
-        date: date ? new Date(date) : undefined,
-        time,
-        platform: finalPlatform,
-        status: "SCHEDULED"
-      },
-      create: {
-        shortlistId,
-        date: date ? new Date(date) : undefined,
-        time,
-        platform: finalPlatform,
-        status: "SCHEDULED"
-      }
+    const existingInterview = await prisma.interview.findFirst({
+      where: { shortlistId }
     });
+
+    let interview;
+    if (existingInterview) {
+      interview = await prisma.interview.update({
+        where: { id: existingInterview.id },
+        data: {
+          date: date ? new Date(date) : undefined,
+          time,
+          platform: finalPlatform,
+          status: "SCHEDULED"
+        }
+      });
+    } else {
+      interview = await prisma.interview.create({
+        data: {
+          shortlistId,
+          date: date ? new Date(date) : undefined,
+          time,
+          platform: finalPlatform,
+          status: "SCHEDULED"
+        }
+      });
+    }
 
     return NextResponse.json({ interview });
   } catch (error) {

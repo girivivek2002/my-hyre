@@ -17,7 +17,9 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json();
-    const { email, password, name, role, phone, website, industry, teamSize } = body;
+    const email = body.email?.trim().toLowerCase();
+    const password = body.password?.trim();
+    const { name, role, phone, website, industry, teamSize } = body;
 
     if (!email || !password || !name) {
       return NextResponse.json({ error: "Missing required fields." }, { status: 400 });

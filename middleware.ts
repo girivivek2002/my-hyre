@@ -5,16 +5,17 @@ import { jwtVerify } from "jose";
 const JWT_SECRET = (process.env.JWT_SECRET as string || "").replace(/['"]+/g, '');
 const secretKey = new TextEncoder().encode(JWT_SECRET);
 
-export async function proxy(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
 
   // 1. Define Public Routes
   const isPublicRoute = 
     path === "/" || 
     path === "/login" || 
-    path.startsWith("/signup") || 
-    path.endsWith("/signup") ||
-    path.includes("/signup");
+    path === "/signup" ||
+    path.startsWith("/signup/") ||
+    path.includes("/signup") ||
+    path.includes("/login");
   
   // 2. Get Session Token (NextAuth or Custom)
   let token: any = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
@@ -26,7 +27,7 @@ export async function proxy(req: NextRequest) {
         const { payload } = await jwtVerify(customToken, secretKey);
         token = payload;
       } catch (err) {
-        console.error("Custom JWT verification failed:", err);
+        // Invalid token
       }
     }
   }
@@ -38,7 +39,13 @@ export async function proxy(req: NextRequest) {
 
   // 4. Handle Authenticated Access
   if (token) {
-    // A. Force Onboarding if profile is incomplete
+    // A. Prevent logged-in users from accessing login/signup pages
+    if (isPublicRoute && (path.includes("/login") || path.includes("/signup"))) {
+      const dashboard = token.role === "recruiter" ? "/recruiter/dashboard" : "/candidate/dashboard";
+      return NextResponse.redirect(new URL(dashboard, req.url));
+    }
+
+    // B. Force Onboarding if profile is incomplete
     const isCompletingProfile = path === "/complete-profile";
     const hasProfileCompletedCookie = req.cookies.get("profileCompleted")?.value === "true";
     const isProfileComplete = (token as any).isProfileComplete || hasProfileCompletedCookie;
@@ -51,8 +58,8 @@ export async function proxy(req: NextRequest) {
       }
     }
 
-    // B. Role-Based Access Control (RBAC)
-    if (token.role) {
+    // C. Role-Based Access Control (RBAC) - ONLY for non-public routes
+    if (token.role && !isPublicRoute) {
       if (path.startsWith("/candidate") && token.role !== "candidate") {
         return NextResponse.redirect(new URL("/recruiter/dashboard", req.url));
       }

@@ -7,7 +7,8 @@ export interface MatchResult {
 
 export async function calculateCandidateMatch(
   candidate: any,
-  job: any
+  job: any,
+  resumeData?: { skills: string[], experience: number, name: string }
 ): Promise<MatchResult> {
   const apiKey = process.env.OPENAI_API_KEY;
 
@@ -22,15 +23,16 @@ export async function calculateCandidateMatch(
 
   try {
     const prompt = `
-      You are an AI-powered Candidate Matching Engine. Analyze the candidate against the job description.
+      You are an AI-powered Candidate Matching Engine. Analyze the candidate against the job description with extreme precision.
       
-      MATCHING LOGIC WEIGHTS:
-      1. Skills Match (40%)
-      2. Experience Match (20%)
-      3. Location & Work Type Match (10%)
-      4. Salary Alignment (10%)
-      5. Profile Strength (10%)
-      6. Resume Semantic Relevance (10%)
+      MATCHING LOGIC WEIGHTS (Total 100%):
+      1. Technical Skills Match (25%): Direct overlap of required vs possessed skills.
+      2. Experience & Seniority (20%): Relevance of years and level of professional history.
+      3. Role Alignment (15%): How well the candidate's professional trajectory matches the job title and core responsibilities.
+      4. Resume Semantic Relevance & Keyword Consistency (15%): Analyzing the uploaded resume file content for consistency with profile and job requirements.
+      5. Geographical & Work Mode (10%): Location proximity and work preference (Remote/Hybrid/Onsite) vs Job requirements.
+      6. Financial Alignment (10%): Candidate's salary expectations vs Job salary range.
+      7. Availability & Notice Period (5%): How well the candidate's availability matches the hiring timeline.
 
       JOB DESCRIPTION:
       - Title: ${job.title}
@@ -38,23 +40,32 @@ export async function calculateCandidateMatch(
       - Description: ${job.description}
       - Location: ${job.location || "Not specified"}
       - Work Type: ${job.type || "Not specified"}
-      - Salary: ${job.salary || "Not specified"}
+      - Salary/Budget: ${job.salary || "Not specified"}
 
       CANDIDATE PROFILE:
       - Name: ${candidate.name}
-      - Role: ${candidate.role}
-      - Skills: ${(candidate.skills || []).join(", ")}
+      - Professional Role: ${candidate.role}
+      - Possessed Skills: ${(candidate.skills || []).join(", ")}
       - Experience: ${candidate.experience}
-      - Bio: ${candidate.biography}
-      - Location: ${candidate.location || "Not specified"}
+      - Bio Summary: ${candidate.biography}
+      - Current Location: ${candidate.location || "Not specified"}
+      - Work Preference: ${candidate.workPreference || "Not specified"}
       - Salary Expectation: ${candidate.salaryExpectation || "Not specified"}
+      - Notice Period: ${candidate.noticePeriod || "Not specified"}
+
+      UPLOADED RESUME DATA:
+      ${resumeData ? `
+      - Parsed Name: ${resumeData.name}
+      - Extracted Skills: ${(resumeData.skills || []).join(", ")}
+      - Extracted Experience: ${resumeData.experience} years
+      ` : "No resume uploaded."}
 
       OUTPUT FORMAT (STRICT JSON):
       {
         "score": number (0-100),
-        "summary": "string",
-        "strengths": ["string"],
-        "gaps": ["string"]
+        "summary": "string (A detailed technical explanation of why this score was given, including a comparison between profile and resume if available)",
+        "strengths": ["string (at least 3 key strengths)"],
+        "gaps": ["string (at least 2 identified gaps or areas for improvement)"]
       }
     `;
 

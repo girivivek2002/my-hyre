@@ -149,6 +149,8 @@ export default function CompanySignup() {
                                     <Building2 size={18} />
                                 </div>
                                 <input
+                                    id="company-name"
+                                    name="companyName"
                                     type="text"
                                     required
                                     value={name}
@@ -169,6 +171,8 @@ export default function CompanySignup() {
                                     <Globe size={18} />
                                 </div>
                                 <input
+                                    id="website"
+                                    name="website"
                                     type="url"
                                     value={website}
                                     onChange={(e) => setWebsite(e.target.value)}
@@ -189,6 +193,8 @@ export default function CompanySignup() {
                                         <Briefcase size={18} />
                                     </div>
                                     <input
+                                        id="industry"
+                                        name="industry"
                                         type="text"
                                         required
                                         value={industry}
@@ -208,6 +214,8 @@ export default function CompanySignup() {
                                         <Users size={18} />
                                     </div>
                                     <input
+                                        id="team-size"
+                                        name="teamSize"
                                         type="text"
                                         required
                                         value={teamSize}
@@ -229,6 +237,8 @@ export default function CompanySignup() {
                                     <Mail size={18} />
                                 </div>
                                 <input
+                                    id="email"
+                                    name="email"
                                     type="email"
                                     required
                                     value={email}
@@ -249,6 +259,8 @@ export default function CompanySignup() {
                                     <Globe size={18} />
                                 </div>
                                 <input
+                                    id="password"
+                                    name="password"
                                     type={showPassword ? "text" : "password"}
                                     required
                                     value={password}

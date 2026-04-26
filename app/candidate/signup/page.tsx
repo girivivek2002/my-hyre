@@ -145,6 +145,8 @@ export default function CandidateSignup() {
                   <User size={18} />
                 </div>
                 <input
+                  id="full-name"
+                  name="name"
                   type="text"
                   required
                   value={name}
@@ -163,6 +165,8 @@ export default function CandidateSignup() {
                   <Mail size={18} />
                 </div>
                 <input
+                  id="email"
+                  name="email"
                   type="email"
                   required
                   value={email}
@@ -181,6 +185,8 @@ export default function CandidateSignup() {
                   <Phone size={18} />
                 </div>
                 <input
+                  id="phone"
+                  name="phone"
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
@@ -198,6 +204,8 @@ export default function CandidateSignup() {
                   <KeyRound size={18} />
                 </div>
                 <input
+                  id="password"
+                  name="password"
                   type={showPassword ? "text" : "password"}
                   required
                   value={password}

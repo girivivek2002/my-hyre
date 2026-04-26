@@ -99,6 +99,9 @@ export async function GET(req: NextRequest) {
 
       let matchResult: any = { score: 85, summary: "Initial screening...", strengths: [], gaps: [] };
       if (scoringJob) {
+        // Fetch resume data if available
+        const latestResume = c.resumes?.[0] || (profile?.user?.resumes?.[0]);
+
         matchResult = await calculateCandidateMatch(
           {
             name: profile.name,
@@ -107,16 +110,16 @@ export async function GET(req: NextRequest) {
             biography: profile.biography,
             experience: profile.experience,
             location: profile.location,
-            salaryExpectation: profile.salaryExpectation
+            salaryExpectation: profile.salaryExpectation,
+            noticePeriod: profile.noticePeriod,
+            workPreference: profile.workPreference
           },
-          {
-            title: scoringJob.title,
-            skills: scoringJob.skills,
-            description: scoringJob.description,
-            location: scoringJob.location,
-            type: scoringJob.type,
-            salary: scoringJob.salary
-          }
+          scoringJob,
+          latestResume ? {
+            skills: latestResume.skills,
+            experience: latestResume.experience,
+            name: latestResume.name
+          } : undefined
         );
       }
 

@@ -147,6 +147,8 @@ export default function LoginPage() {
                   <Mail size={18} />
                 </div>
                 <input
+                  id="email"
+                  name="email"
                   type="email"
                   required
                   value={email}
@@ -172,6 +174,8 @@ export default function LoginPage() {
                   <KeyRound size={18} />
                 </div>
                 <input
+                  id="password"
+                  name="password"
                   type="password"
                   required
                   value={password}

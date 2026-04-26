@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/db";
-import { verifyCandidate } from "@/lib/auth";
 import fs from "fs/promises";
 import path from "path";
+import { NextRequest, NextResponse } from "next/server";
+import { extractTextFromPDF, parseResumeWithAI, ParsedResume } from "@/lib/resume-parser";
+import prisma from "@/lib/db";
+import { verifyCandidate } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   const candidateUser = await verifyCandidate(req);
@@ -25,16 +26,31 @@ export async function POST(req: NextRequest) {
     
     await fs.writeFile(filePath, buffer);
 
+    // Parse the resume with AI
+    let parsedData: ParsedResume = { name: file.name, skills: [], experience: 0, summary: "" };
+    try {
+      const extractedText = await extractTextFromPDF(buffer);
+      parsedData = await parseResumeWithAI(extractedText);
+    } catch (parseError) {
+      console.error("Non-critical Parse Error:", parseError);
+    }
+
     const resume = await prisma.resume.create({
       data: {
         userId: candidateUser.id,
-        name: file.name,
-        experience: 0, 
-        skills: [], 
+        name: parsedData.name || file.name,
+        experience: parsedData.experience || 0,
+        skills: parsedData.skills || [],
       }
     });
 
-    return NextResponse.json({ message: "Resume uploaded successfully", resume });
+    return NextResponse.json({ 
+      message: "Resume uploaded and synchronized with intelligence engine", 
+      resume,
+      parsed: {
+        summary: parsedData.summary
+      }
+    });
   } catch (error: any) {
     console.error("Resume Upload Error:", error);
     return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });

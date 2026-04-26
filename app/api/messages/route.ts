@@ -20,48 +20,77 @@ export async function GET(req: NextRequest) {
       if (!recruiter) return NextResponse.json({ error: "Recruiter profile not found" }, { status: 404 });
 
       if (targetId) {
-        // Fetch specific thread with a candidate
+        // targetId might be a User ID. Resolve to Candidate ID.
+        let resolvedCandidateId = targetId;
+        const candidateProfile = await prisma.candidate.findFirst({
+          where: { OR: [{ userId: targetId }, { id: targetId }] }
+        });
+        if (candidateProfile) resolvedCandidateId = candidateProfile.id;
+
         const messages = await prisma.message.findMany({
           where: {
             recruiterId: recruiter.profile.id,
-            candidateId: targetId
+            candidateId: resolvedCandidateId
           },
           orderBy: { createdAt: "asc" }
         });
         return NextResponse.json({ messages });
       } else {
-        // Fetch all conversations (unique candidates)
         const messages = await prisma.message.findMany({
           where: { recruiterId: recruiter.profile.id },
           distinct: ['candidateId'],
           include: { candidate: true },
           orderBy: { createdAt: "desc" }
         });
-        return NextResponse.json({ conversations: messages });
+        
+        // Map candidate profiles back to User-like shapes for the frontend if needed
+        const mappedConversations = messages.map((msg: any) => ({
+          ...msg,
+          candidate: {
+            ...msg.candidate,
+            id: msg.candidate.userId || msg.candidate.id // Pass User ID so UI works
+          }
+        }));
+        
+        return NextResponse.json({ conversations: mappedConversations });
       }
     } else if (session.role === "candidate") {
       const candidate = await verifyCandidate(req);
       if (!candidate) return NextResponse.json({ error: "Candidate profile not found" }, { status: 404 });
 
       if (targetId) {
-        // Fetch specific thread with a recruiter
+        // Resolve targetId to Recruiter Profile ID
+        let resolvedRecruiterId = targetId;
+        const recruiterProfile = await prisma.recruiter.findFirst({
+          where: { OR: [{ userId: targetId }, { id: targetId }] }
+        });
+        if (recruiterProfile) resolvedRecruiterId = recruiterProfile.id;
+
         const messages = await prisma.message.findMany({
           where: {
             candidateId: candidate.profile.id,
-            recruiterId: targetId
+            recruiterId: resolvedRecruiterId
           },
           orderBy: { createdAt: "asc" }
         });
         return NextResponse.json({ messages });
       } else {
-        // Fetch all conversations (unique recruiters)
         const messages = await prisma.message.findMany({
           where: { candidateId: candidate.profile.id },
           distinct: ['recruiterId'],
           include: { recruiter: true },
           orderBy: { createdAt: "desc" }
         });
-        return NextResponse.json({ conversations: messages });
+        
+        const mappedConversations = messages.map((msg: any) => ({
+          ...msg,
+          recruiter: {
+            ...msg.recruiter,
+            id: msg.recruiter.userId || msg.recruiter.id
+          }
+        }));
+
+        return NextResponse.json({ conversations: mappedConversations });
       }
     }
 
@@ -90,14 +119,32 @@ export async function POST(req: NextRequest) {
     if (session.role === "recruiter") {
       const recruiter = await verifyRecruiter(req);
       if (!recruiter) return NextResponse.json({ error: "Recruiter profile not found" }, { status: 404 });
+      
       recruiterId = recruiter.profile.id;
-      candidateId = targetId;
+      
+      // Resolve Candidate ID
+      let resolvedCandidateId = targetId;
+      const candidateProfile = await prisma.candidate.findFirst({
+        where: { OR: [{ userId: targetId }, { id: targetId }] }
+      });
+      if (candidateProfile) resolvedCandidateId = candidateProfile.id;
+      
+      candidateId = resolvedCandidateId;
       senderType = "RECRUITER";
     } else if (session.role === "candidate") {
       const candidate = await verifyCandidate(req);
       if (!candidate) return NextResponse.json({ error: "Candidate profile not found" }, { status: 404 });
+      
       candidateId = candidate.profile.id;
-      recruiterId = targetId;
+      
+      // Resolve Recruiter ID
+      let resolvedRecruiterId = targetId;
+      const recruiterProfile = await prisma.recruiter.findFirst({
+        where: { OR: [{ userId: targetId }, { id: targetId }] }
+      });
+      if (recruiterProfile) resolvedRecruiterId = recruiterProfile.id;
+      
+      recruiterId = resolvedRecruiterId;
       senderType = "CANDIDATE";
     } else {
       return NextResponse.json({ error: "Invalid role" }, { status: 400 });

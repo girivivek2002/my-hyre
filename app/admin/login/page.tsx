@@ -26,7 +26,10 @@ export default function AdminLogin() {
         // Simulate admin authentication
         setTimeout(() => {
             if (email === "admin@mrhyre.com" && password === "Mr.hyre#2026@") {
-                localStorage.setItem("authToken", "admin-token-mock");
+                // Set authority cookie for middleware recognition
+                document.cookie = "authToken=admin-session-authority; path=/; max-age=3600; SameSite=Lax";
+                
+                localStorage.setItem("authToken", "admin-session-authority");
                 localStorage.setItem("userRole", "admin");
                 localStorage.setItem("userName", "Super Admin");
                 router.push("/admin/dashboard");

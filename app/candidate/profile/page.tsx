@@ -211,8 +211,8 @@ export default function CandidateProfile() {
           });
         }
 
-        // Redirect to candidate dashboard on success
-        router.push("/candidate/dashboard");
+        // Redirect to candidate dashboard on success with a hard reload to sync state
+        window.location.href = "/candidate/dashboard";
       } else {
         const errorData = await res.json();
         alert(`Failed to save profile: ${errorData.error || 'Please try again.'}`);

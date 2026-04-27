@@ -148,7 +148,8 @@ export default function CompanyProfile() {
                     localStorage.setItem("userLogo", profile.logoUrl);
                 }
                 setIsEditing(false);
-                router.push("/recruiter/dashboard");
+                // Use a hard redirect to ensure cookies and middleware state are fresh
+                window.location.href = "/recruiter/dashboard";
             }
         } catch (error) {
             console.error("Error saving profile", error);

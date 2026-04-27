@@ -79,17 +79,9 @@ export async function POST(req: NextRequest) {
     });
 
     // AUTO-SHORTLIST LOGIC (Existing)
-    const jobSkills = Array.isArray(skills) ? skills : (skills ? String(skills).split(",").map((s: string) => s.trim()) : []);
-    const titleKeywords = title.split(/[\s-]+/).filter((k: string) => k.length > 2);
-    const searchTerms = Array.from(new Set([title, ...jobSkills]));
-    
     const matchingCandidates = await prisma.candidate.findMany({
       where: {
-        OR: [
-          { role: { contains: title, mode: 'insensitive' } },
-          { skills: { hasSome: searchTerms } },
-          ...titleKeywords.map((k: string) => ({ role: { contains: k, mode: 'insensitive' as const } })),
-        ]
+        role: { contains: title, mode: 'insensitive' }
       },
       take: 10
     });

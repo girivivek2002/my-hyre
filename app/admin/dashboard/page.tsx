@@ -1,385 +1,366 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence, Variants } from "framer-motion";
-import { useRouter } from "next/navigation";
+
+import React, { useState, useEffect, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Users, Briefcase, FileText, MessageSquare, 
-  Trash2, Search, ArrowUpRight, BarChart3, 
-  Shield, Settings, LogOut, ChevronRight,
-  UserCheck, Timer, Zap, Sparkles, Filter, 
-  MoreHorizontal, Loader2, RefreshCw, Activity,
-  Database, Globe, Server
+    Users, Briefcase, BarChart3, Shield, Search, Filter, 
+    MoreHorizontal, Trash2, CheckCircle, XCircle, Zap,
+    TrendingUp, Database, Activity, Globe, Loader2, Sparkles,
+    FileText, UserCheck, UserPlus, Mail, ExternalLink, RefreshCw
 } from "lucide-react";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 // --- Components ---
 
-const GlassCard = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => (
-  <motion.div 
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    className={`bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 hover:border-white/20 transition-all ${className}`}
-  >
-    {children}
-  </motion.div>
-);
+function GlassCard({ children, className = "" }: { children: React.ReactNode, className?: string }) {
+    return (
+        <div className={`bg-white/70 dark:bg-[#111118]/70 backdrop-blur-md border border-slate-200 dark:border-white/[0.06] rounded-3xl p-6 shadow-premium dark:shadow-premium-dark relative overflow-hidden group ${className}`}>
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="relative z-10">{children}</div>
+        </div>
+    );
+}
 
-const StatCard = ({ title, value, icon: Icon, trend, color }: any) => (
-  <GlassCard className="relative overflow-hidden group">
-    <div className={`absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity`}>
-      <Icon size={80} className={`text-${color}-500`} />
-    </div>
-    <div className={`w-12 h-12 rounded-2xl bg-${color}-500/10 border border-${color}-500/20 flex items-center justify-center mb-4`}>
-      <Icon size={24} className={`text-${color}-500`} />
-    </div>
-    <p className="text-zinc-500 text-xs font-semibold uppercase tracking-widest mb-1">{title}</p>
-    <div className="flex items-baseline gap-2">
-      <h3 className="text-3xl font-bold text-white">{value}</h3>
-      <span className="text-[10px] text-green-500 font-bold">{trend}</span>
-    </div>
-  </GlassCard>
-);
+function AdminDashboardContent() {
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const activeTab = searchParams.get("tab") || "overview";
 
-import DashboardLayout from "@/components/layouts/DashboardLayout";
+    const [stats, setStats] = useState({
+        totalUsers: 1284,
+        totalJobs: 452,
+        totalResumes: 890,
+        activeSyncs: 124,
+        growth: "+14.2%",
+        systemHealth: "99.9%"
+    });
+
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        // Simulate loading
+        const timer = setTimeout(() => setIsLoading(false), 800);
+        return () => clearTimeout(timer);
+    }, []);
+
+    const containerVars = {
+        hidden: { opacity: 0 },
+        visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
+    };
+
+    const itemVars = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
+    };
+
+    if (isLoading) {
+        return (
+            <div className="flex-1 flex items-center justify-center">
+                <div className="flex flex-col items-center gap-4 text-slate-500 font-bold uppercase tracking-widest text-[10px]">
+                    <Loader2 className="animate-spin text-indigo-500" size={32} />
+                    Initializing Platform Core...
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <DashboardLayout role="admin">
+            <motion.div 
+                variants={containerVars}
+                initial="hidden"
+                animate="visible"
+                className="flex-1 overflow-y-auto px-4 sm:px-10 py-8 custom-scrollbar"
+            >
+                <div className="max-w-7xl mx-auto">
+                    
+                    {/* Header */}
+                    <motion.div variants={itemVars} className="mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                        <div>
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-400 text-[10px] font-bold uppercase tracking-widest mb-4">
+                                <Shield size={10} fill="currentColor" /> Admin Authority Active
+                            </div>
+                            <h1 className="text-4xl font-extrabold tracking-tight mb-2">Platform <span className="text-gradient-primary">Intelligence</span></h1>
+                            <p className="text-slate-500 dark:text-slate-400 font-medium">Global control node for Mr. Hyre ecosystem.</p>
+                        </div>
+                        <div className="flex items-center gap-4">
+                            <button className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.06] rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition-all">
+                                <RefreshCw size={14} /> Refresh Data
+                            </button>
+                            <button className="flex items-center gap-2 px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-xs font-bold shadow-glow-indigo hover:scale-105 active:scale-95 transition-all">
+                                <Zap size={14} fill="white" /> Generate Report
+                            </button>
+                        </div>
+                    </motion.div>
+
+                    {/* Stats Grid */}
+                    <motion.div variants={itemVars} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                        {[
+                            { label: "Total Network Users", value: stats.totalUsers, icon: <Users size={20} />, trend: stats.growth, color: "blue" },
+                            { label: "Active Job Clusters", value: stats.totalJobs, icon: <Briefcase size={20} />, trend: "+8.4%", color: "indigo" },
+                            { label: "Intelligence Vault", value: stats.totalResumes, icon: <Database size={20} />, trend: "Syncing", color: "violet" },
+                            { label: "Core Availability", value: stats.systemHealth, icon: <Activity size={20} />, trend: "Stable", color: "emerald" }
+                        ].map((s, i) => (
+                            <GlassCard key={i} className="group cursor-pointer">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className={`p-3 rounded-2xl bg-${s.color}-500/10 text-${s.color}-500 border border-${s.color}-500/20 shadow-inner`}>
+                                        {s.icon}
+                                    </div>
+                                    <span className={`text-[10px] font-black px-2 py-1 rounded-lg bg-emerald-500/10 text-emerald-500`}>{s.trend}</span>
+                                </div>
+                                <h3 className="text-3xl font-black mb-1">{s.value}</h3>
+                                <p className="text-[10px] font-bold text-slate-500 dark:text-slate-500 uppercase tracking-widest">{s.label}</p>
+                            </GlassCard>
+                        ))}
+                    </motion.div>
+
+                    {/* Main Content Area */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        
+                        {/* Interactive Tables Section */}
+                        <motion.div variants={itemVars} className="lg:col-span-2 space-y-8">
+                            <GlassCard className="p-0 overflow-hidden">
+                                <div className="p-6 border-b border-slate-100 dark:border-white/[0.04] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    <h2 className="text-xl font-bold flex items-center gap-3">
+                                        {activeTab === 'users' ? 'User Ecosystem' : activeTab === 'jobs' ? 'Job Clusters' : 'Platform Operations'}
+                                    </h2>
+                                    <div className="flex items-center gap-2">
+                                        <div className="relative">
+                                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
+                                            <input 
+                                                type="text" 
+                                                placeholder="Global query..." 
+                                                className="bg-slate-100 dark:bg-white/[0.03] border-none rounded-xl py-2 pl-9 pr-4 text-xs focus:ring-2 focus:ring-indigo-500/20 w-48 sm:w-64"
+                                            />
+                                        </div>
+                                        <button className="p-2 bg-slate-100 dark:bg-white/[0.03] rounded-xl text-slate-500 hover:text-indigo-500 transition-colors">
+                                            <Filter size={18} />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left border-collapse">
+                                        <thead>
+                                            <tr className="bg-slate-50 dark:bg-white/[0.01] text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">
+                                                <th className="px-6 py-4">Identity</th>
+                                                <th className="px-6 py-4">Role/Cluster</th>
+                                                <th className="px-6 py-4">Security Level</th>
+                                                <th className="px-6 py-4 text-right">Authority</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-100 dark:divide-white/[0.04]">
+                                            {activeTab === 'users' ? (
+                                                [
+                                                    { name: "Ayush Rajput", email: "ayush@mrhyre.com", role: "Super Admin", level: "L10", status: "Active" },
+                                                    { name: "John Doe", email: "john@google.com", role: "Recruiter", level: "L4", status: "Verified" },
+                                                    { name: Sarah Smith", email: "sarah@talentsys.io", role: "Candidate", level: "L1", status: "Active" },
+                                                    { name: "Dev Node 1", email: "api@hyre.io", role: "System Bot", level: "L8", status: "Secure" },
+                                                ].map((u, i) => (
+                                                    <tr key={i} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group">
+                                                        <td className="px-6 py-4">
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-500 to-violet-500 flex items-center justify-center text-white text-[10px] font-bold">
+                                                                    {u.name.slice(0, 2).toUpperCase()}
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-xs font-bold text-slate-900 dark:text-white">{u.name}</p>
+                                                                    <p className="text-[10px] text-slate-500">{u.email}</p>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <span className="text-[10px] font-bold px-2 py-1 rounded-md bg-slate-100 dark:bg-white/[0.04] text-slate-500">{u.role}</span>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <div className="flex items-center gap-2">
+                                                                <div className={`w-1.5 h-1.5 rounded-full ${u.level.startsWith('L10') ? 'bg-fuchsia-500' : 'bg-emerald-500'}`} />
+                                                                <span className="text-xs font-bold">{u.level}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-right">
+                                                            <button className="p-2 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 transition-all">
+                                                                <Trash2 size={16} />
+                                                            </button>
+                                                            <button className="p-2 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-indigo-500 transition-all">
+                                                                <MoreHorizontal size={16} />
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            ) : (
+                                                [
+                                                    { title: "Senior AI Engineer", company: "NeuroTech", apps: 124, status: "Open" },
+                                                    { title: "Frontend Architect", company: "Vercel", apps: 89, status: "Urgent" },
+                                                    { title: "Data Scientist", company: "OpenAI", apps: 256, status: "Closed" },
+                                                    { title: "Product Designer", company: "Figma", apps: 42, status: "Open" },
+                                                ].map((j, i) => (
+                                                    <tr key={i} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group">
+                                                        <td className="px-6 py-4">
+                                                            <div>
+                                                                <p className="text-xs font-bold text-slate-900 dark:text-white">{j.title}</p>
+                                                                <p className="text-[10px] text-slate-500">{j.company}</p>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <div className="flex items-center gap-2">
+                                                                <Users size={12} className="text-slate-400" />
+                                                                <span className="text-xs font-bold">{j.apps} synced</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-6 py-4">
+                                                            <span className={`text-[10px] font-black px-2 py-1 rounded-md ${j.status === 'Urgent' ? 'bg-red-500/10 text-red-500' : 'bg-emerald-500/10 text-emerald-500'}`}>{j.status}</span>
+                                                        </td>
+                                                        <td className="px-6 py-4 text-right">
+                                                            <button className="p-2 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-indigo-500 transition-all">
+                                                                <ExternalLink size={16} />
+                                                            </button>
+                                                            <button className="p-2 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 transition-all">
+                                                                <XCircle size={16} />
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div className="p-4 bg-slate-50/50 dark:bg-white/[0.01] border-t border-slate-100 dark:border-white/[0.04] text-center">
+                                    <button className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest hover:underline">View Expanded Registry →</button>
+                                </div>
+                            </GlassCard>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <GlassCard>
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="p-2 rounded-xl bg-orange-500/10 text-orange-500 border border-orange-500/20">
+                                            <Sparkles size={18} />
+                                        </div>
+                                        <h3 className="font-bold">Intelligence Activity</h3>
+                                    </div>
+                                    <div className="space-y-4">
+                                        {[1, 2, 3].map(i => (
+                                            <div key={i} className="flex gap-4 p-3 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.04]">
+                                                <div className="w-2 h-2 mt-1.5 rounded-full bg-indigo-500 shrink-0 shadow-glow-indigo" />
+                                                <div>
+                                                    <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">System generated new match cluster for "Senior Backend Node".</p>
+                                                    <p className="text-[10px] text-slate-400 mt-1 font-medium">2 minutes ago • Intelligence Sync</p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </GlassCard>
+
+                                <GlassCard>
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className="p-2 rounded-xl bg-violet-500/10 text-violet-500 border border-violet-500/20">
+                                            <Globe size={18} />
+                                        </div>
+                                        <h3 className="font-bold">Global Presence</h3>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-xs font-medium text-slate-500">North America</span>
+                                            <span className="text-xs font-bold">42.8%</span>
+                                        </div>
+                                        <div className="w-full h-1.5 bg-slate-100 dark:bg-white/[0.04] rounded-full overflow-hidden">
+                                            <div className="h-full bg-indigo-500 w-[42.8%]" />
+                                        </div>
+                                        <div className="flex items-center justify-between">
+                                            <span className="text-xs font-medium text-slate-500">Europe / APAC</span>
+                                            <span className="text-xs font-bold">38.2%</span>
+                                        </div>
+                                        <div className="w-full h-1.5 bg-slate-100 dark:bg-white/[0.04] rounded-full overflow-hidden">
+                                            <div className="h-full bg-violet-500 w-[38.2%]" />
+                                        </div>
+                                    </div>
+                                </GlassCard>
+                            </div>
+                        </motion.div>
+
+                        {/* Sidebar Control Panel */}
+                        <motion.div variants={itemVars} className="space-y-8">
+                            <div className="bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 p-8 rounded-[40px] text-white shadow-glow-indigo relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-all duration-700">
+                                    <Shield size={120} />
+                                </div>
+                                <h2 className="text-2xl font-black mb-4 flex items-center gap-3">
+                                    <Zap size={24} fill="white" /> Core Authority
+                                </h2>
+                                <p className="text-indigo-100 text-sm mb-8 font-medium leading-relaxed">
+                                    You have full read/write permissions to the platform database. System protocols are under your direct control.
+                                </p>
+                                <div className="space-y-3">
+                                    <button className="w-full py-3 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-2xl font-bold text-xs uppercase tracking-widest transition-all border border-white/20">
+                                        Platform Settings
+                                    </button>
+                                    <button className="w-full py-3 bg-white text-indigo-600 rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-[1.02] transition-transform active:scale-95 shadow-xl">
+                                        Emergency Lockdown
+                                    </button>
+                                </div>
+                            </div>
+
+                            <GlassCard>
+                                <h3 className="font-bold mb-6 flex items-center gap-2"><Activity size={18} className="text-emerald-500" /> Server Architecture</h3>
+                                <div className="space-y-6">
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex-1">
+                                            <div className="flex justify-between mb-2">
+                                                <span className="text-xs font-bold text-slate-500">CPU LOAD</span>
+                                                <span className="text-xs font-bold">12%</span>
+                                            </div>
+                                            <div className="w-full h-1 bg-slate-100 dark:bg-white/[0.04] rounded-full overflow-hidden">
+                                                <div className="h-full bg-emerald-500 w-[12%]" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex-1">
+                                            <div className="flex justify-between mb-2">
+                                                <span className="text-xs font-bold text-slate-500">MEMORY UTILIZATION</span>
+                                                <span className="text-xs font-bold">2.4 GB</span>
+                                            </div>
+                                            <div className="w-full h-1 bg-slate-100 dark:bg-white/[0.04] rounded-full overflow-hidden">
+                                                <div className="h-full bg-blue-500 w-[45%]" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </GlassCard>
+
+                            <GlassCard className="bg-slate-900 dark:bg-black text-white border-none shadow-2xl">
+                                <h3 className="font-bold mb-4 flex items-center gap-2 text-indigo-400"><TrendingUp size={18} /> Revenue Flow</h3>
+                                <p className="text-3xl font-black mb-1">$42,800.00</p>
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-6">Net Monthly Processing</p>
+                                <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
+                                    <span className="text-xs font-medium">Conversion Rate</span>
+                                    <span className="text-xs font-bold text-emerald-400">+12%</span>
+                                </div>
+                            </GlassCard>
+                        </motion.div>
+                    </div>
+
+                    {/* Footer */}
+                    <div className="mt-20 border-t border-slate-200 dark:border-white/[0.04] pt-8 text-center pb-12">
+                        <p className="text-[10px] font-bold text-slate-400 dark:text-slate-600 uppercase tracking-widest flex items-center justify-center gap-3">
+                            © {new Date().getFullYear()} Mr. Hyre Intelligence • Authority Version 8.4.2 (Stable)
+                        </p>
+                    </div>
+                </div>
+            </motion.div>
+        </DashboardLayout>
+    );
+}
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState("overview");
-  const [stats, setStats] = useState<any>(null);
-  const [users, setUsers] = useState<any[]>([]);
-  const [jobs, setJobs] = useState<any[]>([]);
-  const [resumes, setResumes] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isDeleting, setIsDeleting] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const router = useRouter();
-
-  useEffect(() => {
-    // Handle Tab via URL params
-    const params = new URLSearchParams(window.location.search);
-    const tab = params.get("tab");
-    if (tab) setActiveTab(tab);
-
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      router.push("/login");
-      return;
-    }
-
-    fetchData();
-  }, [router]);
-
-  const fetchData = async () => {
-    setIsLoading(true);
-    const token = localStorage.getItem("authToken");
-    try {
-      const headers = { Authorization: `Bearer ${token}` };
-      const [statsRes, usersRes, jobsRes, resumesRes] = await Promise.all([
-        fetch("/api/admin/stats", { headers }),
-        fetch("/api/admin/users", { headers }),
-        fetch("/api/admin/jobs", { headers }),
-        fetch("/api/admin/resumes", { headers })
-      ]);
-
-      if (statsRes.ok) {
-        const sData = await statsRes.json();
-        setStats(sData.stats);
-      }
-      if (usersRes.ok) {
-        const uData = await usersRes.json();
-        setUsers(uData.users || []);
-      }
-      if (jobsRes.ok) {
-        const jData = await jobsRes.json();
-        setJobs(jData.jobs || []);
-      }
-      if (resumesRes.ok) {
-        const rData = await resumesRes.json();
-        setResumes(rData.resumes || []);
-      }
-    } catch (err) {
-      console.error("Fetch Error:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDeleteEntity = async (id: string, type: "users" | "jobs" | "resumes") => {
-    if (!confirm(`Are you sure you want to delete this ${type.slice(0,-1)}?`)) return;
-    
-    setIsDeleting(id);
-    const token = localStorage.getItem("authToken");
-    try {
-      const res = await fetch(`/api/admin/${type}`, {
-        method: "DELETE",
-        headers: { 
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}` 
-        },
-        body: JSON.stringify({ id }),
-      });
-
-      if (res.ok) {
-        if (type === "users") setUsers(users.filter(u => u.id !== id));
-        if (type === "jobs") setJobs(jobs.filter(j => j.id !== id));
-        if (type === "resumes") setResumes(resumes.filter(r => r.id !== id));
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setIsDeleting(null);
-    }
-  };
-
-  const handleLogout = async () => {
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("adminRole");
-    // Clear the custom JWT cookie
-    document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    
-    try {
-      const { signOut } = await import("next-auth/react");
-      await signOut({ callbackUrl: "/admin/login" });
-    } catch (e) {
-      router.push("/admin/login");
-    }
-  };
-
-  const menuItems = [
-    { id: "overview", label: "Overview", icon: BarChart3 },
-    { id: "users", label: "User Control", icon: Users },
-    { id: "jobs", label: "Job Operations", icon: Briefcase },
-    { id: "resumes", label: "Resume Vault", icon: FileText },
-    { id: "platform", label: "Platform Metrics", icon: Zap },
-    { id: "settings", label: "Core Settings", icon: Settings },
-  ];
-
-  if (isLoading && !stats) return (
-    <DashboardLayout role="admin">
-      <div className="flex-1 flex items-center justify-center p-10">
-        <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
-          <RefreshCw size={40} className="text-blue-500" />
-        </motion.div>
-      </div>
-    </DashboardLayout>
-  );
-
-
-  return (
-    <DashboardLayout role="admin">
-        <main className="flex-1 overflow-y-auto custom-scrollbar relative z-10 p-10">
-
-
-        <AnimatePresence mode="wait">
-        {activeTab === "overview" && (
-          <motion.div 
-            key="overview"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            className="space-y-10"
-          >
-            {/* Stats Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <StatCard title="Total Citizens" value={stats?.totalUsers || 0} icon={Users} trend="+12% this month" color="blue" />
-              <StatCard title="Active Jobs" value={stats?.totalJobs || 0} icon={Briefcase} trend="+8.4% growth" color="purple" />
-              <StatCard title="Resume Nodes" value={stats?.totalResumes || 0} icon={FileText} trend="+24% uploaded" color="emerald" />
-              <StatCard title="Waitlist Count" value={stats?.totalWaitlist || 0} icon={Timer} trend="Stable ingress" color="amber" />
+    return (
+        <Suspense fallback={
+            <div className="flex h-screen bg-[#FAFBFD] dark:bg-[#0A0A0F] items-center justify-center">
+                <Loader2 className="animate-spin text-indigo-500" size={40} />
             </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Activity Section */}
-              <GlassCard className="lg:col-span-2">
-                <div className="flex justify-between items-center mb-8">
-                  <h3 className="text-xl font-bold flex items-center gap-3">
-                    <Zap size={20} className="text-blue-400" /> Recent Ingress
-                  </h3>
-                  <button className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest hover:text-white transition-colors">View All Stream →</button>
-                </div>
-                <div className="space-y-4">
-                  {(users || []).slice(0, 6).map((user, i) => (
-                    <div 
-                      key={user.id}
-                      className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-transparent hover:border-white/10 hover:bg-white/10 transition-all cursor-pointer group"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-zinc-800 to-zinc-700 flex items-center justify-center text-[10px] font-bold group-hover:from-blue-600 group-hover:to-indigo-600 transition-all uppercase">
-                          {user.name.slice(0, 2)}
-                        </div>
-                        <div>
-                          <p className="text-sm font-bold">{user.name}</p>
-                          <p className="text-[10px] text-zinc-500">{user.email}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-6">
-                        <span className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded-md ${user.role === 'admin' ? 'bg-red-500/10 text-red-500' : 'bg-blue-500/10 text-blue-500'}`}>
-                          {user.role}
-                        </span>
-                        <ArrowUpRight size={14} className="text-zinc-700 group-hover:text-blue-400 transition-all" />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </GlassCard>
-
-              {/* Quick Actions */}
-              <div className="space-y-6">
-                <GlassCard className="bg-gradient-to-br from-blue-600 to-indigo-800 border-none relative overflow-hidden group">
-                  <div className="absolute -right-4 -bottom-4 opacity-10 group-hover:scale-125 transition-transform duration-700">
-                    <Sparkles size={120} />
-                  </div>
-                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                    <Sparkles size={20} /> System AI
-                  </h3>
-                  <p className="text-sm text-blue-100/80 leading-relaxed mb-6">
-                    Our semantic analysis engine is currently processing <span className="font-bold text-white">428 profiles</span> per hour. No anomalies detected.
-                  </p>
-                  <button className="w-full py-3 bg-white text-black rounded-xl font-bold text-xs hover:bg-zinc-200 transition-all">
-                    Generate Analysis
-                  </button>
-                </GlassCard>
-
-                <GlassCard>
-                  <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
-                    <Filter size={18} className="text-zinc-500" /> Control Links
-                  </h3>
-                  <div className="space-y-3">
-                    {['Database Manager', 'Mail Server', 'AI Tuning', 'Log Explorer'].map((link) => (
-                      <button key={link} className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-white/5 text-sm text-zinc-400 hover:text-white transition-all">
-                        {link}
-                        <ChevronRight size={14} />
-                      </button>
-                    ))}
-                  </div>
-                </GlassCard>
-              </div>
-            </div>
-          </motion.div>
-        )}
-
-        {activeTab === "users" && (
-          <motion.div 
-            key="users"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="space-y-8"
-          >
-            <div className="flex flex-col md:flex-row justify-between gap-4">
-              <div className="relative flex-1 max-w-xl group">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500 group-focus-within:text-blue-500 transition-colors" size={18} />
-                <input 
-                  placeholder="Search user profiles..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-3.5 pl-12 pr-4 focus:outline-none focus:border-blue-500/50 transition-all"
-                />
-              </div>
-            </div>
-
-            <div className="bg-white/5 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-xl">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="border-b border-white/10 bg-white/5">
-                    <th className="p-6 text-xs font-bold text-zinc-500 uppercase tracking-widest">User Node</th>
-                    <th className="p-6 text-xs font-bold text-zinc-500 uppercase tracking-widest">Role</th>
-                    <th className="p-6 text-xs font-bold text-zinc-500 uppercase tracking-widest">Created</th>
-                    <th className="p-6 text-xs font-bold text-zinc-500 uppercase tracking-widest">Control</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
-                  {users.filter(u => u.name.toLowerCase().includes(searchQuery.toLowerCase())).map((user) => (
-                    <tr key={user.id} className="hover:bg-white/[0.02]">
-                      <td className="p-6">
-                         <p className="font-bold">{user.name}</p>
-                         <p className="text-xs text-zinc-500">{user.email}</p>
-                      </td>
-                      <td className="p-6">
-                         <span className={`text-[10px] font-bold px-2 py-1 rounded-md ${user.role === 'recruiter' ? 'bg-purple-500/10 text-purple-400' : 'bg-blue-500/10 text-blue-400'}`}>{user.role}</span>
-                      </td>
-                      <td className="p-6 text-zinc-500 text-sm">{new Date(user.createdAt).toLocaleDateString()}</td>
-                      <td className="p-6">
-                         <button onClick={() => handleDeleteEntity(user.id, "users")} className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-all">
-                            <Trash2 size={16} />
-                         </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </motion.div>
-        )}
-
-        {activeTab === "jobs" && (
-           <motion.div key="jobs" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
-              <h3 className="text-2xl font-bold">Job Operations Matrix</h3>
-              <div className="bg-white/5 border border-white/10 rounded-3xl overflow-hidden backdrop-blur-xl">
-                 <table className="w-full text-left">
-                    <tbody className="divide-y divide-white/5">
-                       {jobs.map(job => (
-                          <tr key={job.id} className="hover:bg-white/[0.02]">
-                             <td className="p-6">
-                                <p className="font-bold">{job.title}</p>
-                                <p className="text-xs text-zinc-500">{job.recruiter?.companyName || "System"}</p>
-                             </td>
-                             <td className="p-6 text-sm text-zinc-500">{new Date(job.createdAt).toLocaleDateString()}</td>
-                             <td className="p-6">
-                                <button onClick={() => handleDeleteEntity(job.id, "jobs")} className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg">
-                                   <Trash2 size={16} />
-                                </button>
-                             </td>
-                          </tr>
-                       ))}
-                    </tbody>
-                 </table>
-              </div>
-           </motion.div>
-        )}
-
-        {activeTab === "resumes" && (
-           <motion.div key="resumes" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {resumes.map(resume => (
-                 <GlassCard key={resume.id}>
-                    <div className="flex justify-between items-start mb-4">
-                       <FileText size={32} className="text-blue-500" />
-                       <button onClick={() => handleDeleteEntity(resume.id, "resumes")} className="text-zinc-700 hover:text-red-500"><Trash2 size={16} /></button>
-                    </div>
-                    <p className="font-bold truncate">{resume.fileName}</p>
-                    <p className="text-xs text-zinc-500">Linked: {resume.user?.name}</p>
-                 </GlassCard>
-              ))}
-           </motion.div>
-        )}
-
-        {activeTab === "platform" && (
-           <motion.div key="platform" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-10">
-              <h3 className="text-2xl font-bold">Real-time Operational Metrics</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                 <GlassCard className="text-center">
-                    <Database size={40} className="mx-auto mb-4 text-emerald-500" />
-                    <h4 className="text-3xl font-bold mb-1">99.98%</h4>
-                    <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">Database Health</p>
-                 </GlassCard>
-                 <GlassCard className="text-center">
-                    <Globe size={40} className="mx-auto mb-4 text-blue-500" />
-                    <h4 className="text-3xl font-bold mb-1">24ms</h4>
-                    <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">Avg Intelligence Latency</p>
-                 </GlassCard>
-                 <GlassCard className="text-center">
-                    <Server size={40} className="mx-auto mb-4 text-purple-500" />
-                    <h4 className="text-3xl font-bold mb-1">12</h4>
-                    <p className="text-xs text-zinc-500 font-bold uppercase tracking-widest">Active Compute Nodes</p>
-                 </GlassCard>
-              </div>
-              <GlassCard className="h-64 flex items-center justify-center border-dashed border-white/10">
-                 <div className="text-center">
-                    <Activity size={48} className="mx-auto mb-4 text-blue-500 animate-pulse" />
-                    <p className="text-zinc-500 font-semibold tracking-wide uppercase text-xs">Waiting for high-resolution traffic data...</p>
-                 </div>
-              </GlassCard>
-           </motion.div>
-        )}
-        </AnimatePresence>
-
-    </main>
-  </DashboardLayout>
-);
+        }>
+            <AdminDashboardContent />
+        </Suspense>
+    );
 }

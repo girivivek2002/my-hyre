@@ -13,6 +13,7 @@ export async function proxy(req: NextRequest) {
     path === "/" || 
     path === "/login" || 
     path === "/signup" ||
+    path === "/admin/login" ||
     path.startsWith("/signup/") ||
     path.includes("/signup") ||
     path.includes("/login");

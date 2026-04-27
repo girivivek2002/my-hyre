@@ -155,7 +155,7 @@ function AdminDashboardContent() {
                                                 [
                                                     { name: "Ayush Rajput", email: "ayush@mrhyre.com", role: "Super Admin", level: "L10", status: "Active" },
                                                     { name: "John Doe", email: "john@google.com", role: "Recruiter", level: "L4", status: "Verified" },
-                                                    { name: Sarah Smith", email: "sarah@talentsys.io", role: "Candidate", level: "L1", status: "Active" },
+                                                    { name: "Sarah Smith", email: "sarah@talentsys.io", role: "Candidate", level: "L1", status: "Active" },
                                                     { name: "Dev Node 1", email: "api@hyre.io", role: "System Bot", level: "L8", status: "Secure" },
                                                 ].map((u, i) => (
                                                     <tr key={i} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group">

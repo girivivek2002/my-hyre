@@ -18,14 +18,16 @@ export async function middleware(req: NextRequest) {
     path.includes("/signup") ||
     path.includes("/login");
   
-  // 2. Get Session Token (NextAuth or Custom)
-  let token: any = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-  
-  if (!token) {
-    const customToken = req.cookies.get("authToken")?.value;
-    if (customToken === "admin-session-authority") {
-      token = { role: "admin", name: "Super Admin" };
-    } else if (customToken) {
+  // 2. Get Session Token (Priority: Admin Bypass -> NextAuth -> Custom)
+  let token: any = null;
+  const customToken = req.cookies.get("authToken")?.value;
+
+  if (customToken === "admin-session-authority") {
+    token = { role: "admin", name: "Super Admin" };
+  } else {
+    token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    
+    if (!token && customToken) {
       try {
         const { payload } = await jwtVerify(customToken, secretKey);
         token = payload;

@@ -29,10 +29,11 @@ export default function AdminLogin() {
                 // Set authority cookie for middleware recognition
                 document.cookie = "authToken=admin-session-authority; path=/; max-age=3600; SameSite=Lax";
                 
-                localStorage.setItem("authToken", "admin-session-authority");
                 localStorage.setItem("userRole", "admin");
                 localStorage.setItem("userName", "Super Admin");
-                router.push("/admin/dashboard");
+                
+                // Use hard redirect to ensure middleware picks up the cookie immediately
+                window.location.href = "/admin/dashboard";
             } else {
                 setError("Authorization Failed: Invalid admin credentials.");
                 setIsLoading(false);

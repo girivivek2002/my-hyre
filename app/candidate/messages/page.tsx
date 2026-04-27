@@ -262,7 +262,7 @@ function CandidateMessagesContent() {
 
                         {/* Input Area */}
                         <div className="p-6 bg-white dark:bg-[#0A0A0F] border-t border-slate-200/60 dark:border-white/[0.06]">
-                            <form onSubmit={handleSendMessage} className="flex items-center gap-4 bg-slate-100/50 dark:bg-white/[0.03] p-2 rounded-[28px] border border-transparent focus-within:border-violet-500/20 focus-within:bg-white dark:focus-within:bg-[#111118] focus-within:shadow-lg transition-all duration-300">
+                            <form onSubmit={handleSendMessage} className="flex items-center gap-4 bg-slate-100/50 dark:bg-white/[0.03] p-2 rounded-[28px] border border-transparent transition-all duration-300">
                                 <button type="button" className="p-3 text-slate-400 hover:text-violet-500 transition-colors">
                                     <Plus size={24} />
                                 </button>
@@ -271,7 +271,7 @@ function CandidateMessagesContent() {
                                     placeholder="Type your response..." 
                                     value={newMessage}
                                     onChange={(e) => setNewMessage(e.target.value)}
-                                    className="flex-1 bg-transparent border-none focus:ring-0 text-slate-900 dark:text-white placeholder-slate-400 text-sm"
+                                    className="flex-1 bg-transparent border-none focus:ring-0 focus:outline-none text-slate-900 dark:text-white placeholder-slate-400 text-sm"
                                 />
                                 <button 
                                     type="submit" 

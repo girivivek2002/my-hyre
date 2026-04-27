@@ -42,21 +42,11 @@ export async function proxy(req: NextRequest) {
 
   // 4. Handle Authenticated Access
   if (token) {
-    // A. Force Onboarding if profile is incomplete
-    const isCompletingProfile = path === "/complete-profile";
-    const hasProfileCompletedCookie = req.cookies.get("profileCompleted")?.value === "true";
-    const isProfileComplete = (token as any).isProfileComplete || hasProfileCompletedCookie;
-
-    if (!isProfileComplete && !isCompletingProfile && !isPublicRoute && !path.startsWith("/api")) {
-      const targetProfile = token.role === "recruiter" ? "/recruiter/profile" : "/candidate/profile";
-      // Prevent redirect loop if already on the target profile page
-      if (path !== targetProfile) {
-        return NextResponse.redirect(new URL(targetProfile, req.url));
-      }
-    }
-
-    // C. Role-Based Access Control (RBAC) - ONLY for non-public routes
+    // B. Role-Based Access Control (RBAC) - ONLY for non-public routes
     if (token.role && !isPublicRoute) {
+      // Admin bypass
+      if (token.role === "admin") return NextResponse.next();
+
       if (path.startsWith("/candidate") && token.role !== "candidate") {
         return NextResponse.redirect(new URL("/recruiter/dashboard", req.url));
       }

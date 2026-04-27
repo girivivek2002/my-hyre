@@ -62,9 +62,9 @@ export default function CTA() {
               whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="text-4xl md:text-6xl lg:text-7xl font-black text-slate-900 leading-[1.05] mb-6 tracking-tight"
+              className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-slate-900 leading-[1.05] mb-6 tracking-tight"
             >
-              Build your <br />
+              Build your <br className="hidden sm:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">
                 dream team.
               </span>

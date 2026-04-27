@@ -214,40 +214,40 @@ export default function CandidateSettingsPage() {
                   className="space-y-6"
                 >
                   <GlassCard>
-                     <div className="flex flex-col md:flex-row gap-8 items-start">
+                     <div className="flex flex-col gap-8 items-center sm:items-start text-center sm:text-left">
                         <div className="relative group">
-                           <div className="w-32 h-32 rounded-[40px] bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-3xl font-extrabold text-white shadow-2xl relative overflow-hidden">
+                           <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-[24px] sm:rounded-[40px] bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-2xl sm:text-3xl font-extrabold text-white shadow-2xl relative overflow-hidden">
                               {profileData.name ? profileData.name.split(' ').map(n => n[0]).join('').toUpperCase() : "JD"}
                               <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer">
-                                 <Upload size={24} />
+                                 <Upload size={20} />
                                  <span className="text-[8px] font-bold mt-2 uppercase tracking-widest">Update</span>
                               </div>
                            </div>
                         </div>
-                        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+                        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 w-full text-left">
                            <div className="space-y-2">
-                              <label className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest ml-1">Full Name</label>
+                              <label className="text-[9px] sm:text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest ml-1">Full Name</label>
                               <input 
                                 value={profileData.name} 
                                 onChange={(e) => setProfileData({...profileData, name: e.target.value})}
-                                className="w-full bg-slate-50 dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-2xl px-5 py-3 text-sm font-semibold focus:outline-none focus:border-blue-500/50 transition-all" 
+                                className="w-full bg-slate-50 dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-xl sm:rounded-2xl px-4 py-2.5 sm:px-5 sm:py-3 text-xs sm:text-sm font-semibold focus:outline-none focus:border-blue-500/50 transition-all" 
                               />
                            </div>
                            <div className="space-y-2">
-                              <label className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest ml-1">Professional Title</label>
+                              <label className="text-[9px] sm:text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest ml-1">Professional Title</label>
                               <input 
                                 value={profileData.role} 
                                 onChange={(e) => setProfileData({...profileData, role: e.target.value})}
-                                className="w-full bg-slate-50 dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-2xl px-5 py-3 text-sm font-semibold focus:outline-none focus:border-blue-500/50 transition-all" 
+                                className="w-full bg-slate-50 dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-xl sm:rounded-2xl px-4 py-2.5 sm:px-5 sm:py-3 text-xs sm:text-sm font-semibold focus:outline-none focus:border-blue-500/50 transition-all" 
                               />
                            </div>
                            <div className="space-y-2 sm:col-span-2">
-                              <label className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest ml-1">AI-Augmented Bio</label>
+                              <label className="text-[9px] sm:text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest ml-1">AI Bio</label>
                               <textarea 
-                                rows={4} 
+                                rows={3} 
                                 value={profileData.biography} 
                                 onChange={(e) => setProfileData({...profileData, biography: e.target.value})}
-                                className="w-full bg-slate-50 dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-2xl px-5 py-3 text-sm font-semibold focus:outline-none focus:border-blue-500/50 transition-all resize-none" 
+                                className="w-full bg-slate-50 dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-xl sm:rounded-2xl px-4 py-2.5 sm:px-5 sm:py-3 text-xs sm:text-sm font-semibold focus:outline-none focus:border-blue-500/50 transition-all resize-none" 
                               />
                            </div>
                         </div>

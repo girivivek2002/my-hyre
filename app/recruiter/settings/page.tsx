@@ -173,59 +173,59 @@ export default function SettingsPage() {
                         {activeTab === "profile" && (
                             <motion.div variants={itemVars} className="space-y-6">
                                 <GlassCard>
-                                    <h2 className="text-lg font-bold mb-6 flex items-center gap-2"><User size={20} className="text-blue-400" /> Company Profile</h2>
-                                    <div className="flex flex-col sm:flex-row gap-6 mb-6">
+                                    <h2 className="text-base sm:text-lg font-bold mb-6 flex items-center gap-2"><User size={18} className="text-blue-400" /> Organization Architecture</h2>
+                                    <div className="flex flex-col sm:flex-row gap-6 mb-6 items-center sm:items-start text-center sm:text-left">
                                         <div className="shrink-0">
-                                            <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-3xl font-extrabold text-white shadow-[0_0_30px_rgba(59,130,246,0.3)] relative group/avatar cursor-pointer overflow-hidden">
+                                            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-2xl sm:text-3xl font-extrabold text-white shadow-[0_0_30px_rgba(59,130,246,0.3)] relative group/avatar cursor-pointer overflow-hidden">
                                                 {profile.companyName ? profile.companyName.slice(0, 2).toUpperCase() : "HY"}
                                                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover/avatar:opacity-100 transition-opacity flex items-center justify-center">
-                                                    <Upload size={24} />
+                                                    <Upload size={20} />
                                                 </div>
                                             </div>
-                                            <p className="text-[10px] text-neutral-500 text-center mt-2">Click to upload</p>
+                                            <p className="text-[9px] text-neutral-500 mt-2 font-bold uppercase tracking-widest">Update Logo</p>
                                         </div>
-                                        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full text-left">
                                             <div>
-                                                <label className="text-xs text-slate-500 dark:text-neutral-500 font-semibold uppercase tracking-widest mb-1.5 block">Company Name</label>
+                                                <label className="text-[9px] sm:text-xs text-slate-500 dark:text-neutral-500 font-bold uppercase tracking-widest mb-1.5 block">Organization Name</label>
                                                 <input 
                                                     value={profile.companyName} 
                                                     onChange={(e) => setProfile({...profile, companyName: e.target.value})}
-                                                    className="w-full bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-3 px-4 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all shadow-inner dark:shadow-none" 
+                                                    className="w-full bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-2.5 px-4 text-xs sm:text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500/50 transition-all shadow-inner dark:shadow-none" 
                                                 />
                                             </div>
                                             <div>
-                                                <label className="text-xs text-slate-500 dark:text-neutral-500 font-semibold uppercase tracking-widest mb-1.5 block">Industry</label>
+                                                <label className="text-[9px] sm:text-xs text-slate-500 dark:text-neutral-500 font-bold uppercase tracking-widest mb-1.5 block">Industry</label>
                                                 <input 
                                                     value={profile.industry} 
                                                     onChange={(e) => setProfile({...profile, industry: e.target.value})}
-                                                    className="w-full bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-3 px-4 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all shadow-inner dark:shadow-none" 
+                                                    className="w-full bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-2.5 px-4 text-xs sm:text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500/50 transition-all shadow-inner dark:shadow-none" 
                                                 />
                                             </div>
                                             <div>
-                                                <label className="text-xs text-slate-500 dark:text-neutral-500 font-semibold uppercase tracking-widest mb-1.5 block">Email</label>
+                                                <label className="text-[9px] sm:text-xs text-slate-500 dark:text-neutral-500 font-bold uppercase tracking-widest mb-1.5 block">Identity Node (Email)</label>
                                                 <input 
                                                     value={profile.email} 
                                                     readOnly
-                                                    className="w-full bg-slate-50 dark:bg-neutral-900/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-3 px-4 text-sm text-slate-400 dark:text-neutral-500 focus:outline-none cursor-not-allowed shadow-inner dark:shadow-none" 
+                                                    className="w-full bg-slate-50 dark:bg-neutral-900/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-2.5 px-4 text-xs sm:text-sm text-slate-400 dark:text-neutral-500 focus:outline-none cursor-not-allowed shadow-inner dark:shadow-none" 
                                                 />
                                             </div>
                                             <div>
-                                                <label className="text-xs text-slate-500 dark:text-neutral-500 font-semibold uppercase tracking-widest mb-1.5 block">Website</label>
+                                                <label className="text-[9px] sm:text-xs text-slate-500 dark:text-neutral-500 font-bold uppercase tracking-widest mb-1.5 block">HQ Website</label>
                                                 <input 
                                                     value={profile.website} 
                                                     onChange={(e) => setProfile({...profile, website: e.target.value})}
-                                                    className="w-full bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-3 px-4 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all shadow-inner dark:shadow-none" 
+                                                    className="w-full bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-2.5 px-4 text-xs sm:text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500/50 transition-all shadow-inner dark:shadow-none" 
                                                 />
                                             </div>
                                         </div>
                                     </div>
-                                    <div>
-                                        <label className="text-xs text-slate-500 dark:text-neutral-500 font-semibold uppercase tracking-widest mb-1.5 block">Company Bio</label>
+                                    <div className="text-left">
+                                        <label className="text-[9px] sm:text-xs text-slate-500 dark:text-neutral-500 font-bold uppercase tracking-widest mb-1.5 block">Organization Intelligence Bio</label>
                                         <textarea 
                                             value={profile.bio} 
                                             onChange={(e) => setProfile({...profile, bio: e.target.value})}
                                             rows={3} 
-                                            className="w-full bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-3 px-4 text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all resize-none shadow-inner dark:shadow-none" 
+                                            className="w-full bg-white dark:bg-neutral-950/50 border border-slate-200 dark:border-neutral-800 rounded-xl py-2.5 px-4 text-xs sm:text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-500/50 transition-all resize-none shadow-inner dark:shadow-none" 
                                         />
                                     </div>
                                     <div className="flex items-center justify-between mt-6">

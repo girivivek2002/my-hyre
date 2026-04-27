@@ -19,8 +19,9 @@ export default function Engagement() {
       <div className="max-w-7xl mx-auto">
         <motion.div
           onMouseMove={handleMouseMove}
-          className="relative rounded-[40px] bg-white border border-slate-100 p-10 md:p-16 lg:p-20 overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.05)] transition-shadow duration-500 group"
+          className="relative rounded-[32px] md:rounded-[40px] bg-white border border-slate-100 p-6 sm:p-10 md:p-16 lg:p-20 overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_60px_rgba(0,0,0,0.05)] transition-shadow duration-500 group"
         >
+
           {/* Mouse-tracking Spotlight */}
           <motion.div className="absolute inset-0 rounded-[40px] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" style={{ background: spotlight }} />
           {/* Background subtle gradient */}
@@ -59,7 +60,7 @@ export default function Engagement() {
                 high-fidelity data mapping and structural intelligence.
               </motion.p>
 
-              <div className="flex gap-12">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
                 {[
                   { value: "500+", label: "Companies" },
                   { value: "2M+", label: "Candidates" },
@@ -72,11 +73,12 @@ export default function Engagement() {
                     viewport={{ once: true }}
                     transition={{ delay: 0.3 + 0.1 * i }}
                   >
-                    <div className="text-2xl font-bold text-slate-900 mb-1 tracking-tight">{stat.value}</div>
-                    <div className="text-slate-400 text-[10px] uppercase tracking-[0.1em] font-semibold">{stat.label}</div>
+                    <div className="text-xl md:text-2xl font-bold text-slate-900 mb-1 tracking-tight">{stat.value}</div>
+                    <div className="text-slate-400 text-[9px] uppercase tracking-[0.1em] font-semibold">{stat.label}</div>
                   </motion.div>
                 ))}
               </div>
+
             </div>
 
             {/* Overlapping Preview Card */}

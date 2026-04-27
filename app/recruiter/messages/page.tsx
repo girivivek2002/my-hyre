@@ -128,7 +128,8 @@ function MessagesContent() {
     );
 
     return (
-        <div className="flex h-[calc(100vh-100px)] bg-[#FAFBFD] rounded-[40px] overflow-hidden border border-slate-200/60 shadow-xl m-4">
+        <div className="flex flex-1 h-full md:h-[calc(100vh-100px)] bg-[#FAFBFD] md:rounded-[40px] overflow-hidden border-b md:border border-slate-200/60 shadow-xl md:m-4">
+
             {/* Sidebar */}
             <div className={`w-full md:w-80 lg:w-96 border-r border-slate-200/60 flex flex-col bg-white/50 backdrop-blur-md ${selectedCandidateId ? 'hidden md:flex' : 'flex'}`}>
                 <div className="p-6 space-y-6">

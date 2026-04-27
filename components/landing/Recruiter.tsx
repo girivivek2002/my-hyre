@@ -68,10 +68,10 @@ export default function Recruiter() {
               whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.4, type: "spring", stiffness: 100 }}
-              className="absolute -bottom-5 -right-4 lg:-right-6 z-20 bg-white backdrop-blur-2xl border border-slate-100 rounded-2xl p-5 shadow-[0_10px_40px_rgba(0,0,0,0.08)] hover:border-indigo-200 transition-all duration-300"
+              className="absolute -bottom-5 right-4 md:-right-4 lg:-right-6 z-20 bg-white backdrop-blur-2xl border border-slate-100 rounded-2xl p-4 sm:p-5 shadow-[0_10px_40px_rgba(0,0,0,0.08)] hover:border-indigo-200 transition-all duration-300"
             >
-              <div className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-violet-500 mb-0.5">60%</div>
-              <div className="text-slate-400 text-[9px] uppercase tracking-widest font-bold">Faster Hiring</div>
+              <div className="text-2xl sm:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-violet-500 mb-0.5">60%</div>
+              <div className="text-slate-400 text-[8px] sm:text-[9px] uppercase tracking-widest font-bold">Faster Hiring</div>
             </motion.div>
           </motion.div>
 

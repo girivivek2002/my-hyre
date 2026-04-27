@@ -324,16 +324,17 @@ export default function PostJobPage() {
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mb-6"
+                    className="mb-4 sm:mb-6"
                 >
-                    <h1 className="text-3xl font-bold mb-2">
+                    <h1 className="text-2xl sm:text-3xl font-bold mb-2">
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 dark:from-blue-400 dark:via-purple-400 dark:to-cyan-400">AI Job Creator</span>
                     </h1>
-                    <p className="text-slate-500 dark:text-neutral-400 flex items-center gap-2">
-                        <Bot size={18} className="text-blue-500 dark:text-blue-400" />
+                    <p className="text-slate-500 dark:text-neutral-400 flex items-center gap-2 text-xs sm:text-sm">
+                        <Bot size={18} className="text-blue-500 dark:text-blue-400 shrink-0" />
                         Describe your hiring needs naturally. Let AI handle the details.
                     </p>
                 </motion.div>
+
 
                 <div className="flex-1 overflow-y-auto space-y-4 mb-4 custom-scrollbar pr-2">
                     <AnimatePresence>
@@ -453,8 +454,16 @@ export default function PostJobPage() {
                         initial={{ opacity: 0, x: 50 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 50 }}
-                        className="w-[400px] border-l border-slate-200 dark:border-neutral-800/60 bg-white/50 dark:bg-neutral-950/50 backdrop-blur-xl overflow-y-auto p-6"
+                        className="fixed inset-y-0 right-0 w-full sm:w-[400px] border-l border-slate-200 dark:border-neutral-800/60 bg-white dark:bg-neutral-950/95 backdrop-blur-xl overflow-y-auto p-6 z-[100] shadow-2xl"
                     >
+                        {/* Close button for mobile */}
+                        <button 
+                            onClick={() => setShowPreview(false)}
+                            className="absolute top-4 right-4 p-2 rounded-full bg-slate-100 dark:bg-neutral-800 text-slate-500 sm:hidden"
+                        >
+                            <X size={20} />
+                        </button>
+
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-lg font-bold flex items-center gap-2 text-slate-800 dark:text-white">
                                 <Sparkles size={18} className="text-blue-500 dark:text-blue-400" />

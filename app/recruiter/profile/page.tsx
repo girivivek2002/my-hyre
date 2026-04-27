@@ -217,32 +217,32 @@ export default function CompanyProfile() {
         <div className="max-w-6xl mx-auto">
 
             {/* Banner & Profile Header */}
-            <motion.div variants={itemVars} className="relative mb-20">
+            <motion.div variants={itemVars} className="relative mb-28 sm:mb-20">
                 {/* Hidden File Inputs */}
                 <input type="file" accept="image/*" ref={logoInputRef} onChange={handleLogoChange} className="hidden" />
                 <input type="file" accept="image/*" ref={coverInputRef} onChange={handleCoverChange} className="hidden" />
 
                 {/* Cover Image */}
-                <div className="h-64 sm:h-80 w-full rounded-[40px] bg-gradient-to-br from-slate-900 to-slate-800 dark:from-neutral-900 dark:to-neutral-950 border border-slate-200 dark:border-neutral-800 overflow-hidden relative group">
+                <div className="h-48 sm:h-80 w-full md:rounded-[40px] rounded-[24px] bg-gradient-to-br from-slate-900 to-slate-800 dark:from-neutral-900 dark:to-neutral-950 border border-slate-200 dark:border-neutral-800 overflow-hidden relative group">
                     <div className="absolute inset-0 bg-cover bg-center opacity-40 group-hover:scale-105 transition-transform duration-1000" style={{ backgroundImage: `url('${coverImage || profile.coverUrl || "https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069&auto=format&fit=crop"}')` }} />
                     <div className="absolute inset-0 bg-black/20" />
-                    <button onClick={() => coverInputRef.current?.click()} className="absolute bottom-6 right-6 px-4 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-xl text-xs font-bold text-white border border-white/20 transition-all flex items-center gap-2 cursor-pointer z-10">
+                    <button onClick={() => coverInputRef.current?.click()} className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 px-3 py-1.5 sm:px-4 sm:py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-xl text-[10px] sm:text-xs font-bold text-white border border-white/20 transition-all flex items-center gap-2 cursor-pointer z-10">
                         <Camera size={14} /> Update Cover
                     </button>
                 </div>
 
                 {/* Logo Overflow */}
-                <div className="absolute -bottom-16 left-12 flex flex-col sm:flex-row sm:items-end gap-6 sm:gap-8 z-10">
-                    <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-[40px] bg-white dark:bg-neutral-950 p-2 border-4 border-slate-50 dark:border-[#050505] shadow-2xl relative group">
-                        <div className="w-full h-full rounded-[32px] bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-4xl font-extrabold text-white shadow-inner relative overflow-hidden bg-cover bg-center" style={(logoImage || profile.logoUrl) ? { backgroundImage: `url(${logoImage || profile.logoUrl})` } : {}}>
+                <div className="absolute -bottom-20 sm:-bottom-16 left-4 sm:left-12 flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-8 z-10 w-[calc(100%-32px)]">
+                    <div className="w-24 h-24 sm:w-40 sm:h-40 rounded-[24px] sm:rounded-[40px] bg-white dark:bg-neutral-950 p-1 sm:p-2 border-4 border-slate-50 dark:border-[#050505] shadow-2xl relative group shrink-0">
+                        <div className="w-full h-full rounded-[20px] sm:rounded-[32px] bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-2xl sm:text-4xl font-extrabold text-white shadow-inner relative overflow-hidden bg-cover bg-center" style={(logoImage || profile.logoUrl) ? { backgroundImage: `url(${logoImage || profile.logoUrl})` } : {}}>
                             {!(logoImage || profile.logoUrl) && companyInitials}
                             <div onClick={() => logoInputRef.current?.click()} className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer z-10">
-                                <Camera size={24} />
-                                <span className="text-[10px] font-bold mt-2 uppercase tracking-widest text-white">Update Logo</span>
+                                <Camera size={20} className="sm:size-24" />
+                                <span className="text-[9px] sm:text-[10px] font-bold mt-2 uppercase tracking-widest text-white">Update Logo</span>
                             </div>
                         </div>
                     </div>
-                    <div className="pb-4 pt-4 sm:pt-0">
+                    <div className="pb-0 sm:pb-4 pt-2 sm:pt-0 min-w-0 flex-1">
                         {isEditing ? (
                             <input 
                                 type="text"
@@ -250,23 +250,23 @@ export default function CompanyProfile() {
                                 value={profile.companyName}
                                 onChange={handleChange}
                                 placeholder="Company Name"
-                                className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 bg-transparent border-b-2 border-blue-500 focus:outline-none w-full placeholder:text-slate-300"
+                                className="text-2xl sm:text-4xl font-extrabold tracking-tight mb-2 bg-transparent border-b-2 border-blue-500 focus:outline-none w-full placeholder:text-slate-300"
                             />
                         ) : (
-                            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2">{profile.companyName || "Your Company Name"}</h1>
+                            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight mb-1 sm:mb-2 truncate pr-4">{profile.companyName || "Your Company Name"}</h1>
                         )}
-                        <div className="flex flex-wrap items-center gap-4">
-                            <div className="flex items-center gap-1.5 text-xs font-bold text-blue-500 uppercase tracking-widest">
+                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+                            <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-bold text-blue-500 uppercase tracking-widest">
                                 <Globe size={14} /> 
                                 {isEditing ? (
-                                    <input type="text" name="industry" value={profile.industry} onChange={handleChange} placeholder="Industry (e.g. Technology)" className="bg-transparent border-b border-blue-300 focus:outline-none placeholder:text-blue-300/50" />
+                                    <input type="text" name="industry" value={profile.industry} onChange={handleChange} placeholder="Industry" className="bg-transparent border-b border-blue-300 focus:outline-none placeholder:text-blue-300/50" />
                                 ) : (profile.industry || "Industry Not Set")}
                             </div>
                             <span className="hidden sm:block w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-neutral-700" />
-                            <div className="flex items-center gap-1.5 text-xs font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest">
+                            <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-widest">
                                 <MapPin size={14} /> 
                                 {isEditing ? (
-                                    <input type="text" name="location" value={profile.location} onChange={handleChange} placeholder="Location (e.g. London, UK)" className="bg-transparent border-b border-slate-300 focus:outline-none placeholder:text-slate-300/50" />
+                                    <input type="text" name="location" value={profile.location} onChange={handleChange} placeholder="Location" className="bg-transparent border-b border-slate-300 focus:outline-none placeholder:text-slate-300/50" />
                                 ) : (profile.location || "Location Not Set")}
                             </div>
                         </div>
@@ -274,34 +274,34 @@ export default function CompanyProfile() {
                 </div>
                 
                 {/* Edit Toggle Button */}
-                <div className="absolute -bottom-6 right-6 sm:-bottom-12">
+                <div className="absolute top-4 sm:top-auto sm:-bottom-6 right-4 sm:right-6 z-20">
                     {isEditing ? (
                         <div className="flex items-center gap-2">
                             {!isFirstTimeSetup && (
-                                <button onClick={() => setIsEditing(false)} className="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 bg-slate-100 hover:bg-slate-200 transition-colors flex items-center gap-2">
-                                    <X size={14} /> Cancel
+                                <button onClick={() => setIsEditing(false)} className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-[10px] sm:text-xs font-bold text-slate-500 bg-white/90 dark:bg-black/90 backdrop-blur-md hover:bg-slate-100 transition-colors flex items-center gap-2">
+                                    <X size={14} /> <span className="hidden sm:inline">Cancel</span>
                                 </button>
                             )}
-                            <button onClick={handleSave} disabled={isSaving} className="px-6 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 transition-colors flex items-center gap-2">
+                            <button onClick={handleSave} disabled={isSaving} className="px-4 py-2 sm:px-6 sm:py-2 rounded-xl text-[10px] sm:text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-lg">
                                 {isSaving ? <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Save size={14} />}
                                 Save Profile
                             </button>
                         </div>
                     ) : (
-                        <button onClick={() => setIsEditing(true)} className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 transition-colors flex items-center gap-2 shadow-lg">
+                        <button onClick={() => setIsEditing(true)} className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-[10px] sm:text-xs font-bold text-white bg-slate-900/90 dark:bg-neutral-900/90 backdrop-blur-md hover:bg-slate-900 transition-colors flex items-center gap-2 shadow-lg">
                             <Edit2 size={14} /> Edit Profile
                         </button>
                     )}
                 </div>
             </motion.div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mt-16 sm:mt-0">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-10 mt-24 sm:mt-0">
                 
                 {/* Left Column: Details */}
-                <div className="lg:col-span-2 space-y-8">
+                <div className="lg:col-span-2 space-y-6 sm:space-y-8">
                     <GlassCard>
                         <div className="flex justify-between items-center mb-6">
-                            <h2 className="text-xl font-bold tracking-tight">Organization Architecture</h2>
+                            <h2 className="text-lg sm:text-xl font-bold tracking-tight">Organization Architecture</h2>
                         </div>
                         {isEditing ? (
                             <textarea 
@@ -310,31 +310,31 @@ export default function CompanyProfile() {
                                 onChange={handleChange}
                                 placeholder="Tell us about your organization's mission, culture, and architecture..."
                                 rows={4}
-                                className="w-full p-4 bg-slate-50 dark:bg-neutral-900/50 border border-slate-200 dark:border-neutral-800 rounded-xl focus:outline-none focus:border-blue-500 text-sm leading-relaxed mb-8 custom-scrollbar resize-none"
+                                className="w-full p-4 bg-slate-50 dark:bg-neutral-900/50 border border-slate-200 dark:border-neutral-800 rounded-xl focus:outline-none focus:border-blue-500 text-sm leading-relaxed mb-6 sm:mb-8 custom-scrollbar resize-none"
                             />
                         ) : (
-                            <p className="text-slate-600 dark:text-neutral-400 leading-relaxed mb-8">
+                            <p className="text-sm sm:text-base text-slate-600 dark:text-neutral-400 leading-relaxed mb-6 sm:mb-8">
                                 {profile.bio || "No biography provided. Click 'Edit Profile' to add your organization's details."}
                             </p>
                         )}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {isEditing ? (
                                 <>
-                                    <div className="p-4 rounded-2xl bg-white/50 dark:bg-neutral-900/50 border border-slate-100 dark:border-neutral-800/80">
-                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-1"><Globe size={12}/> Company Website</p>
-                                        <input type="text" name="website" value={profile.website} onChange={handleChange} placeholder="e.g. sterlingco.com" className="w-full bg-transparent border-b border-slate-200 focus:border-blue-500 outline-none text-sm font-semibold"/>
+                                    <div className="p-3 sm:p-4 rounded-2xl bg-white/50 dark:bg-neutral-900/50 border border-slate-100 dark:border-neutral-800/80">
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-1"><Globe size={12}/> Website</p>
+                                        <input type="text" name="website" value={profile.website} onChange={handleChange} placeholder="e.g. sterlingco.com" className="w-full bg-transparent border-b border-slate-200 focus:border-blue-500 outline-none text-xs sm:text-sm font-semibold"/>
                                     </div>
-                                    <div className="p-4 rounded-2xl bg-white/50 dark:bg-neutral-900/50 border border-slate-100 dark:border-neutral-800/80">
-                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-1"><Phone size={12}/> Contact Phone</p>
-                                        <input type="text" name="phone" value={profile.phone} onChange={handleChange} placeholder="e.g. +1 555-0100" className="w-full bg-transparent border-b border-slate-200 focus:border-blue-500 outline-none text-sm font-semibold"/>
+                                    <div className="p-3 sm:p-4 rounded-2xl bg-white/50 dark:bg-neutral-900/50 border border-slate-100 dark:border-neutral-800/80">
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-1"><Phone size={12}/> Phone</p>
+                                        <input type="text" name="phone" value={profile.phone} onChange={handleChange} placeholder="e.g. +1 555-0100" className="w-full bg-transparent border-b border-slate-200 focus:border-blue-500 outline-none text-xs sm:text-sm font-semibold"/>
                                     </div>
-                                    <div className="p-4 rounded-2xl bg-white/50 dark:bg-neutral-900/50 border border-slate-100 dark:border-neutral-800/80">
-                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-1"><Building2 size={12}/> Company Size</p>
-                                        <input type="text" name="companySize" value={profile.companySize} onChange={handleChange} placeholder="e.g. 50-200 employees" className="w-full bg-transparent border-b border-slate-200 focus:border-blue-500 outline-none text-sm font-semibold"/>
+                                    <div className="p-3 sm:p-4 rounded-2xl bg-white/50 dark:bg-neutral-900/50 border border-slate-100 dark:border-neutral-800/80">
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-1"><Building2 size={12}/> Size</p>
+                                        <input type="text" name="companySize" value={profile.companySize} onChange={handleChange} placeholder="e.g. 50-200 employees" className="w-full bg-transparent border-b border-slate-200 focus:border-blue-500 outline-none text-xs sm:text-sm font-semibold"/>
                                     </div>
-                                    <div className="p-4 rounded-2xl bg-white/50 dark:bg-neutral-900/50 border border-slate-100 dark:border-neutral-800/80">
-                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-1"><TrendingUp size={12}/> Market Status</p>
-                                        <input type="text" name="marketStatus" value={profile.marketStatus} onChange={handleChange} placeholder="e.g. Series C+" className="w-full bg-transparent border-b border-slate-200 focus:border-blue-500 outline-none text-sm font-semibold"/>
+                                    <div className="p-3 sm:p-4 rounded-2xl bg-white/50 dark:bg-neutral-900/50 border border-slate-100 dark:border-neutral-800/80">
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1 flex items-center gap-1"><TrendingUp size={12}/> Market</p>
+                                        <input type="text" name="marketStatus" value={profile.marketStatus} onChange={handleChange} placeholder="e.g. Series C+" className="w-full bg-transparent border-b border-slate-200 focus:border-blue-500 outline-none text-xs sm:text-sm font-semibold"/>
                                     </div>
                                 </>
                             ) : (
@@ -347,6 +347,7 @@ export default function CompanyProfile() {
                             )}
                         </div>
                     </GlassCard>
+
 
                     <GlassCard>
                         <div className="flex justify-between items-center mb-6">

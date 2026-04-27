@@ -104,7 +104,7 @@ export default function Hero() {
             initial={{ opacity: 0, y: 50, filter: "blur(10px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="text-5xl sm:text-6xl md:text-[100px] lg:text-[130px] font-black text-slate-900 leading-[0.9] tracking-[-0.04em] mb-8"
+            className="text-4xl sm:text-6xl md:text-[100px] lg:text-[130px] font-black text-slate-900 leading-[0.9] tracking-[-0.04em] mb-8"
           >
             <span className="inline-block">SMART</span>
             <br />
@@ -112,6 +112,7 @@ export default function Hero() {
               HIRES.
             </span>
           </motion.h1>
+
 
           {/* Subheading */}
           <motion.p
@@ -146,7 +147,8 @@ export default function Hero() {
       </motion.div>
 
       {/* Stat Cards overlapping into next section */}
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-7xl px-6 translate-y-1/2 z-20 hidden lg:flex gap-5">
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-7xl px-6 translate-y-1/2 z-20 grid grid-cols-1 md:grid-cols-2 lg:flex gap-4 md:gap-5">
+
         {[
           { value: 98, suffix: "%", label: "Neural Accuracy", sublabel: "Matching precision across global pools", accent: "text-indigo-600", dotColor: "bg-indigo-500" },
           { value: 2, suffix: ".4s", label: "Instant Parsing", sublabel: "Real-time high-fidelity vector mapping", accent: "text-emerald-600", dotColor: "bg-emerald-500" },

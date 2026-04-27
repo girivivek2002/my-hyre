@@ -125,57 +125,57 @@ export default function InterviewsPage() {
                   )}
 
                   {interviews.length > 0 ? interviews.map((interview, i) => (
-                    <motion.div key={interview.id} variants={itemVars} className="flex gap-8 group">
+                    <motion.div key={interview.id} variants={itemVars} className="flex gap-4 sm:gap-8 group">
                       {/* Circle Indicator */}
                       <div className="relative shrink-0">
-                         <div className={`w-14 h-14 rounded-2xl bg-white dark:bg-[#111118] border-2 ${interview.status === 'SCHEDULED' ? 'border-violet-500 shadow-glow-violet' : 'border-slate-200 dark:border-white/[0.06]'} flex items-center justify-center font-bold text-violet-500 group-hover:scale-110 transition-transform duration-500 z-10 relative`}>
+                         <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-white dark:bg-[#111118] border-2 ${interview.status === 'SCHEDULED' ? 'border-violet-500 shadow-glow-violet' : 'border-slate-200 dark:border-white/[0.06]'} flex items-center justify-center font-bold text-violet-500 group-hover:scale-110 transition-transform duration-500 z-10 relative text-sm sm:text-base`}>
                             {interview.company[0]}
                          </div>
                       </div>
 
                       <div className="flex-1">
                          <GlassCard className="!p-0 overflow-visible">
-                            <div className="p-6">
-                              <div className="flex justify-between items-start mb-6">
+                            <div className="p-4 sm:p-6">
+                              <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6">
                                  <div>
                                     <p className="text-[10px] font-bold text-violet-500 uppercase tracking-widest mb-1">{interview.date} • {interview.time}</p>
-                                    <h3 className="text-xl font-bold">{interview.company}</h3>
-                                    <p className="text-sm font-semibold text-slate-500 dark:text-neutral-500">{interview.role}</p>
+                                    <h3 className="text-lg sm:text-xl font-bold">{interview.company}</h3>
+                                    <p className="text-xs sm:text-sm font-semibold text-slate-500 dark:text-neutral-500">{interview.role}</p>
                                  </div>
                                  <div className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest ${interview.status === 'SCHEDULED' ? 'bg-violet-500/10 text-violet-500 border border-violet-500/20' : 'bg-slate-100 dark:bg-white/[0.04] text-slate-400 dark:text-slate-600 border border-transparent'}`}>
                                     {interview.status}
                                  </div>
                               </div>
 
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-8">
                                  <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-neutral-900/50 border border-slate-100 dark:border-neutral-800/50">
-                                    <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500">
-                                       {interview.platform.toLowerCase().includes('person') ? <MapPin size={18} /> : <Video size={18} />}
+                                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500">
+                                       {interview.platform.toLowerCase().includes('person') ? <MapPin size={16} /> : <Video size={16} />}
                                     </div>
                                     <div>
                                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Location</p>
-                                       <p className="text-xs font-bold">{interview.platform}</p>
+                                       <p className="text-[11px] sm:text-xs font-bold">{interview.platform}</p>
                                     </div>
                                  </div>
                                  <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 dark:bg-neutral-900/50 border border-slate-100 dark:border-neutral-800/50">
-                                    <div className="w-10 h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500">
-                                       <User size={18} />
+                                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-500">
+                                       <User size={16} />
                                     </div>
                                     <div>
                                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Interviewer</p>
-                                       <p className="text-xs font-bold">{interview.interviewer}</p>
+                                       <p className="text-[11px] sm:text-xs font-bold">{interview.interviewer}</p>
                                     </div>
                                  </div>
                               </div>
 
                               {interview.prep && interview.prep.length > 0 && (
                                 <div className="border-t border-slate-100 dark:border-neutral-800/50 pt-6">
-                                  <h4 className="text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-neutral-500 mb-4 flex items-center gap-2">
+                                  <h4 className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-400 dark:text-neutral-500 mb-4 flex items-center gap-2">
                                       <Sparkles size={14} className="text-violet-500" /> Pre-Interview Intelligence
                                   </h4>
-                                  <ul className="space-y-3">
+                                  <ul className="space-y-2 sm:space-y-3">
                                       {interview.prep.map((item: string, idx: number) => (
-                                        <li key={idx} className="flex items-start gap-3 text-xs text-slate-600 dark:text-neutral-400 leading-relaxed group/item">
+                                        <li key={idx} className="flex items-start gap-3 text-[11px] sm:text-xs text-slate-600 dark:text-neutral-400 leading-relaxed group/item">
                                           <div className="mt-1 w-1.5 h-1.5 rounded-full bg-violet-500/40 group-hover/item:bg-violet-500 transition-colors" />
                                           {item}
                                         </li>
@@ -185,11 +185,11 @@ export default function InterviewsPage() {
                               )}
                             </div>
 
-                            <div className="p-4 bg-slate-50/50 dark:bg-neutral-950/20 border-t border-slate-100 dark:border-neutral-800/50 flex justify-between items-center rounded-b-3xl">
+                            <div className="p-4 bg-slate-50/50 dark:bg-neutral-950/20 border-t border-slate-100 dark:border-neutral-800/50 flex flex-col sm:flex-row justify-between items-center gap-4 rounded-b-3xl">
                                <button className="flex items-center gap-2 text-[10px] font-bold text-slate-500 hover:text-blue-500 transition-colors">
                                   <FileText size={14} /> View Case Study
                                </button>
-                               <button className="px-5 py-2 bg-slate-900 dark:bg-white text-white dark:text-black rounded-xl text-[10px] font-extrabold shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center gap-2">
+                               <button className="w-full sm:w-auto px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-black rounded-xl text-[10px] font-extrabold shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2">
                                   Prepare for Session <ChevronRight size={14} />
                                 </button>
                             </div>
@@ -197,15 +197,16 @@ export default function InterviewsPage() {
                       </div>
                     </motion.div>
                   )) : (
-                    <div className="flex flex-col items-center justify-center p-20 text-center">
-                       <div className="w-20 h-20 rounded-full bg-slate-100 dark:bg-neutral-900 flex items-center justify-center text-slate-400 mb-6">
+                    <div className="flex flex-col items-center justify-center p-12 sm:p-20 text-center">
+                       <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-slate-100 dark:bg-neutral-900 flex items-center justify-center text-slate-400 mb-6">
                           <Calendar size={32} />
                        </div>
-                       <h3 className="text-lg font-bold mb-2">No interviews scheduled yet</h3>
-                       <p className="text-sm text-slate-500 dark:text-neutral-400 max-w-xs">Once a recruiter shortlists you for a role, your interview roadmap will appear here.</p>
+                       <h3 className="text-base sm:text-lg font-bold mb-2">No interviews scheduled yet</h3>
+                       <p className="text-xs sm:text-sm text-slate-500 dark:text-neutral-400 max-w-xs">Once a recruiter shortlists you for a role, your interview roadmap will appear here.</p>
                        <button onClick={() => router.push("/candidate/jobs")} className="mt-8 px-6 py-3 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white rounded-2xl text-xs font-bold shadow-glow-violet hover:scale-105 transition-all">Explore Opportunities</button>
                     </div>
                   )}
+
                 </div>
 
                 {/* Sidebar Info */}

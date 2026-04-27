@@ -58,6 +58,7 @@ export default function CandidatesPage() {
         time: "",
         platform: "Google Meet"
     });
+    const [isMobileDetailView, setIsMobileDetailView] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem("authToken");
@@ -233,9 +234,9 @@ export default function CandidatesPage() {
     );
 
     return (
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex flex-col md:flex-row overflow-hidden relative">
             {/* Sidebar: Level 1 (Jobs) or Level 2 (Candidates) */}
-            <div className="w-[420px] shrink-0 border-r border-slate-200 dark:border-white/[0.04] flex flex-col bg-slate-50/50 dark:bg-[#0A0A0F]/50">
+            <div className={`w-full md:w-[420px] shrink-0 border-r border-slate-200 dark:border-white/[0.04] flex flex-col bg-slate-50/50 dark:bg-[#0A0A0F]/50 transition-all duration-300 ${isMobileDetailView ? 'hidden md:flex' : 'flex'}`}>
                 <div className="p-6 pb-4 border-b border-slate-200 dark:border-white/[0.04]">
                     <div className="flex items-center justify-between mb-4">
                         <h2 className="text-xl font-bold tracking-tight tracking-tighter">
@@ -313,7 +314,10 @@ export default function CandidatesPage() {
                             filteredCandidates.map((c) => (
                                 <div
                                     key={c.id}
-                                    onClick={() => setSelectedCandidateId(c.id)}
+                                    onClick={() => {
+                                        setSelectedCandidateId(c.id);
+                                        setIsMobileDetailView(true);
+                                    }}
                                     className={`flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all border ${selectedCandidateId === c.id ? 'bg-indigo-500/10 border-indigo-500/25' : 'border-transparent hover:bg-white dark:hover:bg-white/[0.02]'}`}
                                 >
                                     <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-sm ${c.shortlistStatus ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-slate-200 dark:bg-neutral-800'}`}>
@@ -345,7 +349,17 @@ export default function CandidatesPage() {
             </div>
 
             {/* Level 3: Candidate Details */}
-            <div className="flex-1 overflow-y-auto px-8 py-8 custom-scrollbar">
+            <div className={`flex-1 overflow-y-auto px-4 sm:px-8 py-8 custom-scrollbar transition-all duration-300 ${isMobileDetailView ? 'flex' : 'hidden md:flex'}`}>
+                {/* Mobile Back Button */}
+                <div className="md:hidden mb-6">
+                    <button 
+                        onClick={() => setIsMobileDetailView(false)}
+                        className="flex items-center gap-2 text-indigo-500 font-bold text-sm"
+                    >
+                        <ChevronDown size={18} className="rotate-90" /> Back to List
+                    </button>
+                </div>
+
                 <AnimatePresence mode="wait">
                     {selectedCandidate ? (
                         <motion.div key={selectedCandidate.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-3xl mx-auto space-y-8">

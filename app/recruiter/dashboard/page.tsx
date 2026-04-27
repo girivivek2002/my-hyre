@@ -99,33 +99,33 @@ export default function RecruiterDashboard() {
   );
 
   return (
-    <motion.div initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.08 } } }} className="flex-1 overflow-y-auto px-6 sm:px-10 py-8 pb-20 custom-scrollbar">
+        <motion.div initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.08 } } }} className="flex-1 overflow-y-auto px-4 sm:px-10 py-6 sm:py-8 pb-24 sm:pb-20 custom-scrollbar">
       <div className="max-w-7xl mx-auto">
 
         {/* Welcome */}
-        <motion.div variants={itemVars} className="mb-8">
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-3 text-slate-900 dark:text-white leading-tight">
+        <motion.div variants={itemVars} className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-5xl font-extrabold tracking-tight mb-2 sm:mb-3 text-slate-900 dark:text-white leading-tight">
             Welcome back, <span className="text-gradient-primary">{userData?.name?.split(' ')[0]}</span>
           </h1>
-          <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-lg flex items-start sm:items-center gap-2 font-medium">
-            <Sparkles size={18} className="text-indigo-500 shrink-0 mt-1 sm:mt-0" />
+          <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-lg flex items-start sm:items-center gap-2 font-medium">
+            <Sparkles size={16} className="text-indigo-500 shrink-0 mt-0.5 sm:mt-0" />
             <span>Your talent ecosystem is active and synchronizing.</span>
           </p>
         </motion.div>
 
         {/* Stats */}
-        <motion.div variants={itemVars} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
+        <motion.div variants={itemVars} className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 sm:mb-10">
           {statCards.map((card, i) => (
             <GlassCard key={i}>
-              <div className="flex justify-between items-start mb-4">
-                <div className={`p-3 ${card.iconBg} border rounded-xl ${card.iconColor}`}>
-                  {card.icon}
+              <div className="flex justify-between items-start mb-2 sm:mb-4">
+                <div className={`p-1.5 sm:p-3 ${card.iconBg} border rounded-xl ${card.iconColor}`}>
+                  {React.cloneElement(card.icon as React.ReactElement, { size: 18 })}
                 </div>
               </div>
-              <p className="text-slate-500 dark:text-slate-400 font-bold text-[9px] sm:text-[10px] tracking-widest uppercase mb-1">{card.title}</p>
-              <div className="flex items-end gap-2 sm:gap-3">
+              <p className="text-slate-500 dark:text-slate-400 font-bold text-[8px] sm:text-[10px] tracking-widest uppercase mb-0.5 sm:mb-1">{card.title}</p>
+              <div className="flex flex-col sm:flex-row sm:items-end sm:gap-2">
                 <AnimatedStat value={card.key === "velocity" ? "94" : (stats?.[card.key] || "0")} suffix={card.key === "velocity" ? "%" : ""} />
-                <span className="text-[10px] font-bold pb-2 text-emerald-500">{card.trend}</span>
+                <span className="text-[9px] sm:text-[10px] font-bold pb-0.5 sm:pb-2 text-emerald-500">{card.trend}</span>
               </div>
             </GlassCard>
           ))}

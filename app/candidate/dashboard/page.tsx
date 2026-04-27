@@ -133,86 +133,86 @@ export default function CandidateDashboard() {
   if (!mounted) return null;
 
   return (
-    <motion.div
+        <motion.div
           variants={containerVars}
           initial="hidden"
           animate="visible"
-          className="flex-1 overflow-y-auto px-6 sm:px-10 py-8 pb-20 custom-scrollbar"
+          className="flex-1 overflow-y-auto px-4 sm:px-10 py-6 sm:py-8 pb-24 sm:pb-20 custom-scrollbar"
         >
           <div className="max-w-7xl mx-auto">
 
             {/* Welcome */}
-            <motion.div variants={itemVars} className="mb-8">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-600 dark:text-violet-400 text-[10px] font-bold uppercase tracking-widest mb-4">
+            <motion.div variants={itemVars} className="mb-6 sm:mb-8">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-600 dark:text-violet-400 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest mb-3 sm:mb-4">
                   <Zap size={10} fill="currentColor" /> Intelligence Sync Complete
                 </div>
-                <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight mb-2 leading-tight">
+                <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight mb-2 leading-tight">
                   Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-500 to-fuchsia-500 dark:from-violet-400 dark:to-fuchsia-400">{userData?.name?.split(' ')[0]}</span>
                 </h1>
-                <p className="text-slate-500 dark:text-neutral-400 text-sm sm:text-base font-medium">
+                <p className="text-slate-500 dark:text-neutral-400 text-xs sm:text-base font-medium">
                   Your AI profile is optimized for <strong className="text-slate-900 dark:text-white">Professional Growth</strong>.
                 </p>
             </motion.div>
 
             {/* Stats Grid */}
-            <motion.div variants={itemVars} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10">
+            <motion.div variants={itemVars} className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 sm:mb-10">
               {[
-                { title: "Applications", value: stats?.activeApplications || 0, icon: <Briefcase size={20} className="text-violet-500" />, trend: "Total active selections", color: "violet" },
-                { title: "Interviews", value: stats?.interviewsCount || 0, icon: <CalendarDays size={20} className="text-indigo-500" />, trend: "Scheduled syncs", color: "indigo" },
-                { title: "Resume Nodes", value: stats?.resumeNodes || 0, icon: <FileText size={20} className="text-amber-500" />, trend: "High-fidelity files", color: "amber" },
-                { title: "Profile Score", value: `${stats?.profileStrength || 0}%`, icon: <Zap size={20} className="text-emerald-500" />, trend: "Matching intelligence", color: "emerald" },
+                { title: "Applications", value: stats?.activeApplications || 0, icon: <Briefcase size={18} className="text-violet-500" />, trend: "Active", color: "violet" },
+                { title: "Interviews", value: stats?.interviewsCount || 0, icon: <CalendarDays size={18} className="text-indigo-500" />, trend: "Scheduled", color: "indigo" },
+                { title: "Resume Nodes", value: stats?.resumeNodes || 0, icon: <FileText size={18} className="text-amber-500" />, trend: "Files", color: "amber" },
+                { title: "Profile Score", value: `${stats?.profileStrength || 0}%`, icon: <Zap size={18} className="text-emerald-500" />, trend: "Match", color: "emerald" },
               ].map((stat, i) => (
                 <GlassCard key={i} className="group cursor-pointer">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className={`p-2 rounded-lg bg-${stat.color}-500/10 border border-${stat.color}-500/20`}>
+                  <div className="flex justify-between items-start mb-2 sm:mb-4">
+                    <div className={`p-1.5 sm:p-2 rounded-lg bg-${stat.color}-500/10 border border-${stat.color}-500/20`}>
                       {stat.icon}
                     </div>
-                    <ArrowUpRight size={16} className="text-slate-300 dark:text-slate-600 group-hover:text-violet-500 transition-colors" />
+                    <ArrowUpRight size={14} className="text-slate-300 dark:text-slate-600 group-hover:text-violet-500 transition-colors" />
                   </div>
-                  <p className="text-xs font-semibold text-slate-500 dark:text-neutral-500 uppercase tracking-wider mb-1">{stat.title}</p>
-                  <div className="flex items-end gap-2">
-                    <h2 className="text-2xl font-bold">{stat.value}</h2>
-                    <span className="text-[10px] font-bold text-slate-400 dark:text-neutral-600 pb-1">{stat.trend}</span>
+                  <p className="text-[9px] sm:text-xs font-semibold text-slate-500 dark:text-neutral-500 uppercase tracking-wider mb-0.5 sm:mb-1">{stat.title}</p>
+                  <div className="flex flex-col sm:flex-row sm:items-end sm:gap-2">
+                    <h2 className="text-lg sm:text-2xl font-bold">{stat.value}</h2>
+                    <span className="text-[8px] sm:text-[10px] font-bold text-slate-400 dark:text-neutral-600 pb-0.5 sm:pb-1 truncate">{stat.trend}</span>
                   </div>
                 </GlassCard>
               ))}
             </motion.div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
 
               {/* Application Timeline */}
               <motion.div variants={itemVars} className="lg:col-span-2">
                 <GlassCard className="h-full">
-                  <div className="flex justify-between items-center mb-8">
-                    <h2 className="text-xl font-bold tracking-tight">Intelligence Selection Roadmap</h2>
-                    <button onClick={() => router.push("/candidate/jobs")} className="text-xs font-bold text-violet-500 hover:text-violet-400 transition-colors">See All Selections →</button>
+                  <div className="flex justify-between items-center mb-6 sm:mb-8">
+                    <h2 className="text-lg sm:text-xl font-bold tracking-tight">Intelligence Roadmap</h2>
+                    <button onClick={() => router.push("/candidate/jobs")} className="text-[10px] sm:text-xs font-bold text-violet-500 hover:text-violet-400 transition-colors">See All →</button>
                   </div>
 
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-6">
                     {recentJobs.length > 0 ? (
                       recentJobs.slice(0, 3).map((job, idx) => (
-                        <div key={idx} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.04] group hover:border-violet-500/30 transition-all gap-4">
-                          <div className="flex items-center gap-4">
+                        <div key={idx} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 sm:p-4 rounded-2xl bg-slate-50 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.04] group hover:border-violet-500/30 transition-all gap-3 sm:gap-4">
+                          <div className="flex items-center gap-3 sm:gap-4">
                             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white dark:bg-[#111118] flex items-center justify-center font-bold text-violet-500 border border-slate-200 dark:border-white/[0.06] shrink-0">
                               {job.logo}
                             </div>
-                            <div>
-                              <p className="text-sm font-bold truncate max-w-[150px] sm:max-w-none">{job.role}</p>
-                              <p className="text-xs text-slate-500 truncate max-w-[150px] sm:max-w-none">{job.company}</p>
+                            <div className="min-w-0">
+                              <p className="text-xs sm:text-sm font-bold truncate max-w-[180px] sm:max-w-none">{job.role}</p>
+                              <p className="text-[10px] sm:text-xs text-slate-500 truncate max-w-[180px] sm:max-w-none">{job.company}</p>
                             </div>
                           </div>
-                          <div className="flex items-center justify-between w-full sm:w-auto gap-4">
-                             <span className="px-2 py-1 rounded-md bg-violet-500/10 text-violet-500 text-[10px] font-bold uppercase tracking-widest">{job.status}</span>
+                          <div className="flex items-center justify-between w-full sm:w-auto gap-3 sm:gap-4">
+                             <span className="px-2 py-0.5 sm:py-1 rounded-md bg-violet-500/10 text-violet-500 text-[8px] sm:text-[10px] font-bold uppercase tracking-widest">{job.status}</span>
                              <ArrowRight size={14} className="text-slate-300 group-hover:text-violet-500 group-hover:translate-x-1 transition-all" />
                           </div>
                         </div>
                       ))
                     ) : (
-                      <div className="flex flex-col items-center justify-center py-10 text-center text-slate-500 dark:text-neutral-500">
-                        <Briefcase size={40} className="mb-3 opacity-20" />
-                        <p className="font-semibold text-slate-600 dark:text-neutral-400">No Applications Yet</p>
-                        <p className="text-xs mt-1">Recruiters haven't shortlisted you yet. Build your profile.</p>
-                        <button onClick={() => router.push("/candidate/profile")} className="mt-4 px-4 py-2 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white rounded-lg text-xs font-bold hover:scale-105 transition-transform shadow-glow-violet">Build Profile</button>
+                      <div className="flex flex-col items-center justify-center py-8 sm:py-10 text-center text-slate-500 dark:text-neutral-500">
+                        <Briefcase size={32} className="mb-3 opacity-20" />
+                        <p className="text-sm font-semibold text-slate-600 dark:text-neutral-400">No Applications Yet</p>
+                        <p className="text-[10px] mt-1">Recruiters haven't shortlisted you yet.</p>
+                        <button onClick={() => router.push("/candidate/profile")} className="mt-4 px-4 py-2 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white rounded-lg text-[10px] font-bold hover:scale-105 transition-transform shadow-glow-violet uppercase tracking-widest">Build Profile</button>
                       </div>
                     )}
                   </div>

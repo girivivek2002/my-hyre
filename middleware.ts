@@ -5,7 +5,7 @@ import { jwtVerify } from "jose";
 const JWT_SECRET = (process.env.JWT_SECRET as string || "").replace(/['"]+/g, '');
 const secretKey = new TextEncoder().encode(JWT_SECRET);
 
-export async function proxy(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname;
 
   // 1. Define Public Routes

@@ -119,7 +119,7 @@ export default function RecruiterDashboard() {
             <GlassCard key={i}>
               <div className="flex justify-between items-start mb-2 sm:mb-4">
                 <div className={`p-1.5 sm:p-3 ${card.iconBg} border rounded-xl ${card.iconColor}`}>
-                  {React.cloneElement(card.icon as React.ReactElement, { size: 18 })}
+                  {React.cloneElement(card.icon as React.ReactElement<any>, { size: 18 })}
                 </div>
               </div>
               <p className="text-slate-500 dark:text-slate-400 font-bold text-[8px] sm:text-[10px] tracking-widest uppercase mb-0.5 sm:mb-1">{card.title}</p>

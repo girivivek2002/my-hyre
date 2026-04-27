@@ -128,7 +128,7 @@ function CandidateMessagesContent() {
     );
 
     return (
-        <div className="flex flex-1 h-full md:h-[calc(100vh-100px)] bg-[#FAFBFD] dark:bg-[#0A0A0F] md:rounded-[40px] overflow-hidden border-b md:border border-slate-200/60 dark:border-white/[0.06] shadow-xl md:m-4">
+        <div className="flex flex-1 h-[calc(100vh-80px)] md:h-[calc(100vh-100px)] bg-[#FAFBFD] dark:bg-[#0A0A0F] md:rounded-[40px] overflow-hidden border-b md:border border-slate-200/60 dark:border-white/[0.06] shadow-xl md:m-4">
 
             {/* Sidebar */}
             <div className={`w-full md:w-80 lg:w-96 border-r border-slate-200/60 dark:border-white/[0.06] flex flex-col bg-white/50 dark:bg-[#0A0A0F]/50 backdrop-blur-md ${selectedRecruiterId ? 'hidden md:flex' : 'flex'}`}>
@@ -261,10 +261,10 @@ function CandidateMessagesContent() {
                         </div>
 
                         {/* Input Area */}
-                        <div className="p-6 bg-white dark:bg-[#0A0A0F] border-t border-slate-200/60 dark:border-white/[0.06]">
-                            <form onSubmit={handleSendMessage} className="flex items-center gap-4 bg-slate-100/50 dark:bg-white/[0.03] p-2 rounded-[28px] border border-transparent transition-all duration-300">
-                                <button type="button" className="p-3 text-slate-400 hover:text-violet-500 transition-colors">
-                                    <Plus size={24} />
+                        <div className="p-4 sm:p-6 bg-white dark:bg-[#0A0A0F] border-t border-slate-200/60 dark:border-white/[0.06] sticky bottom-0 md:relative">
+                            <form onSubmit={handleSendMessage} className="flex items-center gap-3 sm:gap-4 bg-slate-100/50 dark:bg-white/[0.03] p-1.5 sm:p-2 rounded-[24px] sm:rounded-[28px] border border-transparent transition-all duration-300">
+                                <button type="button" className="p-2 sm:p-3 text-slate-400 hover:text-violet-500 transition-colors">
+                                    <Plus size={20} />
                                 </button>
                                 <input 
                                     type="text" 
@@ -276,12 +276,12 @@ function CandidateMessagesContent() {
                                 <button 
                                     type="submit" 
                                     disabled={!newMessage.trim() || isSending}
-                                    className="bg-violet-600 text-white p-3 rounded-2xl shadow-lg shadow-violet-600/30 hover:bg-violet-700 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100"
+                                    className="bg-violet-600 text-white p-2.5 sm:p-3 rounded-xl sm:rounded-2xl shadow-lg shadow-violet-600/30 hover:bg-violet-700 hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:hover:scale-100"
                                 >
-                                    {isSending ? <Loader2 className="animate-spin" size={20} /> : <Send size={20} />}
+                                    {isSending ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
                                 </button>
                             </form>
-                            <p className="text-[9px] text-center text-slate-400 dark:text-slate-600 font-bold uppercase tracking-[0.2em] mt-4 flex items-center justify-center gap-2">
+                            <p className="text-[8px] sm:text-[9px] text-center text-slate-400 dark:text-slate-600 font-bold uppercase tracking-[0.2em] mt-3 sm:mt-4 flex items-center justify-center gap-2">
                                 <ShieldCheck size={10} className="text-emerald-500" /> Secure Protocol Active
                             </p>
                         </div>

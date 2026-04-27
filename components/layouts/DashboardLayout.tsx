@@ -257,7 +257,7 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
         </div>
 
         {/* Children Pane */}
-        <div className="flex-1 overflow-y-auto pb-24 md:pb-0 relative z-10 custom-scrollbar">
+        <div className={`flex-1 overflow-y-auto ${pathname.includes('messages') ? 'pb-20' : 'pb-24'} md:pb-0 relative z-10 custom-scrollbar`}>
           {children}
         </div>
 

@@ -302,20 +302,6 @@ export default function CandidatesPage() {
                                 </div>
                             ))}
 
-                            <div className="mt-6 px-3 py-2 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Global Talent Stream</div>
-                            <div
-                                onClick={() => setSelectedJobId("talent-pool")}
-                                className="flex items-center gap-4 p-4 rounded-2xl cursor-pointer transition-all border border-transparent hover:bg-white dark:hover:bg-white/[0.02] group bg-indigo-500/5"
-                            >
-                                <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center border border-indigo-500/20">
-                                    <Users size={20} className="text-indigo-500" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className="font-semibold text-sm truncate text-indigo-600 dark:text-indigo-400">Talent Pool</p>
-                                    <p className="text-xs text-slate-500 truncate">Explore all available nodes</p>
-                                </div>
-                                <Sparkles size={16} className="text-indigo-400" />
-                            </div>
                         </>
                     ) : (
                         /* Level 2: Candidates List */
@@ -347,10 +333,10 @@ export default function CandidatesPage() {
                                 <Users size={40} className="mx-auto text-slate-300 dark:text-neutral-800 mb-4" />
                                 <p className="text-slate-500 font-medium mb-4">No candidates in this pipeline yet.</p>
                                 <button 
-                                    onClick={() => { setSelectedJobId("talent-pool"); setSelectedCandidateId(null); }}
+                                    onClick={() => router.push("/recruiter/post-job")}
                                     className="px-6 py-2 rounded-xl bg-blue-500 text-white font-bold text-sm shadow-lg shadow-blue-500/20 hover:scale-105 transition-all"
                                 >
-                                    Source from Talent Pool
+                                    Create New Job Sector
                                 </button>
                             </div>
                         )

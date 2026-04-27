@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { 
     Users, Briefcase, BarChart3, Shield, Search, Filter, 
     MoreHorizontal, Trash2, CheckCircle, XCircle, Zap,
@@ -44,12 +44,12 @@ function AdminDashboardContent() {
         return () => clearTimeout(timer);
     }, []);
 
-    const containerVars = {
+    const containerVars: Variants = {
         hidden: { opacity: 0 },
         visible: { opacity: 1, transition: { staggerChildren: 0.1 } }
     };
 
-    const itemVars = {
+    const itemVars: Variants = {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
     };

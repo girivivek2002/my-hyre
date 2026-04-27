@@ -61,9 +61,8 @@ export function canRecruiterPost(user: any, recruiterProfile: any) {
     return true;
   }
 
-  // 4. Default: Require Manual Verification for public email accounts
-  // This is the secure default for a production-grade system.
-  return false; 
+  // 4. Default: Allow posting for now (Relaxed for current phase)
+  return true; 
 }
 
 // CAPTCHA Verification (Stub for Google reCAPTCHA)

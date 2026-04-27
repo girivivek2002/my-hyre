@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 // GET: Fetch recruiter company profile
 export async function GET(req: NextRequest) {
-  const user = await verifyRecruiter(req);
+  const user = await verifyRecruiter(req, { strict: false });
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {
@@ -70,7 +70,7 @@ export async function GET(req: NextRequest) {
 
 // PATCH: Update recruiter company profile
 export async function PATCH(req: NextRequest) {
-  const user = await verifyRecruiter(req);
+  const user = await verifyRecruiter(req, { strict: false });
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   try {

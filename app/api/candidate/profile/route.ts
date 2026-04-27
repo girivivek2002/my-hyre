@@ -5,12 +5,12 @@ import { verifyCandidate } from "@/lib/auth";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
-  const candidateUser = await verifyCandidate(req);
+  const candidateUser = await verifyCandidate(req, { strict: false });
   if (!candidateUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   
   try {
     const profile = await prisma.candidate.findUnique({
-      where: { id: candidateUser.profile.id }
+      where: { userId: candidateUser.id }
     });
     return NextResponse.json({ profile });
   } catch (error) {
@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const candidateUser = await verifyCandidate(req);
+  const candidateUser = await verifyCandidate(req, { strict: false });
   if (!candidateUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   
   try {
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       : Array.isArray(data.skills) ? data.skills : [];
 
     const candidate = await prisma.candidate.upsert({
-      where: { id: candidateUser.profile.id },
+      where: { userId: candidateUser.id },
       update: {
         userId: candidateUser.id,
         name: data.name,

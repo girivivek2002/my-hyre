@@ -67,28 +67,41 @@ export async function getSession(req: NextRequest) {
 /**
  * Verifies a Recruiter session and returns the recruiter profile.
  */
-export async function verifyRecruiter(req: NextRequest) {
+export async function verifyRecruiter(req: NextRequest, options: { strict?: boolean } = { strict: true }) {
   const session = await getSession(req);
-  if (!session || session.role !== "recruiter") return null;
+  if (!session || (session.role !== "recruiter" && session.role !== "admin")) return null;
 
   const recruiter = await prisma.recruiter.findUnique({
     where: { userId: session.id },
     include: { user: true }
   });
 
-  if (!recruiter || !recruiter.user) return null;
+  if (recruiter) {
+    return { 
+      ...session,
+      isVerified: recruiter.isVerified || recruiter.user?.isVerified || false, 
+      profile: recruiter 
+    };
+  }
 
-  return { 
+  // If strict mode is ON, we fail if no profile exists
+  if (options.strict) return null;
+
+  // Fallback: User exists but Recruiter profile record doesn't
+  const user = await prisma.user.findUnique({ where: { id: session.id } });
+  if (!user) return null;
+
+  return {
     ...session,
-    isVerified: recruiter.isVerified || recruiter.user.isVerified, 
-    profile: recruiter 
+    isVerified: user.isVerified,
+    profile: null
   };
 }
 
 /**
  * Verifies a Candidate session and returns the candidate profile.
  */
-export async function verifyCandidate(req: NextRequest) {
+export async function verifyCandidate(req: NextRequest, options: { strict?: boolean } = { strict: true }) {
   const session = await getSession(req);
   if (!session || session.role !== "candidate") return null;
 
@@ -97,9 +110,22 @@ export async function verifyCandidate(req: NextRequest) {
     include: { user: true }
   });
 
-  if (!candidate) return null;
+  if (candidate) {
+    return { ...session, isVerified: candidate.user?.isVerified || false, profile: candidate };
+  }
 
-  return { ...session, profile: candidate };
+  // If strict mode is ON, we fail if no profile exists
+  if (options.strict) return null;
+
+  // Fallback: User exists but Candidate profile record doesn't
+  const user = await prisma.user.findUnique({ where: { id: session.id } });
+  if (!user) return null;
+
+  return {
+    ...session,
+    isVerified: user.isVerified,
+    profile: null
+  };
 }
 
 /**

@@ -58,31 +58,8 @@ export default function CandidateSignup() {
       setErrorObj("Please fill in all required fields.");
       return;
     }
-    setOtpSending(true);
-    setErrorObj(null);
-    setSuccessMsg(null);
-
-    try {
-      const res = await fetch("/api/auth/send-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim().toLowerCase() }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setErrorObj(data.error || "Failed to send OTP.");
-        setOtpSending(false);
-        return;
-      }
-      setSuccessMsg("Verification code sent to " + email);
-      setStep("otp");
-      setCountdown(60);
-      setTimeout(() => otpRefs.current[0]?.focus(), 300);
-    } catch {
-      setErrorObj("Network error. Please try again.");
-    } finally {
-      setOtpSending(false);
-    }
+    // Direct account creation instead of sending OTP
+    await handleCreateAccount();
   };
 
   // Handle OTP input
@@ -264,11 +241,11 @@ export default function CandidateSignup() {
                     </div>
                   </motion.div>
 
-                  {/* Send OTP Button */}
+                  {/* Create Account Button */}
                   <motion.div variants={itemVars} className="pt-4">
-                    <motion.button type="submit" disabled={otpSending} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                    <motion.button type="submit" disabled={isLoading} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                       className="w-full bg-slate-900 border border-slate-800 dark:bg-white text-white dark:text-black py-4 rounded-xl font-bold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all group disabled:opacity-70">
-                      {otpSending ? <Loader2 size={18} className="animate-spin" /> : <><Mail size={18} /> Verify Email & Continue <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" /></>}
+                      {isLoading ? <Loader2 size={18} className="animate-spin" /> : <><ShieldCheck size={18} /> Create Account <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" /></>}
                     </motion.button>
                   </motion.div>
 

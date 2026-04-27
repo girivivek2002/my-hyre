@@ -30,7 +30,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Please use a legitimate email address." }, { status: 400 });
     }
 
-    // 5. OTP Verification Check
+    // 5. OTP Verification Check (REMOVED)
+    /*
     const verifiedOtp = await prisma.otpVerification.findFirst({
       where: {
         email,
@@ -42,6 +43,8 @@ export async function POST(req: NextRequest) {
     if (!verifiedOtp) {
       return NextResponse.json({ error: "Email not verified. Please verify your email with OTP first." }, { status: 400 });
     }
+    */
+
 
     // Check if the user already exists
     const existingUser = await prisma.user.findUnique({ where: { email } });

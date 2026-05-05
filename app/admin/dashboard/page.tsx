@@ -28,21 +28,88 @@ function AdminDashboardContent() {
     const activeTab = searchParams.get("tab") || "overview";
 
     const [stats, setStats] = useState({
-        totalUsers: 1284,
-        totalJobs: 452,
-        totalResumes: 890,
-        activeSyncs: 124,
-        growth: "+14.2%",
-        systemHealth: "99.9%"
+        totalUsers: 0,
+        totalJobs: 0,
+        totalResumes: 0,
+        activeSyncs: 0,
+        growth: "Live",
+        systemHealth: "100%"
     });
 
+    const [users, setUsers] = useState<any[]>([]);
+    const [jobs, setJobs] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
+    const fetchData = async () => {
+        setIsLoading(true);
+        try {
+            const [statsRes, usersRes, jobsRes] = await Promise.all([
+                fetch("/api/admin/stats"),
+                fetch("/api/admin/users?limit=10"),
+                fetch("/api/admin/jobs?limit=10")
+            ]);
+            
+            if (statsRes.ok) {
+                const data = await statsRes.json();
+                setStats({
+                    totalUsers: data.stats.totalUsers || 0,
+                    totalJobs: data.stats.totalJobs || 0,
+                    totalResumes: data.stats.totalResumes || 0,
+                    activeSyncs: data.stats.totalMessages || 0,
+                    growth: "+Live",
+                    systemHealth: "Optimal"
+                });
+            }
+
+            if (usersRes.ok) {
+                const data = await usersRes.json();
+                setUsers(data.users || []);
+            }
+
+            if (jobsRes.ok) {
+                const data = await jobsRes.json();
+                setJobs(data.jobs || []);
+            }
+        } catch (error) {
+            console.error("Failed to load admin data:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     useEffect(() => {
-        // Simulate loading
-        const timer = setTimeout(() => setIsLoading(false), 800);
-        return () => clearTimeout(timer);
+        fetchData();
     }, []);
+
+    const handleDeleteUser = async (id: string) => {
+        if (!confirm("Are you sure you want to permanently delete this user?")) return;
+        try {
+            const res = await fetch("/api/admin/users", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id })
+            });
+            if (res.ok) fetchData();
+            else alert("Failed to delete user.");
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleDeleteJob = async (id: string) => {
+        if (!confirm("Are you sure you want to permanently delete this job?")) return;
+        try {
+            const res = await fetch("/api/admin/jobs", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id })
+            });
+            if (res.ok) fetchData();
+            else alert("Failed to delete job.");
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
     const containerVars: Variants = {
         hidden: { opacity: 0 },
@@ -152,17 +219,12 @@ function AdminDashboardContent() {
                                         </thead>
                                         <tbody className="divide-y divide-slate-100 dark:divide-white/[0.04]">
                                             {activeTab === 'users' ? (
-                                                [
-                                                    { name: "Ayush Rajput", email: "ayush@mrhyre.com", role: "Super Admin", level: "L10", status: "Active" },
-                                                    { name: "John Doe", email: "john@google.com", role: "Recruiter", level: "L4", status: "Verified" },
-                                                    { name: "Sarah Smith", email: "sarah@talentsys.io", role: "Candidate", level: "L1", status: "Active" },
-                                                    { name: "Dev Node 1", email: "api@hyre.io", role: "System Bot", level: "L8", status: "Secure" },
-                                                ].map((u, i) => (
-                                                    <tr key={i} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group">
+                                                users.map((u, i) => (
+                                                    <tr key={u.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group">
                                                         <td className="px-6 py-4">
                                                             <div className="flex items-center gap-3">
-                                                                <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-500 to-violet-500 flex items-center justify-center text-white text-[10px] font-bold">
-                                                                    {u.name.slice(0, 2).toUpperCase()}
+                                                                <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-500 to-violet-500 flex items-center justify-center text-white text-[10px] font-bold uppercase">
+                                                                    {u.name?.slice(0, 2) || "U"}
                                                                 </div>
                                                                 <div>
                                                                     <p className="text-xs font-bold text-slate-900 dark:text-white">{u.name}</p>
@@ -171,53 +233,42 @@ function AdminDashboardContent() {
                                                             </div>
                                                         </td>
                                                         <td className="px-6 py-4">
-                                                            <span className="text-[10px] font-bold px-2 py-1 rounded-md bg-slate-100 dark:bg-white/[0.04] text-slate-500">{u.role}</span>
+                                                            <span className="text-[10px] font-bold px-2 py-1 rounded-md bg-slate-100 dark:bg-white/[0.04] text-slate-500 capitalize">{u.role}</span>
                                                         </td>
                                                         <td className="px-6 py-4">
                                                             <div className="flex items-center gap-2">
-                                                                <div className={`w-1.5 h-1.5 rounded-full ${u.level.startsWith('L10') ? 'bg-fuchsia-500' : 'bg-emerald-500'}`} />
-                                                                <span className="text-xs font-bold">{u.level}</span>
+                                                                <div className={`w-1.5 h-1.5 rounded-full ${u.role === 'admin' ? 'bg-fuchsia-500' : 'bg-emerald-500'}`} />
+                                                                <span className="text-xs font-bold">{u.role === 'admin' ? 'L10' : 'L1'}</span>
                                                             </div>
                                                         </td>
                                                         <td className="px-6 py-4 text-right">
-                                                            <button className="p-2 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 transition-all">
+                                                            <button onClick={() => handleDeleteUser(u.id)} className="p-2 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 transition-all">
                                                                 <Trash2 size={16} />
-                                                            </button>
-                                                            <button className="p-2 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-indigo-500 transition-all">
-                                                                <MoreHorizontal size={16} />
                                                             </button>
                                                         </td>
                                                     </tr>
                                                 ))
                                             ) : (
-                                                [
-                                                    { title: "Senior AI Engineer", company: "NeuroTech", apps: 124, status: "Open" },
-                                                    { title: "Frontend Architect", company: "Vercel", apps: 89, status: "Urgent" },
-                                                    { title: "Data Scientist", company: "OpenAI", apps: 256, status: "Closed" },
-                                                    { title: "Product Designer", company: "Figma", apps: 42, status: "Open" },
-                                                ].map((j, i) => (
-                                                    <tr key={i} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group">
+                                                jobs.map((j, i) => (
+                                                    <tr key={j.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors group">
                                                         <td className="px-6 py-4">
                                                             <div>
                                                                 <p className="text-xs font-bold text-slate-900 dark:text-white">{j.title}</p>
-                                                                <p className="text-[10px] text-slate-500">{j.company}</p>
+                                                                <p className="text-[10px] text-slate-500">{j.company || j.recruiter?.companyName || "Unknown"}</p>
                                                             </div>
                                                         </td>
                                                         <td className="px-6 py-4">
                                                             <div className="flex items-center gap-2">
                                                                 <Users size={12} className="text-slate-400" />
-                                                                <span className="text-xs font-bold">{j.apps} synced</span>
+                                                                <span className="text-xs font-bold">{j.shortlists?.length || 0} synced</span>
                                                             </div>
                                                         </td>
                                                         <td className="px-6 py-4">
-                                                            <span className={`text-[10px] font-black px-2 py-1 rounded-md ${j.status === 'Urgent' ? 'bg-red-500/10 text-red-500' : 'bg-emerald-500/10 text-emerald-500'}`}>{j.status}</span>
+                                                            <span className={`text-[10px] font-black px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-500`}>Open</span>
                                                         </td>
                                                         <td className="px-6 py-4 text-right">
-                                                            <button className="p-2 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-indigo-500 transition-all">
-                                                                <ExternalLink size={16} />
-                                                            </button>
-                                                            <button className="p-2 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 transition-all">
-                                                                <XCircle size={16} />
+                                                            <button onClick={() => handleDeleteJob(j.id)} className="p-2 opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 transition-all">
+                                                                <Trash2 size={16} />
                                                             </button>
                                                         </td>
                                                     </tr>

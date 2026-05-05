@@ -23,22 +23,29 @@ export default function AdminLogin() {
         setIsLoading(true);
         setError(null);
 
-        // Simulate admin authentication
-        setTimeout(() => {
-            if (email === "admin@mrhyre.com" && password === "Mr.hyre#2026@") {
-                // Set authority cookie for middleware recognition
-                document.cookie = "authToken=admin-session-authority; path=/; max-age=3600; SameSite=Lax";
-                
+        try {
+            const res = await fetch("/api/auth/admin/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await res.json();
+
+            if (res.ok) {
                 localStorage.setItem("userRole", "admin");
                 localStorage.setItem("userName", "Super Admin");
                 
-                // Use hard redirect to ensure middleware picks up the cookie immediately
+                // Hard redirect to load middleware with secure cookie
                 window.location.href = "/admin/dashboard";
             } else {
-                setError("Authorization Failed: Invalid admin credentials.");
-                setIsLoading(false);
+                setError(data.error || "Authorization Failed: Invalid admin credentials.");
             }
-        }, 1500);
+        } catch (err) {
+            setError("Network Error: Could not connect to authentication server.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (

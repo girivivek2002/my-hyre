@@ -2,15 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/db";
 import { Prisma, Role } from "@/src/generated/client";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import { checkRateLimit, isDisposableEmail } from "@/lib/security";
 
 export const dynamic = "force-dynamic";
 
 const JWT_SECRET = (process.env.JWT_SECRET as string).replace(/['"]+/g, '');
+const SALT_ROUNDS = 12;
 
 export async function POST(req: NextRequest) {
   try {
-    // 4. ANTI-SPAM: Rate Limiting
+    // ANTI-SPAM: Rate Limiting
     const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
     if (!checkRateLimit(ip)) {
       return NextResponse.json({ error: "Too many requests. Please try again in a minute." }, { status: 429 });
@@ -25,26 +27,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
     }
 
-    // 4. ANTI-SPAM: Block Disposable Emails
+    // Password strength validation
+    if (password.length < 8) {
+      return NextResponse.json({ error: "Password must be at least 8 characters." }, { status: 400 });
+    }
+
+    // ANTI-SPAM: Block Disposable Emails
     if (isDisposableEmail(email)) {
       return NextResponse.json({ error: "Please use a legitimate email address." }, { status: 400 });
     }
-
-    // 5. OTP Verification Check (REMOVED)
-    /*
-    const verifiedOtp = await prisma.otpVerification.findFirst({
-      where: {
-        email,
-        verified: true,
-      },
-      orderBy: { createdAt: "desc" },
-    });
-
-    if (!verifiedOtp) {
-      return NextResponse.json({ error: "Email not verified. Please verify your email with OTP first." }, { status: 400 });
-    }
-    */
-
 
     // Check if the user or profile already exists
     const [existingUser, existingCandidate, existingRecruiter] = await Promise.all([
@@ -57,6 +48,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Email already registered." }, { status: 400 });
     }
 
+    // Hash password with bcrypt
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
     const assignedRole = role === "recruiter" ? Role.recruiter : Role.candidate;
 
     // Create user and associated profile in a transaction
@@ -64,7 +58,7 @@ export async function POST(req: NextRequest) {
       const newUser = await tx.user.create({
         data: {
           email,
-          password, // In a real app, hash the password
+          password: hashedPassword,
           name,
           role: assignedRole,
         },
@@ -85,7 +79,7 @@ export async function POST(req: NextRequest) {
             userId: newUser.id,
             name,
             email,
-            companyName: name, // Initial placeholder
+            companyName: name,
             industry,
             companySize: teamSize,
           },
@@ -134,10 +128,8 @@ export async function POST(req: NextRequest) {
 
     return response;
   } catch (error: any) {
-    console.error("Signup Error Detailed:", error);
-    return NextResponse.json({ 
-      error: "Internal Server Error", 
-      details: error.message || error.toString() 
-    }, { status: 500 });
+    console.error("Signup Error:", error);
+    // Never expose internal error details to the client
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

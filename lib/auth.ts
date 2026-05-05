@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import prisma from "@/lib/db";
 import { getToken } from "next-auth/jwt";
 
-const JWT_SECRET = (process.env.JWT_SECRET || "super-secret-fallback-key").replace(/['"]+/g, '');
+const JWT_SECRET = (process.env.JWT_SECRET as string).replace(/['"]+/g, '');
 const NEXTAUTH_SECRET = process.env.NEXTAUTH_SECRET;
 
 /**

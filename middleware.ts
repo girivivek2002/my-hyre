@@ -25,14 +25,10 @@ export async function middleware(req: NextRequest) {
   // Check if custom token is admin
   let parsedCustomToken: any = null;
   if (customToken) {
-    if (customToken === "admin-session-authority") {
-      parsedCustomToken = { role: "admin", name: "Super Admin" };
-    } else {
-      try {
-        const { payload } = await jwtVerify(customToken, secretKey);
-        parsedCustomToken = payload;
-      } catch (err) {}
-    }
+    try {
+      const { payload } = await jwtVerify(customToken, secretKey);
+      parsedCustomToken = payload;
+    } catch (err) {}
   }
 
   // Priority logic

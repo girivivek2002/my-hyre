@@ -1,16 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/db";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import { checkRateLimit } from "@/lib/security";
 
 const JWT_SECRET = (process.env.JWT_SECRET as string).replace(/['"]+/g, '');
 
 export async function POST(req: NextRequest) {
   try {
-    console.log("DB_URL present:", !!process.env.DATABASE_URL);
-    console.log("JWT_SECRET present:", !!process.env.JWT_SECRET);
-
-    // 4. ANTI-SPAM: Rate Limiting
+    // ANTI-SPAM: Rate Limiting
     const ip = req.headers.get("x-forwarded-for") || "127.0.0.1";
     if (!checkRateLimit(ip)) {
       return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 });
@@ -29,30 +27,41 @@ export async function POST(req: NextRequest) {
       include: { candidateProfile: true, recruiterProfile: true }
     });
 
-    console.log("Login Attempt:", { email, found: !!user, passwordMatch: user?.password === password });
-
-    console.log("Login Attempt Debug:", { 
-      inputEmail: email, 
-      dbEmail: user?.email, 
-      found: !!user, 
-      inputPassword: password, 
-      dbPassword: user?.password, 
-      match: user?.password === password 
-    });
-
+    // OAuth account detection
     if (user && user.password === "oauth-placeholder-password") {
       return NextResponse.json({ 
         error: "This account was created with Google or LinkedIn. Please sign in using that method." 
       }, { status: 401 });
     }
 
-    if (!user || user.password !== password) {
+    // Verify password using bcrypt (with fallback for legacy plaintext passwords)
+    let passwordValid = false;
+    if (user) {
+      if (user.password.startsWith("$2")) {
+        // Bcrypt hash detected
+        passwordValid = await bcrypt.compare(password, user.password);
+      } else {
+        // Legacy plaintext comparison (for existing users not yet migrated)
+        passwordValid = user.password === password;
+
+        // Auto-migrate: hash the plaintext password now for future logins
+        if (passwordValid) {
+          const hashedPassword = await bcrypt.hash(password, 12);
+          await prisma.user.update({ 
+            where: { id: user.id }, 
+            data: { password: hashedPassword } 
+          });
+        }
+      }
+    }
+
+    if (!user || !passwordValid) {
       return NextResponse.json({ 
         error: "Invalid credentials. Please check your email and password." 
       }, { status: 401 });
     }
 
-    // Role Synchronization: If role is candidate but only recruiter profile exists (or vice versa), fix it.
+    // Role Synchronization
     let effectiveRole = user.role;
     if (user.role === "candidate" && !user.candidateProfile && user.recruiterProfile) {
       effectiveRole = "recruiter";

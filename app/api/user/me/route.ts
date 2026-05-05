@@ -34,8 +34,11 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "User profile not found." }, { status: 404 });
     }
 
+    // Strip sensitive fields before sending to client
+    const { password: _pw, ...safeUser } = user as any;
+
     const response = NextResponse.json({
-      user,
+      user: safeUser,
       stats: {
         resumesUploaded: user._count.resumes, 
         matches: 0,

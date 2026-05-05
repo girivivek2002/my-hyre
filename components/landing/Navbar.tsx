@@ -18,7 +18,6 @@ export default function Navbar() {
     { name: "Features", href: "#features" },
     { name: "Recruiters", href: "#recruiters" },
     { name: "Pricing", href: "#pricing" },
-    { name: "Testimonials", href: "#testimonials" },
   ];
 
   return (

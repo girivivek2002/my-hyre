@@ -18,22 +18,30 @@ export async function middleware(req: NextRequest) {
     path.includes("/signup") ||
     path.includes("/login");
   
-  // 2. Get Session Token (Priority: Admin Bypass -> NextAuth -> Custom)
+  // 2. Get Session Token (Priority: Admin Token -> NextAuth -> Custom Token)
   let token: any = null;
   const customToken = req.cookies.get("authToken")?.value;
 
-  if (customToken === "admin-session-authority") {
-    token = { role: "admin", name: "Super Admin" };
-  } else {
-    token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-    
-    if (!token && customToken) {
+  // Check if custom token is admin
+  let parsedCustomToken: any = null;
+  if (customToken) {
+    if (customToken === "admin-session-authority") {
+      parsedCustomToken = { role: "admin", name: "Super Admin" };
+    } else {
       try {
         const { payload } = await jwtVerify(customToken, secretKey);
-        token = payload;
-      } catch (err) {
-        // Invalid token
-      }
+        parsedCustomToken = payload;
+      } catch (err) {}
+    }
+  }
+
+  // Priority logic
+  if (parsedCustomToken?.role === "admin") {
+    token = parsedCustomToken;
+  } else {
+    token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    if (!token && parsedCustomToken) {
+      token = parsedCustomToken;
     }
   }
 

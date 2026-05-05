@@ -16,6 +16,17 @@ export async function getSession(req: NextRequest) {
   let userName: string | null = null;
   let userRole: string | null = null;
 
+  // 0. Priority Override: Check if cookie is an Admin Token
+  const cookieToken = req.cookies.get("authToken")?.value;
+  if (cookieToken && cookieToken !== "null") {
+    try {
+      const decoded: any = jwt.verify(cookieToken, JWT_SECRET);
+      if (decoded.role === "admin") {
+        return { id: decoded.id, email: decoded.email, name: decoded.name, role: decoded.role };
+      }
+    } catch (err) {}
+  }
+
   // 1. Try Explicit Authorization Header (Custom JWT) FIRST
   const auth = req.headers.get("authorization");
   const bearerToken = auth?.startsWith("Bearer ") ? auth.split(" ")[1] : null;
@@ -43,19 +54,16 @@ export async function getSession(req: NextRequest) {
     }
   }
 
-  // 3. Try Custom JWT Cookie as last resort
-  if (!userId) {
-    const cookieToken = req.cookies.get("authToken")?.value;
-    if (cookieToken && cookieToken !== "null") {
-      try {
-        const decoded: any = jwt.verify(cookieToken, JWT_SECRET);
-        userId = decoded.id;
-        userEmail = decoded.email;
-        userName = decoded.name;
-        userRole = decoded.role;
-      } catch (err) {
-        // Invalid cookie token
-      }
+  // 3. Try Custom JWT Cookie as last resort (for non-admin roles)
+  if (!userId && cookieToken && cookieToken !== "null") {
+    try {
+      const decoded: any = jwt.verify(cookieToken, JWT_SECRET);
+      userId = decoded.id;
+      userEmail = decoded.email;
+      userName = decoded.name;
+      userRole = decoded.role;
+    } catch (err) {
+      // Invalid cookie token
     }
   }
 

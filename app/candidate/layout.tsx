@@ -1,6 +1,8 @@
 "use client";
+import React, { Suspense } from "react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { usePathname } from "next/navigation";
+import { Loader2 } from "lucide-react";
 
 export default function CandidateRoot({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -11,8 +13,14 @@ export default function CandidateRoot({ children }: { children: React.ReactNode 
   }
 
   return (
-    <DashboardLayout role="candidate">
-      {children}
-    </DashboardLayout>
+    <Suspense fallback={
+      <div className="flex h-screen bg-[#FAFBFD] dark:bg-[#0A0A0F] items-center justify-center">
+        <Loader2 className="animate-spin text-violet-500" size={40} />
+      </div>
+    }>
+      <DashboardLayout role="candidate">
+        {children}
+      </DashboardLayout>
+    </Suspense>
   );
 }

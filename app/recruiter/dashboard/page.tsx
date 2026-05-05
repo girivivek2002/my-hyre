@@ -1,10 +1,11 @@
 "use client";
-import React, { ReactNode, MouseEvent, useState, useEffect, useRef } from "react";
+import React, { ReactNode, MouseEvent, useState, useEffect, useRef, Suspense } from "react";
 import { motion, useMotionTemplate, useMotionValue, Variants, useInView } from "framer-motion";
 import { useRouter } from "next/navigation";
 import {
   Users, Briefcase, Sparkles, Clock, TrendingUp, Zap, Loader2
 } from "lucide-react";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 // Animated Counter
 function AnimatedStat({ value, suffix = "" }: { value: string | number; suffix?: string }) {
@@ -53,7 +54,7 @@ const statCards = [
   { title: "Hiring Velocity", key: "velocity", icon: <TrendingUp size={22} />, trend: "Optimal", color: "emerald", iconBg: "bg-emerald-500/10 border-emerald-500/20", iconColor: "text-emerald-500" },
 ];
 
-export default function RecruiterDashboard() {
+function RecruiterDashboardContent() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [userData, setUserData] = useState<any>(null);
@@ -90,16 +91,16 @@ export default function RecruiterDashboard() {
   if (!mounted) return null;
 
   if (isLoading) return (
-    <div className="flex-1 flex items-center justify-center">
+    <div className="flex-1 flex items-center justify-center min-h-screen">
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center gap-4">
         <Loader2 size={32} className="animate-spin text-indigo-500" />
-        <p className="text-sm font-semibold text-slate-500 uppercase tracking-widest">Synchronizing...</p>
+        <p className="text-sm font-semibold text-slate-500 uppercase tracking-widest">Synchronizing Ecosystem...</p>
       </motion.div>
     </div>
   );
 
   return (
-        <motion.div initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.08 } } }} className="flex-1 overflow-y-auto px-4 sm:px-10 py-6 sm:py-8 pb-24 sm:pb-20 custom-scrollbar">
+    <motion.div initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.08 } } }} className="flex-1 overflow-y-auto px-4 sm:px-10 py-6 sm:py-8 pb-24 sm:pb-20 custom-scrollbar">
       <div className="max-w-7xl mx-auto">
 
         {/* Welcome */}
@@ -178,5 +179,17 @@ export default function RecruiterDashboard() {
         </div>
       </div>
     </motion.div>
+  );
+}
+
+export default function RecruiterDashboard() {
+  return (
+    <Suspense fallback={
+      <div className="flex h-screen bg-[#FAFBFD] dark:bg-[#0A0A0F] items-center justify-center">
+        <Loader2 className="animate-spin text-indigo-500" size={40} />
+      </div>
+    }>
+      <RecruiterDashboardContent />
+    </Suspense>
   );
 }

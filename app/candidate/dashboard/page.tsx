@@ -1,15 +1,15 @@
 "use client";
-import React, { ReactNode, MouseEvent, useState, useEffect } from "react";
+import React, { ReactNode, MouseEvent, useState, useEffect, Suspense } from "react";
 import { motion, useMotionTemplate, useMotionValue, Variants } from "framer-motion";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import {
   LayoutDashboard, Briefcase, BarChart3, Settings,
   Zap, Bell, ChevronDown, Sparkles, Clock, MapPin, 
   TrendingUp, CalendarDays, ArrowUpRight, Search, 
   CheckCircle2, AlertCircle, FileText, ArrowRight,
-  User, LogOut
+  User, LogOut, Loader2
 } from "lucide-react";
+import DashboardLayout from "@/components/layouts/DashboardLayout";
 
 // Interactive Glass Card Component
 function GlassCard({ children, className = "" }: { children: ReactNode, className?: string }) {
@@ -41,7 +41,7 @@ function GlassCard({ children, className = "" }: { children: ReactNode, classNam
   );
 }
 
-export default function CandidateDashboard() {
+function CandidateDashboardContent() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [userData, setUserData] = useState<any>(null);
@@ -49,23 +49,6 @@ export default function CandidateDashboard() {
   const [recentJobs, setRecentJobs] = useState<any[]>([]);
   const [recentInterviews, setRecentInterviews] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [showNotifications, setShowNotifications] = useState(false);
-
-  const handleLogout = async () => {
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userRole");
-    // Clear the custom JWT cookie
-    document.cookie = "authToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    
-    try {
-      const { signOut } = await import("next-auth/react");
-      await signOut({ callbackUrl: "/login" });
-    } catch (e) {
-      window.location.href = "/login";
-    }
-  };
 
   useEffect(() => {
     setMounted(true);
@@ -318,5 +301,17 @@ export default function CandidateDashboard() {
 
           </div>
         </motion.div>
-    );
+  );
+}
+
+export default function CandidateDashboard() {
+  return (
+    <Suspense fallback={
+      <div className="flex h-screen bg-[#FAFBFD] dark:bg-[#0A0A0F] items-center justify-center">
+        <Loader2 className="animate-spin text-indigo-500" size={40} />
+      </div>
+    }>
+      <CandidateDashboardContent />
+    </Suspense>
+  );
 }

@@ -46,9 +46,14 @@ export async function POST(req: NextRequest) {
     */
 
 
-    // Check if the user already exists
-    const existingUser = await prisma.user.findUnique({ where: { email } });
-    if (existingUser) {
+    // Check if the user or profile already exists
+    const [existingUser, existingCandidate, existingRecruiter] = await Promise.all([
+      prisma.user.findUnique({ where: { email } }),
+      prisma.candidate.findUnique({ where: { email } }),
+      prisma.recruiter.findUnique({ where: { email } })
+    ]);
+
+    if (existingUser || existingCandidate || existingRecruiter) {
       return NextResponse.json({ error: "Email already registered." }, { status: 400 });
     }
 

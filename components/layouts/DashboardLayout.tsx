@@ -1,6 +1,6 @@
 "use client";
 import React, { ReactNode, useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -43,33 +43,88 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
   };
 
   const recruiterLinks = [
-    { icon: <LayoutDashboard size={20} />, label: "Dashboard", path: "/recruiter/dashboard" },
-    { icon: <Users size={20} />, label: "Candidates", path: "/recruiter/candidates" },
-    { icon: <Briefcase size={20} />, label: "Jobs", path: "/recruiter/post-job" },
-    { icon: <BarChart3 size={20} />, label: "Analytics", path: "/recruiter/analytics" },
-    { icon: <CalendarDays size={20} />, label: "Schedule", path: "/recruiter/schedule" },
-    { icon: <MessageSquare size={20} />, label: "Messages", path: "/recruiter/messages" },
+    {
+      category: "Overview",
+      items: [
+        { icon: <LayoutDashboard size={18} />, label: "Dashboard", path: "/recruiter/dashboard" },
+        { icon: <BarChart3 size={18} />, label: "Analytics", path: "/recruiter/analytics" },
+      ]
+    },
+    {
+      category: "Recruitment",
+      items: [
+        { icon: <Briefcase size={18} />, label: "Job Postings", path: "/recruiter/post-job" },
+        { icon: <Users size={18} />, label: "Candidates", path: "/recruiter/candidates" },
+        { icon: <CalendarDays size={18} />, label: "Interviews", path: "/recruiter/schedule" },
+      ]
+    },
+    {
+      category: "Communication",
+      items: [
+        { icon: <MessageSquare size={18} />, label: "Messages", path: "/recruiter/messages" },
+      ]
+    }
   ];
 
   const candidateLinks = [
-    { icon: <LayoutDashboard size={20} />, label: "Dashboard", path: "/candidate/dashboard" },
-    { icon: <Briefcase size={20} />, label: "Shortlisted Roles", path: "/candidate/jobs" },
-    { icon: <CalendarDays size={20} />, label: "Interviews", path: "/candidate/interviews" },
-    { icon: <BarChart3 size={20} />, label: "Talent Profile", path: "/candidate/profile" },
-    { icon: <MessageSquare size={20} />, label: "Messages", path: "/candidate/messages" },
+    {
+      category: "Overview",
+      items: [
+        { icon: <LayoutDashboard size={18} />, label: "Dashboard", path: "/candidate/dashboard" },
+        { icon: <BarChart3 size={18} />, label: "Talent Profile", path: "/candidate/profile" },
+      ]
+    },
+    {
+      category: "Opportunities",
+      items: [
+        { icon: <Briefcase size={18} />, label: "Saved Roles", path: "/candidate/jobs" },
+        { icon: <CalendarDays size={18} />, label: "Interviews", path: "/candidate/interviews" },
+      ]
+    },
+    {
+      category: "Communication",
+      items: [
+        { icon: <MessageSquare size={18} />, label: "Messages", path: "/candidate/messages" },
+      ]
+    }
   ];
 
   const adminLinks = [
-    { icon: <LayoutDashboard size={20} />, label: "Platform Overview", path: "/admin/dashboard" },
-    { icon: <Users size={20} />, label: "User Control", path: "/admin/dashboard?tab=users" },
-    { icon: <Briefcase size={20} />, label: "Job Operations", path: "/admin/dashboard?tab=jobs" },
-    { icon: <BarChart3 size={20} />, label: "Resume Vault", path: "/admin/dashboard?tab=resumes" },
+    {
+      category: "Platform",
+      items: [
+        { icon: <LayoutDashboard size={18} />, label: "Overview", path: "/admin/dashboard" },
+      ]
+    },
+    {
+      category: "Ecosystem Management",
+      items: [
+        { icon: <Users size={18} />, label: "User Control", path: "/admin/dashboard?tab=users" },
+        { icon: <Briefcase size={18} />, label: "Job Operations", path: "/admin/dashboard?tab=jobs" },
+        { icon: <BarChart3 size={18} />, label: "Resume Vault", path: "/admin/dashboard?tab=resumes" },
+      ]
+    }
   ];
 
-  const links = role === "admin" ? adminLinks : (role === "recruiter" ? recruiterLinks : candidateLinks);
+  const categories = role === "admin" ? adminLinks : (role === "recruiter" ? recruiterLinks : candidateLinks);
+  const flatLinks = categories.flatMap(c => c.items);
   const settingsPath = role === "admin" ? "/admin/settings" : (role === "recruiter" ? "/recruiter/settings" : "/candidate/settings");
   const portalName = role === "admin" ? "Platform Control" : (role === "recruiter" ? "Recruiter Hub" : "Candidate Hub");
   const accentColor = role === "recruiter" ? "indigo" : role === "candidate" ? "violet" : "cyan";
+  const searchParams = useSearchParams();
+
+  // Match active link considering query params (e.g. ?tab=users)
+  const isLinkActive = (linkPath: string) => {
+    const url = new URL(linkPath, 'http://x');
+    if (url.pathname !== pathname) return false;
+    // If the link has search params, they must match too
+    const linkParams = url.searchParams;
+    if (linkParams.toString() === '') return !searchParams.get('tab');
+    for (const [key, value] of linkParams.entries()) {
+      if (searchParams.get(key) !== value) return false;
+    }
+    return true;
+  };
 
   const handleNavigation = (path: string) => {
     setIsMobileMenuOpen(false);
@@ -115,43 +170,51 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
           </button>
         </div>
 
-        <div className="space-y-1.5 text-slate-600 dark:text-slate-400 flex-1">
-          {links.map((item, i) => {
-            const isActive = pathname === item.path;
-            return (
-              <motion.div
-                key={i}
-                onClick={() => handleNavigation(item.path)}
-                whileHover={{ x: 4 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                className={`flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer transition-all duration-200 font-semibold group relative ${isActive 
-                  ? `bg-${accentColor}-500/10 text-${accentColor}-600 dark:text-${accentColor}-400 border border-${accentColor}-500/20` 
-                  : 'hover:bg-slate-50 dark:hover:bg-white/[0.03] hover:text-slate-900 dark:hover:text-white border border-transparent'}`}
-              >
-                {/* Active indicator bar */}
-                {isActive && (
-                  <motion.div
-                    layoutId="sidebar-indicator"
-                    className={`absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-6 rounded-full bg-${accentColor}-500`}
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  />
-                )}
-                {item.icon}
-                <span>{item.label}</span>
-              </motion.div>
-            );
-          })}
+        <div className="text-slate-600 dark:text-slate-400 flex-1 overflow-y-auto custom-scrollbar">
+          {categories.map((group, gi) => (
+            <div key={gi} className={gi > 0 ? 'mt-6' : ''}>
+              <div className="mb-2 px-4 text-[10px] font-bold tracking-[0.2em] text-slate-400 dark:text-slate-600 uppercase">{group.category}</div>
+              <div className="space-y-1">
+                {group.items.map((item, i) => {
+                  const isActive = isLinkActive(item.path);
+                  return (
+                    <motion.div
+                      key={`${gi}-${i}`}
+                      onClick={() => handleNavigation(item.path)}
+                      whileHover={{ x: 4 }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                      className={`flex items-center gap-3.5 px-4 py-2.5 rounded-xl cursor-pointer transition-all duration-200 font-semibold text-[13px] group relative ${isActive 
+                        ? `bg-${accentColor}-500/10 text-${accentColor}-600 dark:text-${accentColor}-400 border border-${accentColor}-500/20` 
+                        : 'hover:bg-slate-50 dark:hover:bg-white/[0.03] hover:text-slate-900 dark:hover:text-white border border-transparent'}`}
+                    >
+                      {isActive && (
+                        <motion.div
+                          layoutId="sidebar-indicator"
+                          className={`absolute left-0 top-1/2 -translate-y-1/2 w-[3px] h-5 rounded-full bg-${accentColor}-500`}
+                          transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                        />
+                      )}
+                      {item.icon}
+                      <span>{item.label}</span>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
 
-          <div className="mt-8 mb-2 px-4 text-xs font-semibold tracking-widest text-slate-400 dark:text-slate-600 uppercase">Configuration</div>
-          <motion.div 
-            whileHover={{ x: 4 }}
-            onClick={() => handleNavigation(settingsPath)} 
-            className={`flex items-center gap-4 px-4 py-3 rounded-xl cursor-pointer transition-all duration-200 font-medium relative ${pathname === settingsPath ? `bg-${accentColor}-500/10 text-${accentColor}-600 dark:text-${accentColor}-400 border border-${accentColor}-500/20` : 'hover:bg-slate-50 dark:hover:bg-white/[0.03] hover:text-slate-900 dark:hover:text-white border border-transparent'}`}
-          >
-            <Settings size={20} />
-            <span>Settings</span>
-          </motion.div>
+          <div className="mt-6">
+            <div className="mb-2 px-4 text-[10px] font-bold tracking-[0.2em] text-slate-400 dark:text-slate-600 uppercase">Configuration</div>
+            <motion.div 
+              whileHover={{ x: 4 }}
+              onClick={() => handleNavigation(settingsPath)} 
+              className={`flex items-center gap-3.5 px-4 py-2.5 rounded-xl cursor-pointer transition-all duration-200 font-semibold text-[13px] relative ${pathname === settingsPath ? `bg-${accentColor}-500/10 text-${accentColor}-600 dark:text-${accentColor}-400 border border-${accentColor}-500/20` : 'hover:bg-slate-50 dark:hover:bg-white/[0.03] hover:text-slate-900 dark:hover:text-white border border-transparent'}`}
+            >
+              <Settings size={18} />
+              <span>Settings</span>
+            </motion.div>
+          </div>
         </div>
       </div>
 
@@ -265,8 +328,8 @@ export default function DashboardLayout({ children, role }: { children: ReactNod
         <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 px-4 pb-6 pt-2 pointer-events-none">
           <div className="max-w-md mx-auto pointer-events-auto">
              <div className="bg-white/80 dark:bg-[#111118]/80 backdrop-blur-2xl border border-slate-200/50 dark:border-white/[0.06] rounded-2xl shadow-premium dark:shadow-premium-dark flex justify-between items-center px-2 py-2">
-                {links.slice(0, 4).map((item, i) => {
-                  const isActive = pathname === item.path;
+                {flatLinks.slice(0, 4).map((item, i) => {
+                  const isActive = isLinkActive(item.path);
                   return (
                     <div 
                       key={i} 

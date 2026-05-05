@@ -55,13 +55,70 @@ export async function DELETE(req: NextRequest) {
     const { id } = await req.json();
     if (!id) return NextResponse.json({ error: "User ID required" }, { status: 400 });
     
-    // Cascading delete safety
-    await prisma.resume.deleteMany({ where: { userId: id } });
-    await prisma.candidate.deleteMany({ where: { userId: id } });
-    await prisma.recruiter.deleteMany({ where: { userId: id } });
-    
-    await prisma.user.delete({ where: { id } });
-    return NextResponse.json({ message: "User deleted successfully" });
+    // Deep cascading delete using transaction
+    await prisma.$transaction(async (tx: any) => {
+      // 1. Get associated profiles
+      const candidate = await tx.candidate.findUnique({ where: { userId: id } });
+      const recruiter = await tx.recruiter.findUnique({ where: { userId: id } });
+
+      if (candidate) {
+        // Find candidate shortlists
+        const shortlists = await tx.shortlist.findMany({ 
+          where: { candidateId: candidate.id },
+          select: { id: true }
+        });
+        const shortlistIds = shortlists.map((s: any) => s.id);
+
+        // Delete interviews for candidate
+        if (shortlistIds.length > 0) {
+          await tx.interview.deleteMany({ where: { shortlistId: { in: shortlistIds } } });
+        }
+        
+        // Delete shortlists, messages, resumes
+        await tx.shortlist.deleteMany({ where: { candidateId: candidate.id } });
+        await tx.message.deleteMany({ where: { candidateId: candidate.id } });
+        await tx.candidate.delete({ where: { id: candidate.id } });
+      }
+
+      if (recruiter) {
+        // Find recruiter jobs
+        const jobs = await tx.job.findMany({ 
+          where: { recruiterId: recruiter.id },
+          select: { id: true }
+        });
+        const jobIds = jobs.map((j: any) => j.id);
+
+        if (jobIds.length > 0) {
+          // Find shortlists for recruiter jobs
+          const shortlists = await tx.shortlist.findMany({ 
+            where: { jobId: { in: jobIds } },
+            select: { id: true }
+          });
+          const shortlistIds = shortlists.map((s: any) => s.id);
+
+          // Delete interviews for recruiter jobs
+          if (shortlistIds.length > 0) {
+            await tx.interview.deleteMany({ where: { shortlistId: { in: shortlistIds } } });
+          }
+
+          // Delete shortlists for recruiter jobs
+          await tx.shortlist.deleteMany({ where: { jobId: { in: jobIds } } });
+          
+          // Delete recruiter jobs
+          await tx.job.deleteMany({ where: { recruiterId: recruiter.id } });
+        }
+
+        // Delete recruiter messages
+        await tx.message.deleteMany({ where: { recruiterId: recruiter.id } });
+        await tx.recruiter.delete({ where: { id: recruiter.id } });
+      }
+
+      // 2. Final cleanup of resumes and user
+      await tx.resume.deleteMany({ where: { userId: id } });
+      await tx.user.delete({ where: { id } });
+    });
+
+    return NextResponse.json({ message: "User and all associated data deleted successfully" });
   } catch (error) {
     console.error("Admin Delete Error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

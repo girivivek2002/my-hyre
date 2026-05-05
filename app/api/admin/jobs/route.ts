@@ -27,11 +27,30 @@ export async function DELETE(req: NextRequest) {
     const { id } = await req.json();
     if (!id) return NextResponse.json({ error: "Job ID required" }, { status: 400 });
     
-    // Cascade delete shortlists and interviews
-    await prisma.shortlist.deleteMany({ where: { jobId: id } });
-    await prisma.job.delete({ where: { id } });
+    // Deep cascading delete using transaction
+    await prisma.$transaction(async (tx: any) => {
+      // 1. Find all shortlists associated with this job
+      const shortlists = await tx.shortlist.findMany({
+        where: { jobId: id },
+        select: { id: true }
+      });
+      const shortlistIds = shortlists.map((s: any) => s.id);
+
+      // 2. Delete all interviews linked to these shortlists
+      if (shortlistIds.length > 0) {
+        await tx.interview.deleteMany({
+          where: { shortlistId: { in: shortlistIds } }
+        });
+      }
+
+      // 3. Delete shortlists
+      await tx.shortlist.deleteMany({ where: { jobId: id } });
+
+      // 4. Delete the job itself
+      await tx.job.delete({ where: { id } });
+    });
     
-    return NextResponse.json({ message: "Job deleted" });
+    return NextResponse.json({ message: "Job deleted successfully" });
   } catch (err) {
     console.error("Admin Job Delete Error:", err);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

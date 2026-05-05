@@ -129,7 +129,10 @@ export async function POST(req: NextRequest) {
 
     return response;
   } catch (error: any) {
-    console.error("Signup Error:", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    console.error("Signup Error Detailed:", error);
+    return NextResponse.json({ 
+      error: "Internal Server Error", 
+      details: error.message || error.toString() 
+    }, { status: 500 });
   }
 }

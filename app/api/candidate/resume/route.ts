@@ -1,5 +1,5 @@
-import fs from "fs/promises";
-import path from "path";
+import cloudinary from "@/lib/cloudinary";
+import { Readable } from "stream";
 import { NextRequest, NextResponse } from "next/server";
 import {
   extractTextFromPDF,
@@ -39,23 +39,29 @@ export async function POST(req: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    
+    const fileNameWithoutExtension =
+    file.name.substring(0, file.name.lastIndexOf(".")) || file.name;
 
-    // Ensure upload directory exists
-    const uploadDir = path.join(process.cwd(), "public/uploads");
+const uploadResult: any = await new Promise(
+  (resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        resource_type: "auto",
+        folder: "resumes",
+        public_id: `${Date.now()}-${fileNameWithoutExtension}`,
+      },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      }
+    );
 
-    await fs.mkdir(uploadDir, {
-      recursive: true,
-    });
+    Readable.from(buffer).pipe(uploadStream);
+  }
+);
+    console.log(uploadResult);
 
-    const filePath = path.join(
-    uploadDir,
-    `${Date.now()}-${file.name}`
-  );
-
-    await fs.writeFile(filePath, buffer);
-
-    console.log("✅ File saved:", filePath);
+    console.log("✅ Cloudinary Upload:", uploadResult.secure_url);
 
     let parsedData: ParsedResume = {
       name: file.name,
@@ -95,6 +101,7 @@ export async function POST(req: NextRequest) {
           name: parsedData.name || file.name,
           experience: parsedData.experience || 0,
           skills: parsedData.skills || [],
+          fileUrl: uploadResult.secure_url,
         },
       });
     } else {
@@ -106,6 +113,7 @@ export async function POST(req: NextRequest) {
           name: parsedData.name || file.name,
           experience: parsedData.experience || 0,
           skills: parsedData.skills || [],
+          fileUrl: uploadResult.secure_url,
         },
       });
     }

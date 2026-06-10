@@ -96,6 +96,67 @@ If Gemini is unavailable or quota limits are reached, a local fallback parser ex
 
 ---
 
+### File Storage
+
+- Cloudinary
+
+### Cloudinary Resume Storage
+
+The platform was enhanced to use Cloudinary for resume storage instead of local filesystem storage.
+
+Benefits:
+
+- Persistent file storage across deployments
+- Production-ready file management
+- Secure cloud-hosted resume access
+- Improved scalability
+- Recruiters can directly view uploaded resumes
+
+### Resume Delivery
+
+Candidate resumes are uploaded to Cloudinary and stored as secure URLs in the database.
+
+Workflow:
+
+Candidate Upload
+→ Cloudinary Storage
+→ Resume URL Saved in Database
+→ Recruiter Resume Viewer
+
+This resolves the limitations of local file storage on serverless platforms such as Vercel.
+
+---
+
+## Additional Technology Stack
+
+### File Storage
+
+- Cloudinary
+
+Used for:
+
+- Resume Storage
+- Resume Delivery
+- Secure File Access
+- Production Asset Management
+
+---
+
+## Production Optimizations
+
+Implemented:
+
+- Cloudinary-based resume storage
+- Secure PDF delivery
+- Prisma PostgreSQL integration
+- JWT Authentication
+- NextAuth Session Management
+- Vercel Deployment
+- AI Resume Parsing
+- AI Candidate Matching
+
+---
+
 ## Job Description Parsing
 
 Recruiters can enter job requirements.
@@ -308,29 +369,26 @@ npm start
 
 # Future Improvements
 
-## AI Enhancements
-
-- Advanced semantic candidate matching
-- Interview question generation
-- Resume scoring and feedback
-- Skill gap analysis
-
-## Platform Features
+### Notifications
 
 - Real-time notifications
-- Email interview reminders
-- In-app messaging system
-- Resume version management
-- Candidate analytics dashboard
-- Recruiter analytics dashboard
+- Interview reminders
+- Message alerts
 
-## Infrastructure
+### AI Enhancements
 
-- File storage using AWS S3
-- Background job processing
+- Semantic candidate matching
+- Interview question generation
+- Skill gap analysis
+- Resume quality scoring
+
+### Infrastructure
+
 - Redis caching
-- CI/CD pipelines
-- Automated testing
+- Background processing queues
+- Email service integration
+- Audit logging
+- Analytics dashboards
 
 ---
 

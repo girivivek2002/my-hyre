@@ -152,6 +152,7 @@ console.log("Latest Resume:", latestResume);
         skills: profile.skills || ["Communication", "Research"],
         summary: profile.biography || "No intelligence summary provided.",
         resume: c.resumes?.[0]?.name || null,
+        fileUrl: c.resumes?.[0]?.fileUrl || null,
         status: "Verified",
       };
     }));

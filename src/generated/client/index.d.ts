@@ -11202,6 +11202,7 @@ export namespace Prisma {
     userId: string | null
     name: string | null
     experience: number | null
+    fileUrl: string | null
     createdAt: Date | null
   }
 
@@ -11210,6 +11211,7 @@ export namespace Prisma {
     userId: string | null
     name: string | null
     experience: number | null
+    fileUrl: string | null
     createdAt: Date | null
   }
 
@@ -11219,6 +11221,7 @@ export namespace Prisma {
     name: number
     skills: number
     experience: number
+    fileUrl: number
     createdAt: number
     _all: number
   }
@@ -11237,6 +11240,7 @@ export namespace Prisma {
     userId?: true
     name?: true
     experience?: true
+    fileUrl?: true
     createdAt?: true
   }
 
@@ -11245,6 +11249,7 @@ export namespace Prisma {
     userId?: true
     name?: true
     experience?: true
+    fileUrl?: true
     createdAt?: true
   }
 
@@ -11254,6 +11259,7 @@ export namespace Prisma {
     name?: true
     skills?: true
     experience?: true
+    fileUrl?: true
     createdAt?: true
     _all?: true
   }
@@ -11350,6 +11356,7 @@ export namespace Prisma {
     name: string
     skills: string[]
     experience: number
+    fileUrl: string | null
     createdAt: Date
     _count: ResumeCountAggregateOutputType | null
     _avg: ResumeAvgAggregateOutputType | null
@@ -11378,6 +11385,7 @@ export namespace Prisma {
     name?: boolean
     skills?: boolean
     experience?: boolean
+    fileUrl?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["resume"]>
@@ -11388,6 +11396,7 @@ export namespace Prisma {
     name?: boolean
     skills?: boolean
     experience?: boolean
+    fileUrl?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["resume"]>
@@ -11398,6 +11407,7 @@ export namespace Prisma {
     name?: boolean
     skills?: boolean
     experience?: boolean
+    fileUrl?: boolean
     createdAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["resume"]>
@@ -11408,10 +11418,11 @@ export namespace Prisma {
     name?: boolean
     skills?: boolean
     experience?: boolean
+    fileUrl?: boolean
     createdAt?: boolean
   }
 
-  export type ResumeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "skills" | "experience" | "createdAt", ExtArgs["result"]["resume"]>
+  export type ResumeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "skills" | "experience" | "fileUrl" | "createdAt", ExtArgs["result"]["resume"]>
   export type ResumeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -11433,6 +11444,7 @@ export namespace Prisma {
       name: string
       skills: string[]
       experience: number
+      fileUrl: string | null
       createdAt: Date
     }, ExtArgs["result"]["resume"]>
     composites: {}
@@ -11863,6 +11875,7 @@ export namespace Prisma {
     readonly name: FieldRef<"Resume", 'String'>
     readonly skills: FieldRef<"Resume", 'String[]'>
     readonly experience: FieldRef<"Resume", 'Int'>
+    readonly fileUrl: FieldRef<"Resume", 'String'>
     readonly createdAt: FieldRef<"Resume", 'DateTime'>
   }
     
@@ -13449,6 +13462,7 @@ export namespace Prisma {
     name: 'name',
     skills: 'skills',
     experience: 'experience',
+    fileUrl: 'fileUrl',
     createdAt: 'createdAt'
   };
 
@@ -14278,6 +14292,7 @@ export namespace Prisma {
     name?: StringFilter<"Resume"> | string
     skills?: StringNullableListFilter<"Resume">
     experience?: IntFilter<"Resume"> | number
+    fileUrl?: StringNullableFilter<"Resume"> | string | null
     createdAt?: DateTimeFilter<"Resume"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
@@ -14288,6 +14303,7 @@ export namespace Prisma {
     name?: SortOrder
     skills?: SortOrder
     experience?: SortOrder
+    fileUrl?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     user?: UserOrderByWithRelationInput
   }
@@ -14301,6 +14317,7 @@ export namespace Prisma {
     name?: StringFilter<"Resume"> | string
     skills?: StringNullableListFilter<"Resume">
     experience?: IntFilter<"Resume"> | number
+    fileUrl?: StringNullableFilter<"Resume"> | string | null
     createdAt?: DateTimeFilter<"Resume"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id">
@@ -14311,6 +14328,7 @@ export namespace Prisma {
     name?: SortOrder
     skills?: SortOrder
     experience?: SortOrder
+    fileUrl?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     _count?: ResumeCountOrderByAggregateInput
     _avg?: ResumeAvgOrderByAggregateInput
@@ -14328,6 +14346,7 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"Resume"> | string
     skills?: StringNullableListFilter<"Resume">
     experience?: IntWithAggregatesFilter<"Resume"> | number
+    fileUrl?: StringNullableWithAggregatesFilter<"Resume"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Resume"> | Date | string
   }
 
@@ -15184,6 +15203,7 @@ export namespace Prisma {
     name: string
     skills?: ResumeCreateskillsInput | string[]
     experience: number
+    fileUrl?: string | null
     createdAt?: Date | string
     user: UserCreateNestedOneWithoutResumesInput
   }
@@ -15194,6 +15214,7 @@ export namespace Prisma {
     name: string
     skills?: ResumeCreateskillsInput | string[]
     experience: number
+    fileUrl?: string | null
     createdAt?: Date | string
   }
 
@@ -15202,6 +15223,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     skills?: ResumeUpdateskillsInput | string[]
     experience?: IntFieldUpdateOperationsInput | number
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     user?: UserUpdateOneRequiredWithoutResumesNestedInput
   }
@@ -15212,6 +15234,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     skills?: ResumeUpdateskillsInput | string[]
     experience?: IntFieldUpdateOperationsInput | number
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -15221,6 +15244,7 @@ export namespace Prisma {
     name: string
     skills?: ResumeCreateskillsInput | string[]
     experience: number
+    fileUrl?: string | null
     createdAt?: Date | string
   }
 
@@ -15229,6 +15253,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     skills?: ResumeUpdateskillsInput | string[]
     experience?: IntFieldUpdateOperationsInput | number
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -15238,6 +15263,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     skills?: ResumeUpdateskillsInput | string[]
     experience?: IntFieldUpdateOperationsInput | number
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -15896,6 +15922,7 @@ export namespace Prisma {
     name?: SortOrder
     skills?: SortOrder
     experience?: SortOrder
+    fileUrl?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -15908,6 +15935,7 @@ export namespace Prisma {
     userId?: SortOrder
     name?: SortOrder
     experience?: SortOrder
+    fileUrl?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -15916,6 +15944,7 @@ export namespace Prisma {
     userId?: SortOrder
     name?: SortOrder
     experience?: SortOrder
+    fileUrl?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -17851,6 +17880,7 @@ export namespace Prisma {
     name: string
     skills?: ResumeCreateskillsInput | string[]
     experience: number
+    fileUrl?: string | null
     createdAt?: Date | string
   }
 
@@ -17859,6 +17889,7 @@ export namespace Prisma {
     name: string
     skills?: ResumeCreateskillsInput | string[]
     experience: number
+    fileUrl?: string | null
     createdAt?: Date | string
   }
 
@@ -18007,6 +18038,7 @@ export namespace Prisma {
     name?: StringFilter<"Resume"> | string
     skills?: StringNullableListFilter<"Resume">
     experience?: IntFilter<"Resume"> | number
+    fileUrl?: StringNullableFilter<"Resume"> | string | null
     createdAt?: DateTimeFilter<"Resume"> | Date | string
   }
 
@@ -18333,6 +18365,7 @@ export namespace Prisma {
     name: string
     skills?: ResumeCreateskillsInput | string[]
     experience: number
+    fileUrl?: string | null
     createdAt?: Date | string
   }
 
@@ -18341,6 +18374,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     skills?: ResumeUpdateskillsInput | string[]
     experience?: IntFieldUpdateOperationsInput | number
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -18349,6 +18383,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     skills?: ResumeUpdateskillsInput | string[]
     experience?: IntFieldUpdateOperationsInput | number
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -18357,6 +18392,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     skills?: ResumeUpdateskillsInput | string[]
     experience?: IntFieldUpdateOperationsInput | number
+    fileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

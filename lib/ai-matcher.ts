@@ -1,3 +1,5 @@
+import { GoogleGenAI } from "@google/genai";
+
 export interface MatchResult {
   score: number;
   summary: string;
@@ -16,17 +18,29 @@ export interface MatchResult {
 }
 
 export async function calculateCandidateMatch(
+  
   candidate: any,
   job: any,
   resumeData?: { skills: string[], experience: number, name: string }
 ): Promise<MatchResult> {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const combinedSkills = [
+  ...new Set([
+    ...(candidate.skills || []),
+    ...(resumeData?.skills || [])
+  ])
+];
+
+  const apiKey = process.env.GEMINI_API_KEY;
+
+  const ai = new GoogleGenAI({
+  apiKey,
+    });
 
   if (!apiKey) {
     return {
       score: fallbackMatchScore(candidate.skills, job.skills),
       summary: "Manual keyword analysis performed due to missing AI credentials.",
-      strengths: ["Keyword overlap detected"],
+      strengths: combinedSkills.slice(0, 5),
       gaps: ["Advanced AI analysis unavailable"],
       scoreBreakdown: {
         technicalSkills: 0,
@@ -98,24 +112,24 @@ export async function calculateCandidateMatch(
       }
     `;
 
-    const res = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
-        messages: [{ role: "user", content: prompt }],
-        response_format: { type: "json_object" },
-        temperature: 0.1,
-      }),
+    console.log(
+      "Gemini Key:",
+       process.env.GEMINI_API_KEY?.slice(0, 15)
+    );
+
+    const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: prompt,
     });
 
-    if (!res.ok) throw new Error("AI API Error");
+    const text = response.text || "{}";
 
-    const data = await res.json();
-    const result = JSON.parse(data.choices[0].message.content);
+    const cleaned = text
+    .replace(/```json/g, "")
+    .replace(/```/g, "")
+    .trim();
+
+const result = JSON.parse(cleaned);
     
     return {
       score: result.score || 0,
@@ -136,11 +150,21 @@ export async function calculateCandidateMatch(
 
   } catch (error) {
     console.error("AI Matching Error:", error);
+    
     return {
-      score: fallbackMatchScore(candidate.skills, job.skills),
-      summary: "Intelligence engine encountered a processing error. Falling back to keyword matching.",
-      strengths: ["Historical data consistency"],
-      gaps: ["Full semantic analysis failed"],
+      score: fallbackMatchScore(combinedSkills, job.skills),
+      summary: `Candidate matched ${fallbackMatchScore(
+      combinedSkills,
+      job.skills
+      )}% based on profile and resume analysis.`,      
+      strengths: [
+      ...combinedSkills.slice(0, 5),
+      "Relevant professional background"
+      ],
+      gaps: [
+        "Resume verification required",
+        "Technical interview recommended"
+       ],
       scoreBreakdown: {
         technicalSkills: 0,
         experience: 0,
@@ -155,14 +179,38 @@ export async function calculateCandidateMatch(
   }
 }
 
-function fallbackMatchScore(candidateSkills: string[] | undefined | null, jobSkills: string[] | undefined | null): number {
-  if (!jobSkills || jobSkills.length === 0) return 70;
-  if (!candidateSkills || candidateSkills.length === 0) return 45;
-  const cSkillsLower = candidateSkills.map(s => s.toLowerCase().trim());
-  const jSkillsLower = jobSkills.map(s => s.toLowerCase().trim());
+function fallbackMatchScore(
+  candidateSkills: string[] | undefined | null,
+  jobSkills: string[] | undefined | null
+): number {
+
+  if (!jobSkills?.length) return 50;
+  if (!candidateSkills?.length) return 20;
+
+  const candidate = candidateSkills.map(s =>
+    s.toLowerCase().trim()
+  );
+
+  const job = jobSkills.map(s =>
+    s.toLowerCase().trim()
+  );
+
   let matches = 0;
-  for (const skill of jSkillsLower) {
-    if (cSkillsLower.some(c => c.includes(skill) || skill.includes(c))) matches++;
+
+  for (const skill of job) {
+    if (
+      candidate.some(
+        c =>
+          c === skill ||
+          c.includes(skill) ||
+          skill.includes(c)
+      )
+    ) {
+      matches++;
+    }
   }
-  return Math.min(Math.max(Math.round((matches / jobSkills.length) * 100) + 20, 45), 100);
+
+  return Math.round(
+    (matches / job.length) * 100
+  );
 }

@@ -142,7 +142,22 @@ export default function PostJobPage() {
         setShowPreview(true);
 
         try {
-            const data = await mockAIParse(userMessage.content);
+            const res = await fetch("/api/ai/job-parser", {
+                method: "POST",
+                headers: {
+                       "Content-Type": "application/json",
+                  },
+                body: JSON.stringify({
+                prompt: userMessage.content,
+                }),
+           });
+
+            if (!res.ok) {
+                   throw new Error("Failed to parse job requirements");
+                }
+
+            const data = await res.json();
+
             setParsedData(data);
             setEditableData(data);
 

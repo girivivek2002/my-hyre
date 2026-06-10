@@ -138,27 +138,82 @@ function CandidateDashboardContent() {
             </motion.div>
 
             {/* Stats Grid */}
-            <motion.div variants={itemVars} className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 sm:mb-10">
-              {[
-                { title: "Applications", value: stats?.activeApplications || 0, icon: <Briefcase size={18} className="text-violet-500" />, trend: "Active", color: "violet" },
-                { title: "Interviews", value: stats?.interviewsCount || 0, icon: <CalendarDays size={18} className="text-indigo-500" />, trend: "Scheduled", color: "indigo" },
-                { title: "Resume Nodes", value: stats?.resumeNodes || 0, icon: <FileText size={18} className="text-amber-500" />, trend: "Files", color: "amber" },
-                { title: "Profile Score", value: `${stats?.profileStrength || 0}%`, icon: <Zap size={18} className="text-emerald-500" />, trend: "Match", color: "emerald" },
-              ].map((stat, i) => (
-                <GlassCard key={i} className="group cursor-pointer">
-                  <div className="flex justify-between items-start mb-2 sm:mb-4">
-                    <div className={`p-1.5 sm:p-2 rounded-lg bg-${stat.color}-500/10 border border-${stat.color}-500/20`}>
-                      {stat.icon}
-                    </div>
-                    <ArrowUpRight size={14} className="text-slate-300 dark:text-slate-600 group-hover:text-violet-500 transition-colors" />
-                  </div>
-                  <p className="text-[9px] sm:text-xs font-semibold text-slate-500 dark:text-neutral-500 uppercase tracking-wider mb-0.5 sm:mb-1">{stat.title}</p>
-                  <div className="flex flex-col sm:flex-row sm:items-end sm:gap-2">
-                    <h2 className="text-lg sm:text-2xl font-bold">{stat.value}</h2>
-                    <span className="text-[8px] sm:text-[10px] font-bold text-slate-400 dark:text-neutral-600 pb-0.5 sm:pb-1 truncate">{stat.trend}</span>
-                  </div>
-                </GlassCard>
-              ))}
+            <motion.div
+  variants={itemVars}
+  className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 sm:mb-10"
+>
+  {[
+    {
+      title: "Applications",
+      value: stats?.activeApplications || 0,
+      icon: <Briefcase size={18} className="text-violet-500" />,
+      trend: "Active",
+      color: "violet",
+      route: "/candidate/jobs",
+    },
+    {
+      title: "Interviews",
+      value: stats?.interviewsCount || 0,
+      icon: <CalendarDays size={18} className="text-indigo-500" />,
+      trend: "Scheduled",
+      color: "indigo",
+      route: "/candidate/interviews",
+    },
+    {
+      title: "Resume Nodes",
+      value: stats?.resumeNodes || 0,
+      icon: <FileText size={18} className="text-amber-500" />,
+      trend: "Files",
+      color: "amber",
+      route: "/candidate/profile",
+    },
+    {
+      title: "Profile Score",
+      value: `${stats?.profileStrength || 0}%`,
+      icon: <Zap size={18} className="text-emerald-500" />,
+      trend: "Match",
+      color: "emerald",
+      route: "/candidate/profile",
+    },
+  ].map((stat, i) => (
+    <motion.div
+      key={i}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={() => {
+        console.log("Clicked", stat.route);
+        router.push(stat.route);
+      }}
+      className="group cursor-pointer rounded-3xl p-4 sm:p-6 bg-white dark:bg-[#0f0f15] border border-slate-200 dark:border-white/[0.05] shadow-sm"
+    >
+      <div className="flex justify-between items-start mb-2 sm:mb-4">
+        <div
+          className={`p-1.5 sm:p-2 rounded-lg bg-${stat.color}-500/10 border border-${stat.color}-500/20`}
+        >
+          {stat.icon}
+        </div>
+
+        <ArrowUpRight
+          size={14}
+          className="text-slate-300 dark:text-slate-600 group-hover:text-violet-500 transition-colors"
+        />
+      </div>
+
+      <p className="text-[9px] sm:text-xs font-semibold text-slate-500 dark:text-neutral-500 uppercase tracking-wider mb-0.5 sm:mb-1">
+        {stat.title}
+      </p>
+
+      <div className="flex flex-col sm:flex-row sm:items-end sm:gap-2">
+        <h2 className="text-lg sm:text-2xl font-bold">
+          {stat.value}
+        </h2>
+
+        <span className="text-[8px] sm:text-[10px] font-bold text-slate-400 dark:text-neutral-600 pb-0.5 sm:pb-1 truncate">
+          {stat.trend}
+        </span>
+      </div>
+    </motion.div>
+  ))}
             </motion.div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">

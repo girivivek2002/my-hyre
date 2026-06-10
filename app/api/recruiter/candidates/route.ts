@@ -4,6 +4,7 @@ import { calculateCandidateMatch } from "@/lib/ai-matcher";
 import { verifyRecruiter } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
+  
   const authUser = await verifyRecruiter(req);
   if (!authUser) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
@@ -68,7 +69,7 @@ export async function GET(req: NextRequest) {
         orderBy: { createdAt: "desc" }
       });
     }
-
+    console.log("Total Candidates:", candidates.length);
     const formatted = await Promise.all(candidates.map(async (c: any) => {
       // Get profile
       const profile = c.candidateProfile;
@@ -98,9 +99,20 @@ export async function GET(req: NextRequest) {
       }
 
       let matchResult: any = { score: 85, summary: "Initial screening...", strengths: [], gaps: [] };
+      console.log("Scoring Job:", scoringJob);
       if (scoringJob) {
-        // Fetch resume data if available
-        const latestResume = c.resumes?.[0] || (profile?.user?.resumes?.[0]);
+        
+        const latestResume = await prisma.resume.findFirst({
+  where: {
+    userId: c.id
+  },
+  orderBy: {
+    createdAt: "desc"
+  }
+});
+
+console.log("Latest Resume:", latestResume);
+        console.log("Latest Resume:", latestResume);
 
         matchResult = await calculateCandidateMatch(
           {

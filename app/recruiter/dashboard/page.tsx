@@ -48,10 +48,46 @@ function GlassCard({ children, className = "" }: { children: ReactNode, classNam
 }
 
 const statCards = [
-  { title: "Active Jobs", key: "activeJobs", icon: <Briefcase size={22} />, trend: "+12.5%", color: "indigo", iconBg: "bg-indigo-500/10 border-indigo-500/20", iconColor: "text-indigo-500" },
-  { title: "Talent Pipeline", key: "candidates", icon: <Users size={22} />, trend: "+48 new", color: "violet", iconBg: "bg-violet-500/10 border-violet-500/20", iconColor: "text-violet-500" },
-  { title: "Scheduled Interviews", key: "interviews", icon: <Clock size={22} />, trend: "2 today", color: "amber", iconBg: "bg-amber-500/10 border-amber-500/20", iconColor: "text-amber-500" },
-  { title: "Hiring Velocity", key: "velocity", icon: <TrendingUp size={22} />, trend: "Optimal", color: "emerald", iconBg: "bg-emerald-500/10 border-emerald-500/20", iconColor: "text-emerald-500" },
+  {
+    title: "Active Jobs",
+    key: "activeJobs",
+    icon: <Briefcase size={22} />,
+    trend: "+12.5%",
+    color: "indigo",
+    iconBg: "bg-indigo-500/10 border-indigo-500/20",
+    iconColor: "text-indigo-500",
+    route: "/recruiter/dashboard",
+  },
+  {
+    title: "Talent Pipeline",
+    key: "candidates",
+    icon: <Users size={22} />,
+    trend: "+48 new",
+    color: "violet",
+    iconBg: "bg-violet-500/10 border-violet-500/20",
+    iconColor: "text-violet-500",
+    route: "/recruiter/candidates",
+  },
+  {
+    title: "Scheduled Interviews",
+    key: "interviews",
+    icon: <Clock size={22} />,
+    trend: "2 today",
+    color: "amber",
+    iconBg: "bg-amber-500/10 border-amber-500/20",
+    iconColor: "text-amber-500",
+    route: "/recruiter/schedule",
+  },
+  {
+    title: "Hiring Velocity",
+    key: "velocity",
+    icon: <TrendingUp size={22} />,
+    trend: "Optimal",
+    color: "emerald",
+    iconBg: "bg-emerald-500/10 border-emerald-500/20",
+    iconColor: "text-emerald-500",
+    route: "/recruiter/analytics",
+  },
 ];
 
 function RecruiterDashboardContent() {
@@ -115,21 +151,51 @@ function RecruiterDashboardContent() {
         </motion.div>
 
         {/* Stats */}
-        <motion.div variants={itemVars} className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 sm:mb-10">
-          {statCards.map((card, i) => (
-            <GlassCard key={i}>
-              <div className="flex justify-between items-start mb-2 sm:mb-4">
-                <div className={`p-1.5 sm:p-3 ${card.iconBg} border rounded-xl ${card.iconColor}`}>
-                  {React.cloneElement(card.icon as React.ReactElement<any>, { size: 18 })}
-                </div>
-              </div>
-              <p className="text-slate-500 dark:text-slate-400 font-bold text-[8px] sm:text-[10px] tracking-widest uppercase mb-0.5 sm:mb-1">{card.title}</p>
-              <div className="flex flex-col sm:flex-row sm:items-end sm:gap-2">
-                <AnimatedStat value={card.key === "velocity" ? "94" : (stats?.[card.key] || "0")} suffix={card.key === "velocity" ? "%" : ""} />
-                <span className="text-[9px] sm:text-[10px] font-bold pb-0.5 sm:pb-2 text-emerald-500">{card.trend}</span>
-              </div>
-            </GlassCard>
-          ))}
+        <motion.div
+  variants={itemVars}
+  className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-8 sm:mb-10"
+>
+  {statCards.map((card, i) => (
+    <motion.div
+      key={i}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      onClick={() => router.push(card.route)}
+      className="cursor-pointer"
+    >
+      <GlassCard>
+        <div className="flex justify-between items-start mb-2 sm:mb-4">
+          <div
+            className={`p-1.5 sm:p-3 ${card.iconBg} border rounded-xl ${card.iconColor}`}
+          >
+            {React.cloneElement(
+              card.icon as React.ReactElement<any>,
+              { size: 18 }
+            )}
+          </div>
+        </div>
+
+        <p className="text-slate-500 dark:text-slate-400 font-bold text-[8px] sm:text-[10px] tracking-widest uppercase mb-0.5 sm:mb-1">
+          {card.title}
+        </p>
+
+        <div className="flex flex-col sm:flex-row sm:items-end sm:gap-2">
+          <AnimatedStat
+            value={
+              card.key === "velocity"
+                ? "94"
+                : (stats?.[card.key] || "0")
+            }
+            suffix={card.key === "velocity" ? "%" : ""}
+          />
+
+          <span className="text-[9px] sm:text-[10px] font-bold pb-0.5 sm:pb-2 text-emerald-500">
+            {card.trend}
+          </span>
+        </div>
+      </GlassCard>
+    </motion.div>
+  ))}
         </motion.div>
 
         {/* Content Grid */}

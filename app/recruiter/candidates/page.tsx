@@ -489,7 +489,7 @@ export default function CandidatesPage() {
                                                 className="w-full py-2.5 rounded-xl bg-white dark:bg-neutral-800 border border-slate-200 dark:border-neutral-700 text-sm font-bold hover:bg-slate-50 dark:hover:bg-neutral-700 transition-all flex items-center justify-center gap-2"
                                                 onClick={() => {
                                                     if (selectedCandidate.resume) {
-                                                        window.open(`/uploads/${selectedCandidate.resume}`, '_blank');
+                                                        window.open(`/uploads/${selectedCandidate.resume}.pdf`, '_blank');
                                                     } else {
                                                         setIsResumeModalOpen(true);
                                                     }
